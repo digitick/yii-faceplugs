@@ -19,47 +19,45 @@ require_once 'EFaceplugsBase.php';
 class LikeButton extends EFaceplugsBase
 {
 	/**
-	 * The URL of the Facebook page for this Like button.
-	 * @var string
+	 * @var string The URL of the Facebook page for this Like button.
 	 */
 	public $href;
 	/**
-	 * Display profile photos below the button (standard layout only) 
-	 * @var boolean
+	 * @var boolean Display profile photos below the button (standard layout only).
 	 */
 	public $show_faces;
 	/**
-	 * Width of the Like button, defults to 450px
-	 * @var integer
+	 * @var integer Width of the Like button, defults to 450px
 	 */
 	public $width;
 	/**
-	 * Three options : 'standard', 'button_count', 'box_count'
-	 * @var string
+	 * @var string Three options : 'standard', 'button_count', 'box_count'
 	 */
 	public $layout;
 	/**
-	 * The verb to display on the button. Options: 'like', 'recommend'
-	 * @var string
+	 * @var string The verb to display on the button. Options: 'like', 'recommend'
 	 */
 	public $action;
 	/**
-	 * The font to display in the button. Options: 'arial', 'lucida grande',
-	 * 'segoe ui', 'tahoma', 'trebuchet ms', 'verdana'
-	 * @var string
+	 * @var string The font to display in the button. Options: 'arial',
+	 * 'lucida grande', 'segoe ui', 'tahoma', 'trebuchet ms', 'verdana'
 	 */
 	public $font;
 	/**
-	 * The color scheme for the plugin. Options: 'light', 'dark'
-	 * @var string
+	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
 	 */
 	public $colorscheme;
 	/**
-	 * A label for tracking referrals; must be less than 50 characters and can
-	 * contain alphanumeric characters and some punctuation (currently +/=-.:_).
-	 * @var string
+	 * @var string A label for tracking referrals; must be less than 50
+	 * characters and can contain alphanumeric characters and some punctuation
+	 * (currently +/=-.:_).
 	 */
 	public $ref;
+	/**
+	 * @var boolean Specifies whether to include a Send button with the Like
+	 * button.
+	 */
+	public $send;
 
 	public function run()
 	{

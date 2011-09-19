@@ -24,39 +24,34 @@ require_once 'EFaceplugsBase.php';
 class FanBox extends EFaceplugsBase
 {
 	/**
-	 * The width of the plugin in pixels. Default width: 300px.
-	 * @var integer
+	 * @var integer The width of the plugin in pixels. Default width: 300px.
 	 */
 	public $width;
 	/**
-	 * The height of the plugin in pixels.
-	 * @var integer
+	 * @var integer The height of the plugin in pixels.
 	 */
 	public $height;
 	/**
-	 * Specifies whether to display a stream of the latest posts from the
-	 * page's wall.
-	 * @var boolean
+	 * @var boolean Specifies whether to display a stream of the latest posts
+	 * from the page's wall.
 	 */
 	public $stream;
 	/**
-	 * Specifies the profile to be a fan of.
-	 * @var string
+	 * @var string Specifies the profile to be a fan of.
 	 */
 	public $profile_id;
 	/**
-	 * Specifies whether to display the Facebook logo at the top of the plugin.
-	 * @var boolean
+	 * @var boolean Specifies whether to display the Facebook logo at the top
+	 * of the plugin.
 	 */
 	public $logobar;
 	/**
-	 * Specify the number of connections (faces) to display in the plugin.
-	 * @var integer
+	 * @var integer Specify the number of connections (faces) to display in
+	 * the plugin.
 	 */
 	public $connections;
 	/**
-	 * Specify a CSS file to use with the plugin.
-	 * @var string Absolute URL
+	 * @var string Absolute URL, specify a CSS file to use with the plugin.
 	 */
 	public $css;
 

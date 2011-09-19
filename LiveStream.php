@@ -17,25 +17,21 @@ require_once 'EFaceplugsAppLink.php';
 class LiveStream extends EFaceplugsAppLink
 {
 	/**
-	 * Width of the plugin in pixels. Default width: 400px.
-	 * @var integer
+	 * @var integer Width of the plugin in pixels. Default width: 400px.
 	 */
 	public $width;
 	/**
-	 * The height of the plugin in pixels. Default height: 500px.
-	 * @var integer
+	 * @var integer The height of the plugin in pixels. Default height: 500px.
 	 */
 	public $height;
 	/**
-	 * The URL that users are redirected to when they click on your app name on
-	 * a status (if not specified, your Connect URL is used).
-	 * @var string
+	 * @var string The URL that users are redirected to when they click on your
+	 * app name on a status (if not specified, your Connect URL is used).
 	 */
 	public $via_url;
 	/**
-	 * If you have multiple live stream boxes on the same page, specify a
-	 * unique xid for each.
-	 * @var integer
+	 * @var integer If you have multiple live stream boxes on the same page,
+	 * specify a unique xid for each.
 	 */
 	public $xid;
 

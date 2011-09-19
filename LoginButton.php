@@ -18,32 +18,28 @@ require_once 'EFaceplugsAppLink.php';
 class LoginButton extends EFaceplugsAppLink
 {
 	/**
-	 * The URL of the page.
+	 * @var string The URL of the page.
 	 *
 	 * The plugin will display photos of users who have liked this page.
-	 * @var string
 	 */
 	public $show_faces;
 	/**
-	 * The maximum number of rows of profile pictures to display.
+	 * @var integer The maximum number of rows of profile pictures to display.
 	 * Default value: 1.
-	 * @var integer
 	 */
 	public $max_rows;
 	/**
-	 * The width of the plugin in pixels. Default width: 200px.
-	 * @var integer
+	 * @var integer The width of the plugin in pixels. Default width: 200px.
 	 */
 	public $width;
 	/**
-	 * A comma separated list of extended permissions.
+	 * @var string A comma separated list of extended permissions.
 	 * 
 	 * By default the Login button prompts users for their public information.
 	 * If your application needs to access other parts of the user's profile
 	 * that may be private, your application can request extended permissions.
 	 * 
 	 * @see http://developers.facebook.com/docs/authentication/permissions/
-	 * @var string
 	 */
 	public $perms;
 

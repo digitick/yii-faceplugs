@@ -24,46 +24,48 @@ require_once 'EFaceplugsBase.php';
 class LikeBox extends EFaceplugsBase
 {
 	/**
-	 * The URL of the Facebook page for this Like Box.
-	 * @var string
+	 * @var string The URL of the Facebook page for this Like Box.
 	 */
 	public $href;
 	/**
-	 * Display profile photos in the plugin.
-	 * @var boolean
+	 * @var boolean Display profile photos in the plugin.
 	 */
 	public $show_faces;
 	/**
-	 * The width of the plugin in pixels. Default width: 300px.
-	 * @var integer
+	 * @var integer The width of the plugin in pixels. Default width: 300px.
 	 */
 	public $width;
 	/**
-	 * The height of the plugin in pixels.
-	 * @var integer
+	 * @var integer The height of the plugin in pixels.
 	 */
 	public $height;
 	/**
-	 * Specifies whether to display a stream of the latest posts from the
-	 * page's wall.
-	 * @var boolean
+	 * @var boolean Specifies whether to display a stream of the latest posts
+	 * from the page's wall.
 	 */
 	public $stream;
 	/**
-	 * Specifies whether to display the Facebook header at the top of the plugin.
-	 * @var boolean
+	 * @var boolean Specifies whether to display the Facebook header at the
+	 * top of the plugin.
 	 */
 	public $header;
 	/**
-	 * The color scheme for the plugin. Options: 'light', 'dark'
-	 * @var string
+	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
 	 */
 	public $colorscheme;
 	/**
-	 * Specifies the profile to like.
-	 * @var string
+	 * @var string Specifies the profile to like.
 	 */
 	public $profile_id;
+	/**
+	 * @var string The border color of the plugin. 
+	 */
+	public $border_color;
+	/**
+	 * @var boolean for Places, specifies whether the stream contains posts
+	 * from the Place's wall or just checkins from friends. Default value: false. 
+	 */
+	public $force_wall;
 
 	public function run()
 	{

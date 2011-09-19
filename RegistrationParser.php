@@ -13,7 +13,7 @@
  *
  * THIS IS UNFINISHED, UNTESTED CODE !!
  *
- * !!!! DO NOT USE !!!!
+ * Contributions welcome :-)
  */
 class RegistrationParser extends CComponent
 {
@@ -53,8 +53,11 @@ class RegistrationParser extends CComponent
 	 * change the facebook response to an objet
 	 * @return Object $response
 	 */
-	public function parse_signed_request()
+	public function parse_signed_request($data=null)
 	{
+		if (!$data){
+			$data = $this->testData;
+		}
 		$data = json_decode($this->testData);
 		if (strtoupper($data->algorithm) !== 'HMAC-SHA256') {
 			if (YII_DEBUG) {

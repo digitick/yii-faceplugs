@@ -17,18 +17,15 @@ require_once 'EFaceplugsBase.php';
 class Comments extends EFaceplugsBase
 {
 	/**
-	 * Number of posts to show.
-	 * @var integer
+	 * @var integer Number of posts to show.
 	 */
 	public $numposts;
 	/**
-	 * the width of the widget.
-	 * @var integer
+	 * @var integer The width of the widget.
 	 */
 	public $width;
 	/**
-	 * Specify whether to publish a comment on the user's wall.
-	 * @var boolean
+	 * @var boolean Specify whether to publish a comment on the user's wall.
 	 */
 	public $publish_feed = true;
 

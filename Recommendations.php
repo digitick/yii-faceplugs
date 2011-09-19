@@ -16,54 +16,46 @@ require_once 'EFaceplugsBase.php';
 class Recommendations extends EFaceplugsBase
 {
 	/**
-	 * The domain to show activity for. Defaults to the current domain.
-	 * @var string
+	 * @var string The domain to show activity for. Defaults to the current domain.
 	 */
 	public $site;
 	/**
-	 * The height of the plugin in pixels. Default height: 300px.
-	 * @var integer
+	 * @var integer The height of the plugin in pixels. Default height: 300px.
 	 */
 	public $height;
 	/**
-	 * the width of the plugin in pixels. Default width: 300px.
-	 * @var integer
+	 * @var integer The width of the plugin in pixels. Default width: 300px.
 	 */
 	public $width;
 	/**
-	 * Specifies whether to show the Facebook header. 
-	 * @var boolean
+	 * @var boolean Specifies whether to show the Facebook header.
 	 */
 	public $header;
 	/**
-	 * The color scheme for the plugin. Options: 'light', 'dark'
-	 * @var string
+	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
 	 */
 	public $colorscheme;
 	/**
-	 * The font to display in the plugin. Options: 'arial', 'lucida grande',
+	 * @var string The font to display in the plugin. Options: 'arial', 'lucida grande',
 	 * 'segoe ui', 'tahoma', 'trebuchet ms', 'verdana'
-	 * @var string
 	 */
 	public $font;
 	/**
-	 * The border color of the plugin.
-	 * @var string
+	 * @var string The border color of the plugin.
 	 */
 	public $border_color;
 	/**
-	 * Allows you to filter which URLs are shown in the plugin.
+	 * @var string Allows you to filter which URLs are shown in the plugin.
 	 *
 	 * The plugin will only include URLs which contain the filter in the first
 	 * two path parameters of the URL. If nothing in the first two path
 	 * parameters of the URL matches the filter, the URL will not be included.
-	 * @var string
 	 */
 	public $filter;
 	/**
-	 * A label for tracking referrals; must be less than 50 characters and can
-	 * contain alphanumeric characters and some punctuation (currently +/=-.:_).
-	 * @var string
+	 * @var string A label for tracking referrals; must be less than 50
+	 * characters and can contain alphanumeric characters and some punctuation
+	 * (currently +/=-.:_).
 	 */
 	public $ref;
 

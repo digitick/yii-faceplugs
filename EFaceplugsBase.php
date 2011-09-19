@@ -23,57 +23,49 @@
 abstract class EFaceplugsBase extends CWidget
 {
 	/**
-	 * Facebook application ID.
+	 * @var string Facebook application ID.
 	 *
 	 * This can be set in the 'fbAppId' parameter in the Yii config file.
-	 * @var string
 	 */
 	public $app_id;
 	/**
-	 * Page URL, for Open Graph
-	 * @var string
+	 * @var string Page URL, for Open Graph
 	 */
 	public $url;
 	public $css;
 	/**
-	 * Open Graph properties.
-	 * @var array
+	 * @var array Open Graph properties.
 	 */
 	public $og = array();
 	/**
-	 * Check user's login status.
-	 * @var boolean
+	 * @var boolean Check user's login status.
 	 */
 	public $status = true;
 	/**
-	 * Enable cookies to allow the server to access the session.
-	 * @var boolean
+	 * @var boolean Enable cookies to allow the server to access the session.
 	 */
 	public $cookie = true;
 	/**
-	 * Parse XFBML.
-	 * @var boolean
+	 * @var boolean Parse XFBML.
 	 */
 	public $xfbml = true;
 	/**
-	 * Load the Facebook init script asynchronously.
+	 * @var boolean Load the Facebook init script asynchronously.
 	 *
 	 * This speeds up page loads because loading the plugin does not block
 	 * loading other elements of the page.
-	 * @var boolean 
 	 */
 	public $async = true;
 	/**
-	 * Override default locale for the widget.
+	 * @var string Override default locale for the widget.
 	 * 
 	 * Normally locale is set automatically based on the Yii language settings,
 	 * setting it here allows a specific locale to be used.
-	 * @var string
 	 */
 	public $locale;
 	/**
-	 * Specify the debug mode. When active, it loads the debug version of
-	 * the SDK (en_US only).
+	 * @var string Specify the debug mode. When active, it loads the debug
+	 * version of the SDK (en_US only).
 	 *
 	 * Options :
 	 * <ul>
@@ -81,17 +73,14 @@ abstract class EFaceplugsBase extends CWidget
 	 * <li>'on' - debug enabled.
 	 * <li>'off' - debug disabled (default).
 	 * </ul>
-	 * @var string
 	 */
 	public $debugMode = 'off';
 	/**
-	 * URL of the script file to load.
-	 * @var string
+	 * @var string URL of the script file to load.
 	 */
 	protected $scriptFile = 'connect.facebook.net/%%locale%%/all.js';
 	/**
-	 * Allowed Open Graph properties.
-	 * @var array
+	 * @var array Allowed Open Graph properties.
 	 */
 	protected $openGraphProperties = array(
 		'admins',
@@ -125,8 +114,7 @@ abstract class EFaceplugsBase extends CWidget
 		'audio:type',
 	);
 	/**
-	 * Valid Facebook locales.
-	 * @var array
+	 * @var array Valid Facebook locales.
 	 */
 	protected $locales = array(
 		'az_AZ',
