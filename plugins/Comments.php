@@ -1,12 +1,16 @@
 <?php
 /**
- * Wrappers for facebook plugins.
- * @copyright © Digitick <www.digitick.net> 2011
- * @license GNU Lesser General Public License v3.0
- * @author Ianaré Sévi
+ * Comments class file.
+ *
+ * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Ianaré Sévi (original author) www.digitick.net
+ * @link https://github.com/splashlab/yii-facebook-opengraph
+ * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ *
  */
 
-require_once 'EFaceplugsBase.php';
+require_once 'SPluginBase.php';
 
 /**
  * The Comments Box easily enables your users to comment on your site's content —
@@ -14,7 +18,7 @@ require_once 'EFaceplugsBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/comments
  */
-class Comments extends EFaceplugsBase
+class Comments extends SPluginBase
 {
 	/**
 	 * @var integer Number of posts to show.
@@ -32,9 +36,8 @@ class Comments extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
 		$params = $this->getParams();
-		echo CHtml::openTag('fb:comments', $params), CHtml::closeTag('fb:comments');
+        $this->renderTag('comments',$params);
 	}
 
 }

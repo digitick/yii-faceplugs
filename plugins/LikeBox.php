@@ -1,12 +1,16 @@
 <?php
 /**
- * Wrappers for facebook plugins.
- * @copyright © Digitick <www.digitick.net> 2011
- * @license GNU Lesser General Public License v3.0
- * @author Ianaré Sévi
+ * LikeBox class file.
+ *
+ * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Ianaré Sévi (original author) www.digitick.net
+ * @link https://github.com/splashlab/yii-facebook-opengraph
+ * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ *
  */
 
-require_once 'EFaceplugsBase.php';
+require_once 'SPluginBase.php';
 
 /**
  * The Like Box is a social plugin that enables Facebook Page owners to
@@ -21,7 +25,7 @@ require_once 'EFaceplugsBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
-class LikeBox extends EFaceplugsBase
+class LikeBox extends SPluginBase
 {
 	/**
 	 * @var string The URL of the Facebook page for this Like Box.
@@ -58,23 +62,22 @@ class LikeBox extends EFaceplugsBase
 	 */
 	public $profile_id;
 	/**
-	 * @var string The border color of the plugin. 
+	 * @var string The border color of the plugin.
 	 */
 	public $border_color;
 	/**
 	 * @var boolean for Places, specifies whether the stream contains posts
-	 * from the Place's wall or just checkins from friends. Default value: false. 
+	 * from the Place's wall or just checkins from friends. Default value: false.
 	 */
 	public $force_wall;
 
 	public function run()
 	{
 		parent::run();
-
 		if (!isset($this->profile_id)) {
-			$this->profile_id = $this->app_id;
+			$this->profile_id = Yii::app()->facebook->appId;
 		}
 		$params = $this->getParams();
-		echo CHtml::openTag('fb:like-box', $params), CHtml::closeTag('fb:like-box');
+		$this->renderTag('like-box',$params);
 	}
 }

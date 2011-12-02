@@ -1,13 +1,16 @@
 <?php
-
 /**
- * Wrappers for facebook plugins.
- * @copyright © Digitick <www.digitick.net> 2011
- * @license GNU Lesser General Public License v3.0
- * @author Ianaré Sévi
+ * LoginButton class file.
+ *
+ * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Ianaré Sévi (original author) www.digitick.net
+ * @link https://github.com/splashlab/yii-facebook-opengraph
+ * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ *
  */
 
-require_once 'EFaceplugsAppLink.php';
+require_once 'SPluginBase.php';
 
 /**
  * The Login Button shows profile pictures of the user's friends who have
@@ -15,7 +18,7 @@ require_once 'EFaceplugsAppLink.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/login
  */
-class LoginButton extends EFaceplugsAppLink
+class LoginButton extends SPluginBase
 {
 	/**
 	 * @var string The URL of the page.
@@ -34,11 +37,11 @@ class LoginButton extends EFaceplugsAppLink
 	public $width;
 	/**
 	 * @var string A comma separated list of extended permissions.
-	 * 
+	 *
 	 * By default the Login button prompts users for their public information.
 	 * If your application needs to access other parts of the user's profile
 	 * that may be private, your application can request extended permissions.
-	 * 
+	 *
 	 * @see http://developers.facebook.com/docs/authentication/permissions/
 	 */
 	public $perms;
@@ -46,9 +49,8 @@ class LoginButton extends EFaceplugsAppLink
 	public function run()
 	{
 		parent::run();
-
 		$params = $this->getParams();
-		echo CHtml::openTag('fb:login-button', $params), CHtml::closeTag('fb:login-button');
+		$this->renderTag('login-button',$params);
 	}
 
 }

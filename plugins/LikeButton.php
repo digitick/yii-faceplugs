@@ -1,22 +1,27 @@
 <?php
 /**
- * Wrappers for facebook plugins.
- * @copyright © Digitick <www.digitick.net> 2011
- * @license GNU Lesser General Public License v3.0
- * @author Ianaré Sévi
+ * ActivityFeed class file.
+ *
+ * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Ianaré Sévi (original author) www.digitick.net
+ * @link https://github.com/splashlab/yii-facebook-opengraph
+ * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ *
  */
 
-require_once 'EFaceplugsBase.php';
+require_once 'SPluginBase.php';
 
 /**
  * The Like button lets a user share your content with friends on Facebook.
  *
  * When the user clicks the Like button on your site, a story appears in the
  * user's friends' News Feed with a link back to your website.
- * 
+ *
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
-class LikeButton extends EFaceplugsBase
+
+class LikeButton extends SPluginBase
 {
 	/**
 	 * @var string The URL of the Facebook page for this Like button.
@@ -62,8 +67,7 @@ class LikeButton extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
 		$params = $this->getParams();
-		echo CHtml::openTag('fb:like', $params), CHtml::closeTag('fb:like');
+        $this->renderTag('like',$params);
 	}
 }

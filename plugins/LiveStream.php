@@ -1,12 +1,16 @@
 <?php
 /**
- * Wrappers for facebook plugins.
- * @copyright © Digitick <www.digitick.net> 2011
- * @license GNU Lesser General Public License v3.0
- * @author Ianaré Sévi
+ * LiveStream class file.
+ *
+ * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Ianaré Sévi (original author) www.digitick.net
+ * @link https://github.com/splashlab/yii-facebook-opengraph
+ * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ *
  */
 
-require_once 'EFaceplugsAppLink.php';
+require_once 'SPluginBase.php';
 
 /**
  * The Live Stream plugin lets your users share activity and comments in
@@ -14,7 +18,7 @@ require_once 'EFaceplugsAppLink.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/live-stream
  */
-class LiveStream extends EFaceplugsAppLink
+class LiveStream extends SPluginBase
 {
 	/**
 	 * @var integer Width of the plugin in pixels. Default width: 400px.
@@ -38,9 +42,8 @@ class LiveStream extends EFaceplugsAppLink
 	public function run()
 	{
 		parent::run();
-
 		$params = $this->getParams();
-		echo CHtml::openTag('fb:live-stream', $params), CHtml::closeTag('fb:live-stream');
+		$this->renderTag('live-stream',$params);
 	}
 
 }

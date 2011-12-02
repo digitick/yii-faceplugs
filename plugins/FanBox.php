@@ -1,12 +1,16 @@
 <?php
 /**
- * Wrappers for facebook plugins.
- * @copyright © Digitick <www.digitick.net> 2011
- * @license GNU Lesser General Public License v3.0
- * @author Ianaré Sévi
+ * FanBox class file.
+ *
+ * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Ianaré Sévi (original author) www.digitick.net
+ * @link https://github.com/splashlab/yii-facebook-opengraph
+ * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ *
  */
 
-require_once 'EFaceplugsBase.php';
+require_once 'SPluginBase.php';
 
 /**
  * The Like Box is a social plugin that enables Facebook Page owners to
@@ -21,7 +25,7 @@ require_once 'EFaceplugsBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
-class FanBox extends EFaceplugsBase
+class FanBox extends SPluginBase
 {
 	/**
 	 * @var integer The width of the plugin in pixels. Default width: 300px.
@@ -58,11 +62,10 @@ class FanBox extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
 		if (!isset($this->profile_id)) {
-			$this->profile_id = $this->app_id;
+			$this->profile_id = Yii::app()->facebook->appId;
 		}
 		$params = $this->getParams();
-		echo CHtml::openTag('fb:fan', $params), CHtml::closeTag('fb:fan');
+		$this->renderTag('fan',$params);
 	}
 }

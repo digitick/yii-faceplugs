@@ -1,12 +1,16 @@
 <?php
 /**
- * Wrappers for facebook plugins.
- * @copyright © Digitick <www.digitick.net> 2011
- * @license GNU Lesser General Public License v3.0
- * @author Ianaré Sévi
+ * Registration class file.
+ *
+ * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Ianaré Sévi (original author) www.digitick.net
+ * @link https://github.com/splashlab/yii-facebook-opengraph
+ * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ *
  */
 
-require_once 'EFaceplugsAppLink.php';
+require_once 'SPluginBase.php';
 
 /**
  * The registration plugin allows users to easily sign up for your website with
@@ -14,7 +18,7 @@ require_once 'EFaceplugsAppLink.php';
  *
  * @see http://developers.facebook.com/docs/plugins/registration
  */
-class Registration extends EFaceplugsAppLink
+class Registration extends SPluginBase
 {
 	/**
 	 * @var string If the user arrives logged into Facebook, but has not registered for
@@ -51,9 +55,9 @@ class Registration extends EFaceplugsAppLink
 	public function run()
 	{
 		parent::run();
-		$this->client_id = $this->app_id;
+		$this->client_id = Yii::app()->facebook->appId;
 		$params = $this->getParams();
-		echo CHtml::openTag('fb:registration', $params), CHtml::closeTag('fb:registration');
+		$this->renderTag('registration',$params);
 	}
 
 }
