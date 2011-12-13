@@ -37,6 +37,7 @@ Include the extension in your Yii config:
     //'locale'=>'en_US', // override locale setting (defaults to en_US)
     //'jsSdk'=>true, // don't include JS SDK
     //'async'=>true, // load JS SDK asynchronously
+    //'jsCallback'=>false, // declare if you are going to be inserting any JS callbacks to the async JS SDK loader
     //'status'=>true, // JS SDK - check login status
     //'cookie'=>true, // JS SDK - enable cookies to allow the server to access the session
     //'oauth'=>true,  // JS SDK -enable OAuth 2.0
@@ -56,6 +57,9 @@ protected function afterRender($view)
     Yii::app()->facebook->renderOGMetaTags();
     return true;
 }
+
+If you have the jsCallback property set to true for async JS callbacks, also add this to afterRender():
+Yii::app()->facebook->registerAsyncCallback();
 
 The components will lazy-load when you try to use the helpers, but if you want
 OG tags and the Facebook JS SDK on every page automatically you need to add it

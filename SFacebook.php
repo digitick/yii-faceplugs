@@ -53,9 +53,14 @@ class SFacebook extends CApplicationComponent
     public $xfbml = true;
 
     /**
+     * @var bool whether or not to look for an run JS callbacks in the async JS loader
+     */
+    public $jsCallback = false;
+
+    /**
      * @var string JavaScript to run after the Facebook JS library loads asynchronously
      */
-    private $scripts = '';
+    private $callbackScripts = '';
 
     /**
      * @var bool turn on or off the Facebook JS
@@ -255,7 +260,7 @@ class SFacebook extends CApplicationComponent
      * @return void
      */
     public function addScript($script) {
-        $this->scripts .= $script;
+        $this->callbackScripts .= $script;
     }
 
     /**
@@ -267,15 +272,12 @@ class SFacebook extends CApplicationComponent
     public function init()
 	{
         parent::init();
-        if (!$this->appId)
+        if (!$this->appId) {
             throw new CException('Facebook Application ID not specified.');
-
+        }
         // initialize the Facebook JS
         if ($this->jsSdk) {
-
             $script = '//connect.facebook.net/'.$this->getLocale().'/all.js';
-			echo CHtml::openTag('div', array('id' => 'fb-root'));
-
 			$init = $this->registerSDKScript('init', array(
 				'appId' => $this->appId, // application ID
 				'status' => $this->status, // check login status
@@ -285,7 +287,6 @@ class SFacebook extends CApplicationComponent
 				'channelUrl' => $this->getChannelUrl(), // Channel File
 				)
 			);
-
 			if ($this->async) {
                 $init = "window.fbAsyncInit = function(){{$init}};
                 (function(d){
@@ -299,10 +300,9 @@ class SFacebook extends CApplicationComponent
 				Yii::app()->clientScript->registerScriptFile($script, CClientScript::POS_END);
 			}
 			Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
-
-			echo CHtml::closeTag('div');
+            $fbRoot = '<div id="fb-root"></div>';
+            Yii::app()->getClientScript()->renderBodyEnd($fbRoot);
         }
-        //$this->renderOGMetaTags(); // moved to the afterRender() controller callback
     }
 
     protected function getChannelUrl() {
@@ -324,16 +324,31 @@ class SFacebook extends CApplicationComponent
     }
 
     /**
-	 * Creates the Facebook JS init call
-	 * @param string $method
-	 * @param array $args args to use in the method
-	 * @return string the js created
-	 */
-	public function registerSDKScript($method, $args=array())
-	{
-		$args = CJavaScript::encode($args);// Initalize Facebook JS
-		return "FB.{$method}({$args});{$this->scripts}";
-	}
+     * Creates the Facebook JS init call
+     * @param string $method
+     * @param array $args args to use in the method
+     * @return string the js created
+     */
+    public function registerSDKScript($method, $args=array())
+    {
+        $args = CJavaScript::encode($args);// Initalize Facebook JS
+        if ($this->jsCallback)
+            return "FB.{$method}({$args});asyncCallback();";
+        else
+            return "FB.{$method}({$args});";
+    }
+
+    /**
+     * This method adds your scripts to the callback method
+     * Call this function in afterRender after you have added scripts with the addScript method
+     * @return void
+     */
+    public function registerAsyncCallback() {
+        $script = "function asyncCallback() {
+          {$this->callbackScripts}
+        }";
+        Yii::app()->getClientScript()->registerScript('fb-async-callback', $script, CClientScript::POS_END);
+    }
 
     /**
 	 * Register an opengraph property.
@@ -341,13 +356,17 @@ class SFacebook extends CApplicationComponent
 	 * @param string $data
 	 */
     public function registerOpenGraph($property, $data)
-	{
-		if (!in_array($property, $this->openGraphProperties)) {
-			throw new CException('Invalid open graph property : ' . $property);
-		}
-		$property = 'og:' . $property;
-		Yii::app()->clientScript->registerMetaTag($data, null, null, array('property' => $property));
-	}
+    {
+        if (!in_array($property, $this->openGraphProperties)) {
+            throw new CException('Invalid open graph property : ' . $property);
+        }
+        if (in_array($property, array('app_id','admins'))) {
+            $property = 'fb:' . $property;
+        } else {
+            $property = 'og:' . $property;
+        }
+        Yii::app()->clientScript->registerMetaTag($data, null, null, array('property' => $property));
+    }
 
     /**
 	 * Determine the script locale to load
