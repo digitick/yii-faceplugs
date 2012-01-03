@@ -2,7 +2,7 @@
 /**
  * SFacebook class file.
  *
- * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Evan Johnson <thaddeusmt - A T - gmail.com>
  * @link https://github.com/splashlab/yii-facebook-opengraph
  * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
  * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
@@ -255,38 +255,30 @@ class SFacebook extends CApplicationComponent
     }
 
     /**
-     * Add JS to run after Facebook initalizes
-     * @param JavaScript that needs to run right after the Facebook Asynchronous loader finishes
-     * @return void
-     */
-    public function addScript($script) {
-        $this->callbackScripts .= $script;
-    }
-
-    /**
      * Load Facebook JS and Open Graph meta tags
      * http://developers.facebook.com/docs/reference/javascript/
      * http://developers.facebook.com/docs/opengraph/
      * @return void
      */
-    public function init()
+    public function initJs()
 	{
-        parent::init();
         if (!$this->appId) {
             throw new CException('Facebook Application ID not specified.');
         }
         // initialize the Facebook JS
         if ($this->jsSdk) {
             $script = '//connect.facebook.net/'.$this->getLocale().'/all.js';
-			$init = $this->registerSDKScript('init', array(
-				'appId' => $this->appId, // application ID
-				'status' => $this->status, // check login status
-				'cookie' => $this->cookie, // enable cookies to allow the server to access the session
-				'xfbml' => $this->xfbml, // parse XFBML
-				'oauth' => $this->oauth, // enable OAuth 2.0
-				'channelUrl' => $this->getChannelUrl(), // Channel File
-				)
-			);
+            $init = $this->registerSDKScript('init', array(
+                    'appId' => $this->appId, // application ID
+                    'status' => $this->status, // check login status
+                    'cookie' => $this->cookie, // enable cookies to allow the server to access the session
+                    'xfbml' => $this->xfbml, // parse XFBML
+                    'oauth' => $this->oauth, // enable OAuth 2.0
+                    // TODO follow up on this bug: http://developers.facebook.com/bugs/258868920826496
+                    // IE won't login with this channelUrl line uncommented
+                    //'channelUrl' => $this->getChannelUrl(), // Channel File
+                )
+            );
 			if ($this->async) {
                 $init = "window.fbAsyncInit = function(){{$init}};
                 (function(d){
@@ -302,13 +294,22 @@ class SFacebook extends CApplicationComponent
 			Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
             $fbRoot = '<div id="fb-root"></div>';
             Yii::app()->getClientScript()->renderBodyEnd($fbRoot);
+            $this->registerAsyncCallback();
         }
     }
 
+    /**
+     * http://developers.facebook.com/docs/reference/javascript/
+     * @return string url of the FB JS SDK channel file
+     */
     protected function getChannelUrl() {
         return '//'.Yii::app()->request->getServerName().'/facebook-channel.php';
     }
 
+    /**
+     * Registers all of the Open Graph meta tags declared
+     * @return void
+     */
     public function renderOGMetaTags() {
         $this->ogTags['app_id'] = $this->appId; // set this app ID og tag, for Facebook insights and administration
         if (!isset($this->ogTags['type']))
@@ -317,10 +318,18 @@ class SFacebook extends CApplicationComponent
           $this->ogTags['title'] = Yii::app()->name; // default to App name
         if (!isset($this->ogTags['url']))
           $this->ogTags['url'] = $this->getProtocol()."://".Yii::app()->request->serverName.Yii::app()->request->requestUri; // defaults to current URL
-
         foreach ($this->ogTags as $type => $value) { // loop through any other OG tags declared
 			$this->registerOpenGraph($type, $value);
 		}
+    }
+
+    /**
+     * Add JS to run after Facebook initalizes
+     * @param JavaScript that needs to run right after the Facebook Asynchronous loader finishes
+     * @return void
+     */
+    public function addJsCallback($script) {
+        $this->callbackScripts .= $script;
     }
 
     /**
@@ -329,7 +338,7 @@ class SFacebook extends CApplicationComponent
      * @param array $args args to use in the method
      * @return string the js created
      */
-    public function registerSDKScript($method, $args=array())
+    protected function registerSDKScript($method, $args=array())
     {
         $args = CJavaScript::encode($args);// Initalize Facebook JS
         if ($this->jsCallback)
@@ -343,11 +352,13 @@ class SFacebook extends CApplicationComponent
      * Call this function in afterRender after you have added scripts with the addScript method
      * @return void
      */
-    public function registerAsyncCallback() {
-        $script = "function asyncCallback() {
-          {$this->callbackScripts}
-        }";
-        Yii::app()->getClientScript()->registerScript('fb-async-callback', $script, CClientScript::POS_END);
+    protected function registerAsyncCallback() {
+        if ($this->jsCallback) {
+            $script = "function asyncCallback() {
+        {$this->callbackScripts}
+      }";
+            Yii::app()->getClientScript()->registerScript('fb-async-callback', $script, CClientScript::POS_END);
+        }
     }
 
     /**
