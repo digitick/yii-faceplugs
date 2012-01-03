@@ -1,6 +1,6 @@
 
 This is a wrapper for the Facebook PHP SDK class, which also can include the JS SDK on
-your pages, and allows easily setting Open Graph tags. ALso include are helpers widgets
+your pages, and allows easily setting Open Graph tags. Also included are helper widgets
 for all of the Facebook Social Plugins.
 
 Facebook PHP SDK:
