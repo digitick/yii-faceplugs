@@ -9,7 +9,7 @@
  *
  */
 
-require_once "php-sdk-3.1.1/facebook.php";
+Yii::import("ext.yii-facebook-opengraph.SBaseFacebook");
 class SFacebook extends CApplicationComponent
 {
     /**
@@ -457,7 +457,7 @@ class SFacebook extends CApplicationComponent
     {
         if (is_null($this->_facebook)) {
             if ($this->appId && $this->secret) {
-                $this->_facebook = new Facebook(
+                $this->_facebook = new SBaseFacebook(
                     array(
                          'appId' => $this->appId,
                          'secret' => $this->secret,
