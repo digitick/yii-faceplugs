@@ -33,6 +33,7 @@ Copy the rest of this extension in to your project's protected/extensions direct
 Include the extension in your Yii config:
 
 'components'=>array(
+  'facebook'=>array(
     'class' => 'ext.yii-facebook-opengraph.SFacebook',
     'appId'=>'YOUR_FACEBOOK_APP_ID', // needed for JS SDK, Social Plugins and PHP SDK
     'secret'=>'YOUR_FACEBOOK_APP_SECRET', // needed for the PHP SDK
@@ -50,6 +51,7 @@ Include the extension in your Yii config:
         //'description'=>'MY_WEBSITE_DESCRIPTION',
         //'image'=>'URL_TO_WEBSITE_LOGO',
     //),
+  ),
 ),
 
 Then, in your base Controller, add this function to override the afterRender callback:
