@@ -35,7 +35,7 @@ Include the extension in your Yii config:
 'components'=>array(
     'class' => 'ext.yii-facebook-opengraph.SFacebook',
     'appId'=>'YOUR_FACEBOOK_APP_ID', // needed for JS SDK, Social Plugins and PHP SDK
-    'secret'=>'YOUR_FACEBOOK_APP_SECRET', needed for the PHP SDK
+    'secret'=>'YOUR_FACEBOOK_APP_SECRET', // needed for the PHP SDK
     //'locale'=>'en_US', // override locale setting (defaults to en_US)
     //'jsSdk'=>true, // don't include JS SDK
     //'async'=>true, // load JS SDK asynchronously
@@ -54,7 +54,7 @@ Include the extension in your Yii config:
 
 Then, in your base Controller, add this function to override the afterRender callback:
 
-protected function afterRender($view)
+protected function afterRender($view, &$output)
 {
     parent::afterRender($view);
     //Yii::app()->facebook->addJsCallback($js); // use this if you are registering any $js code you want to run asyc
