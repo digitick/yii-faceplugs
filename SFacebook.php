@@ -73,20 +73,20 @@ class SFacebook extends CApplicationComponent
     public $html5 = true;
 
     /**
-	 * @var bool Load the Facebook init script asynchronously.
-	 *
-	 * This speeds up page loads because loading the plugin does not block
-	 * loading other elements of the page.
-	 */
-	public $async = true;
+     * @var bool Load the Facebook init script asynchronously.
+     *
+     * This speeds up page loads because loading the plugin does not block
+     * loading other elements of the page.
+     */
+    public $async = true;
 
     /**
-	 * @var string Override default locale for the widget.
-	 *
-	 * Normally locale is set automatically based on the Yii language settings,
-	 * setting it here allows a specific locale to be used.
-	 */
-	public $locale;
+     * @var string Override default locale for the widget.
+     *
+     * Normally locale is set automatically based on the Yii language settings,
+     * setting it here allows a specific locale to be used.
+     */
+    public $locale;
     private $_locale;
 
     /**
@@ -95,153 +95,153 @@ class SFacebook extends CApplicationComponent
     public $ogTags = array();
 
     /**
-	 * @var array Allowed Open Graph properties.
-	 */
-	protected $openGraphProperties = array(
-		'admins',
-		'app_id',
-		'title',
-		'type',
-		'image',
-		'url',
-		'description',
-		'site_name',
-		'latitude',
-		'longitude',
-		'street-address',
-		'locality',
-		'region',
-		'postal-code',
-		'country-name',
-		'email',
-		'phone_number',
-		'fax_number',
-		'upc',
-		'isbn',
-		'video',
-		'video:height',
-		'video:width',
-		'video:type',
-		'audio',
-		'audio:title',
-		'audio:artist',
-		'audio:album',
-		'audio:type',
-	);
+     * @var array Allowed Open Graph properties.
+     */
+    protected $openGraphProperties = array(
+        'admins',
+        'app_id',
+        'title',
+        'type',
+        'image',
+        'url',
+        'description',
+        'site_name',
+        'latitude',
+        'longitude',
+        'street-address',
+        'locality',
+        'region',
+        'postal-code',
+        'country-name',
+        'email',
+        'phone_number',
+        'fax_number',
+        'upc',
+        'isbn',
+        'video',
+        'video:height',
+        'video:width',
+        'video:type',
+        'audio',
+        'audio:title',
+        'audio:artist',
+        'audio:album',
+        'audio:type',
+    );
 
     /**
-	 * @var array Valid Facebook locales.
-	 */
-	protected $locales = array(
-		'az_AZ',
-		'be_BY',
-		'bg_BG',
-		'bn_IN',
-		'bs_BA',
-		'ca_ES',
-		'ck_US',
-		'cs_CZ',
-		'cy_GB',
-		'da_DK',
-		'de_DE',
-		'eu_ES',
-		'en_GB',
-		'en_PI',
-		'en_UD',
-		'en_US',
-		'es_LA',
-		'es_CL',
-		'es_CO',
-		'es_ES',
-		'es_MX',
-		'es_VE',
-		'fb_FI',
-		'fi_FI',
-		'fr_FR',
-		'gl_ES',
-		'hu_HU',
-		'it_IT',
-		'ja_JP',
-		'ko_KR',
-		'nb_NO',
-		'nn_NO',
-		'nl_NL',
-		'pl_PL',
-		'pt_BR',
-		'pt_PT',
-		'ro_RO',
-		'ru_RU',
-		'sk_SK',
-		'sl_SI',
-		'sv_SE',
-		'th_TH',
-		'tr_TR',
-		'ku_TR',
-		'zh_CN',
-		'zh_HK',
-		'zh_TW',
-		'fb_LT',
-		'af_ZA',
-		'sq_AL',
-		'hy_AM',
-		'hr_HR',
-		'nl_BE',
-		'eo_EO',
-		'et_EE',
-		'fo_FO',
-		'fr_CA',
-		'ka_GE',
-		'el_GR',
-		'gu_IN',
-		'hi_IN',
-		'is_IS',
-		'id_ID',
-		'ga_IE',
-		'jv_ID',
-		'kn_IN',
-		'kk_KZ',
-		'la_VA',
-		'lv_LV',
-		'li_NL',
-		'lt_LT',
-		'mk_MK',
-		'mg_MG',
-		'ms_MY',
-		'mt_MT',
-		'mr_IN',
-		'mn_MN',
-		'ne_NP',
-		'pa_IN',
-		'rm_CH',
-		'sa_IN',
-		'sr_RS',
-		'so_SO',
-		'sw_KE',
-		'tl_PH',
-		'ta_IN',
-		'tt_RU',
-		'te_IN',
-		'ml_IN',
-		'uk_UA',
-		'uz_UZ',
-		'vi_VN',
-		'xh_ZA',
-		'zu_ZA',
-		'km_KH',
-		'tg_TJ',
-		'ar_AR',
-		'he_IL',
-		'ur_PK',
-		'fa_IR',
-		'sy_SY',
-		'yi_DE',
-		'gn_PY',
-		'qu_PE',
-		'ay_BO',
-		'se_NO',
-		'ps_AF',
-		'tl_ST',
-	);
+     * @var array Valid Facebook locales.
+     */
+    protected $locales = array(
+        'az_AZ',
+        'be_BY',
+        'bg_BG',
+        'bn_IN',
+        'bs_BA',
+        'ca_ES',
+        'ck_US',
+        'cs_CZ',
+        'cy_GB',
+        'da_DK',
+        'de_DE',
+        'eu_ES',
+        'en_GB',
+        'en_PI',
+        'en_UD',
+        'en_US',
+        'es_LA',
+        'es_CL',
+        'es_CO',
+        'es_ES',
+        'es_MX',
+        'es_VE',
+        'fb_FI',
+        'fi_FI',
+        'fr_FR',
+        'gl_ES',
+        'hu_HU',
+        'it_IT',
+        'ja_JP',
+        'ko_KR',
+        'nb_NO',
+        'nn_NO',
+        'nl_NL',
+        'pl_PL',
+        'pt_BR',
+        'pt_PT',
+        'ro_RO',
+        'ru_RU',
+        'sk_SK',
+        'sl_SI',
+        'sv_SE',
+        'th_TH',
+        'tr_TR',
+        'ku_TR',
+        'zh_CN',
+        'zh_HK',
+        'zh_TW',
+        'fb_LT',
+        'af_ZA',
+        'sq_AL',
+        'hy_AM',
+        'hr_HR',
+        'nl_BE',
+        'eo_EO',
+        'et_EE',
+        'fo_FO',
+        'fr_CA',
+        'ka_GE',
+        'el_GR',
+        'gu_IN',
+        'hi_IN',
+        'is_IS',
+        'id_ID',
+        'ga_IE',
+        'jv_ID',
+        'kn_IN',
+        'kk_KZ',
+        'la_VA',
+        'lv_LV',
+        'li_NL',
+        'lt_LT',
+        'mk_MK',
+        'mg_MG',
+        'ms_MY',
+        'mt_MT',
+        'mr_IN',
+        'mn_MN',
+        'ne_NP',
+        'pa_IN',
+        'rm_CH',
+        'sa_IN',
+        'sr_RS',
+        'so_SO',
+        'sw_KE',
+        'tl_PH',
+        'ta_IN',
+        'tt_RU',
+        'te_IN',
+        'ml_IN',
+        'uk_UA',
+        'uz_UZ',
+        'vi_VN',
+        'xh_ZA',
+        'zu_ZA',
+        'km_KH',
+        'tg_TJ',
+        'ar_AR',
+        'he_IL',
+        'ur_PK',
+        'fa_IR',
+        'sy_SY',
+        'yi_DE',
+        'gn_PY',
+        'qu_PE',
+        'ay_BO',
+        'se_NO',
+        'ps_AF',
+        'tl_ST',
+    );
 
     /**
      * Get the proper http URL prefix depending on if this was a secure page request or not
@@ -260,8 +260,8 @@ class SFacebook extends CApplicationComponent
      * http://developers.facebook.com/docs/opengraph/
      * @return void
      */
-    public function initJs()
-	{
+    public function initJs(&$output)
+    {
         if (!$this->appId) {
             throw new CException('Facebook Application ID not specified.');
         }
@@ -279,7 +279,7 @@ class SFacebook extends CApplicationComponent
                     //'channelUrl' => $this->getChannelUrl(), // Channel File
                 )
             );
-			if ($this->async) {
+            if ($this->async) {
                 $init = "window.fbAsyncInit = function(){{$init}};
                 (function(d){
                  var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
@@ -287,15 +287,29 @@ class SFacebook extends CApplicationComponent
                  js.src = '{$script}';
                  d.getElementsByTagName('head')[0].appendChild(js);
                 }(document));";
-			}
-			else {
-				Yii::app()->clientScript->registerScriptFile($script, CClientScript::POS_END);
-			}
-			Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
-            $fbRoot = '<div id="fb-root"></div>';
-            Yii::app()->getClientScript()->renderBodyEnd($fbRoot);
+            }
+            else {
+                Yii::app()->clientScript->registerScriptFile($script, CClientScript::POS_END);
+            }
+            Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
+            $this->insertFbRoot($output);
             $this->registerAsyncCallback();
         }
+    }
+
+    /**
+     * This function adds the fb-root div tag to the bottom of the <body> tag
+     * THe code is borrowed from Yii's own CClientScript::renderBodyEnd() function
+     * @param $output (passed by reference) the final page HTML render, so insert the tag into
+     */
+    protected function insertFbRoot(&$output) {
+        $fbRoot = '<div id="fb-root"></div>';
+        $fullPage=0;
+        $output=preg_replace('/(<\\/body\s*>)/is','<###end###>$1',$output,1,$fullPage);
+        if($fullPage)
+            $output=str_replace('<###end###>',$fbRoot,$output);
+        else
+            $output=$output.$fbRoot;
     }
 
     /**
@@ -313,14 +327,14 @@ class SFacebook extends CApplicationComponent
     public function renderOGMetaTags() {
         $this->ogTags['app_id'] = $this->appId; // set this app ID og tag, for Facebook insights and administration
         if (!isset($this->ogTags['type']))
-          $this->ogTags['type'] = 'website'; // set website as the default type
+            $this->ogTags['type'] = 'website'; // set website as the default type
         if (!isset($this->ogTags['title']))
-          $this->ogTags['title'] = Yii::app()->name; // default to App name
+            $this->ogTags['title'] = Yii::app()->name; // default to App name
         if (!isset($this->ogTags['url']))
-          $this->ogTags['url'] = $this->getProtocol()."://".Yii::app()->request->serverName.Yii::app()->request->requestUri; // defaults to current URL
+            $this->ogTags['url'] = $this->getProtocol()."://".Yii::app()->request->serverName.Yii::app()->request->requestUri; // defaults to current URL
         foreach ($this->ogTags as $type => $value) { // loop through any other OG tags declared
-			$this->registerOpenGraph($type, $value);
-		}
+            $this->registerOpenGraph($type, $value);
+        }
     }
 
     /**
@@ -362,10 +376,10 @@ class SFacebook extends CApplicationComponent
     }
 
     /**
-	 * Register an opengraph property.
-	 * @param string $property
-	 * @param string $data
-	 */
+     * Register an opengraph property.
+     * @param string $property
+     * @param string $data
+     */
     public function registerOpenGraph($property, $data)
     {
         if (!in_array($property, $this->openGraphProperties)) {
@@ -380,14 +394,14 @@ class SFacebook extends CApplicationComponent
     }
 
     /**
-	 * Determine the script locale to load
+     * Determine the script locale to load
      * Looks at $locale variable declared in this file first
      * Then looks at the Yii application language
      * Defaults to en_US
-	 * @return string locale code
-	 */
+     * @return string locale code
+     */
     protected function getLocale()
-	{
+    {
         if($this->_locale === null) {
             if (isset($this->locale)) {
                 $locale = strtolower($this->locale);
@@ -445,7 +459,7 @@ class SFacebook extends CApplicationComponent
             $this->_locale = $locale;
         }
         return $this->_locale;
-	}
+    }
 
     /*** PHP SDK functions **/
 
@@ -459,15 +473,15 @@ class SFacebook extends CApplicationComponent
             if ($this->appId && $this->secret) {
                 $this->_facebook = new SBaseFacebook(
                     array(
-                         'appId' => $this->appId,
-                         'secret' => $this->secret,
-                         'fileUpload' => $this->fileUpload
+                        'appId' => $this->appId,
+                        'secret' => $this->secret,
+                        'fileUpload' => $this->fileUpload
                     ));
             } else {
                 if (!$this->appId)
-                  throw new CException('Facebook application ID not specified.');
+                    throw new CException('Facebook application ID not specified.');
                 elseif (!$this->secret)
-                  throw new CException('Facebook application secret not specified.');
+                    throw new CException('Facebook application secret not specified.');
             }
         }
         if(!is_object($this->_facebook)) {
