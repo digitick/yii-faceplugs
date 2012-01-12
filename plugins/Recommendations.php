@@ -2,7 +2,7 @@
 /**
  * Recommendations class file.
  *
- * @author Evan Johnson <thaddeusmt@gmail.com>
+ * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @author Ianaré Sévi (original author) www.digitick.net
  * @link https://github.com/splashlab/yii-facebook-opengraph
  * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
