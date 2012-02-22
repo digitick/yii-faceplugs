@@ -38,9 +38,7 @@ class Facepile extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:facepile', $params), CHtml::closeTag('fb:facepile');
+		$this->printTag('facepile');
 	}
 
 }

@@ -58,11 +58,9 @@ class FanBox extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
 		if (!isset($this->profile_id)) {
 			$this->profile_id = $this->app_id;
 		}
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:fan', $params), CHtml::closeTag('fb:fan');
+		$this->printTag('fan');
 	}
 }

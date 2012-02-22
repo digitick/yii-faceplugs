@@ -52,8 +52,7 @@ class Registration extends EFaceplugsAppLink
 	{
 		parent::run();
 		$this->client_id = $this->app_id;
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:registration', $params), CHtml::closeTag('fb:registration');
+		$this->printTag('registration');
 	}
 
 }

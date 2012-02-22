@@ -32,9 +32,7 @@ class Comments extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:comments', $params), CHtml::closeTag('fb:comments');
+		$this->printTag('comments');
 	}
 
 }

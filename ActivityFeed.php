@@ -71,10 +71,7 @@ class ActivityFeed extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:activity', $params);
-		echo CHtml::closeTag('fb:activity');
+		$this->printTag('activity');
 	}
 
 }

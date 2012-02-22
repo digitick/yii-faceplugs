@@ -394,7 +394,7 @@ abstract class EFaceplugsBase extends CWidget
 	}
 
 	/**
-	 * creates a method of facebook sdk script
+	 * Creates a method of facebook sdk script.
 	 *
 	 * @param string $method
 	 * @param array $args args to use in the method
@@ -404,6 +404,21 @@ abstract class EFaceplugsBase extends CWidget
 	{
 		$args = CJavaScript::encode($args);
 		return "FB.{$method}({$args});";
+	}
+	
+	/**
+	 * Render an HTML Facebook tag.
+	 *
+	 * @param string $name The name of the FB plugin.
+	 * @param array $params Plugin parameters. If set, don't get parameters automatically.
+	 */
+	protected function printTag($name, $params=false)
+	{
+		if (!$params) {
+			$params = $this->getParams();	
+		}
+		$name = "fb:$name";
+		echo CHtml::openTag($name, $params), CHtml::closeTag($name);
 	}
 
 }

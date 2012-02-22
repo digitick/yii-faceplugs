@@ -38,9 +38,7 @@ class LiveStream extends EFaceplugsAppLink
 	public function run()
 	{
 		parent::run();
-
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:live-stream', $params), CHtml::closeTag('fb:live-stream');
+		$this->printTag('live-stream');
 	}
 
 }

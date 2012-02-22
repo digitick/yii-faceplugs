@@ -62,9 +62,7 @@ class Recommendations extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:recommendations', $params), CHtml::closeTag('fb:recommendations');
+		$this->printTag('recommendations');
 	}
 
 }

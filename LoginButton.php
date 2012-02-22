@@ -46,9 +46,7 @@ class LoginButton extends EFaceplugsAppLink
 	public function run()
 	{
 		parent::run();
-
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:login-button', $params), CHtml::closeTag('fb:login-button');
+		$this->printTag('login-button');
 	}
 
 }

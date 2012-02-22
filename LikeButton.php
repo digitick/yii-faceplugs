@@ -62,8 +62,6 @@ class LikeButton extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-
-		$params = $this->getParams();
-		echo CHtml::openTag('fb:like', $params), CHtml::closeTag('fb:like');
+		$this->printTag('like');
 	}
 }
