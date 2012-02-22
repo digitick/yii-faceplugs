@@ -262,13 +262,13 @@ abstract class EFaceplugsBase extends CWidget
 			}
 
 			$protocol = 'http';
-			if (isset($_SERVER['HTTPS'])) {
+			if (Yii::app()->getRequest()->isSecureConnection) {
 				$protocol .= 's';
 			}
 			$this->scriptFile = $protocol . '://' . $this->scriptFile;
 
 			
-			echo CHtml::openTag('div', array('id' => 'fb-root'));
+			echo CHtml::tag('div', array('id' => 'fb-root'));
 
 			$init = $this->registerSDKScript('init', array(
 				'status' => $this->status,
@@ -290,7 +290,6 @@ abstract class EFaceplugsBase extends CWidget
 				Yii::app()->clientScript->registerScriptFile($this->scriptFile, CClientScript::POS_END);
 			}
 			Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
-			echo CHtml::closeTag('div');
 
 			Yii::app()->params->fbRootSet = true;
 		}
@@ -395,7 +394,6 @@ abstract class EFaceplugsBase extends CWidget
 
 	/**
 	 * Creates a method of facebook sdk script.
-	 *
 	 * @param string $method
 	 * @param array $args args to use in the method
 	 * @return string the js created
@@ -408,7 +406,6 @@ abstract class EFaceplugsBase extends CWidget
 	
 	/**
 	 * Render an HTML Facebook tag.
-	 *
 	 * @param string $name The name of the FB plugin.
 	 * @param array $params Plugin parameters. If set, don't get parameters automatically.
 	 */
