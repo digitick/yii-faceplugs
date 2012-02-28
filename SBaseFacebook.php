@@ -90,4 +90,22 @@ class SBaseFacebook extends BaseFacebook
                               $this->getAppId(),
                               $key));
   }
+
+  /**
+   * Prints to the error log if you aren't in command line mode.
+   * Overidden to use the Yii log instead of the default server log.
+   *
+   * @param string $msg Log message
+   */
+  protected static function errorLog($msg) {
+    // disable error log if we are running in a CLI environment
+    // @codeCoverageIgnoreStart
+    if (php_sapi_name() != 'cli') {
+      //error_log($msg);
+      Yii::log($msg,CLogger::LEVEL_ERROR,'ext.SBaseFacebook');
+    }
+    // uncomment this if you want to see the errors on the page
+    // print 'error_log: '.$msg."\n";
+    // @codeCoverageIgnoreEnd
+  }
 }
