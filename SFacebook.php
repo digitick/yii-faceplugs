@@ -109,7 +109,7 @@ class SFacebook extends CApplicationComponent
         'latitude',
         'longitude',
         'street-address',
-        'locality',
+        'locale',
         'region',
         'postal-code',
         'country-name',
