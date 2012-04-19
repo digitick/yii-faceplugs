@@ -95,41 +95,6 @@ class SFacebook extends CApplicationComponent
     public $ogTags = array();
 
     /**
-     * @var array Allowed Open Graph properties.
-     */
-    protected $openGraphProperties = array(
-        'admins',
-        'app_id',
-        'title',
-        'type',
-        'image',
-        'url',
-        'description',
-        'site_name',
-        'latitude',
-        'longitude',
-        'street-address',
-        'locale',
-        'region',
-        'postal-code',
-        'country-name',
-        'email',
-        'phone_number',
-        'fax_number',
-        'upc',
-        'isbn',
-        'video',
-        'video:height',
-        'video:width',
-        'video:type',
-        'audio',
-        'audio:title',
-        'audio:artist',
-        'audio:album',
-        'audio:type',
-    );
-
-    /**
      * @var array Valid Facebook locales.
      */
     protected $locales = array(
@@ -382,9 +347,6 @@ class SFacebook extends CApplicationComponent
      */
     public function registerOpenGraph($property, $data)
     {
-        if (!in_array($property, $this->openGraphProperties)) {
-            throw new CException('Invalid open graph property : ' . $property);
-        }
         if (in_array($property, array('app_id','admins'))) {
             $property = 'fb:' . $property;
         } else {
