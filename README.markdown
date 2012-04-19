@@ -1,8 +1,8 @@
-This is mainly a wrapper for the Facebook PHP SDK class.
+### This is mainly a wrapper for the Facebook PHP SDK class.
 
-You can also use it to include the Facebook JS SDK on your pages, and easily set Open Graph meta tags.
+### You can also use it to include the Facebook JS SDK on your pages, and easily set Open Graph meta tags.
 
-Also included are helper widgets for all of the Facebook Social Plugins.
+### Also included are helper widgets for all of the Facebook Social Plugins.
 
 Facebook PHP SDK:
 http://developers.facebook.com/docs/reference/php/
@@ -21,9 +21,10 @@ A lot of this comes from forking ianare's faceplugs Yii extension:
 http://www.yiiframework.com/extension/faceplugs
 https://github.com/digitick/yii-faceplugs
 
-==========================================================================================
+* * *
 
 INSTALLATION:
+---------------------------------------------------------------------------
 
 Copy the file "facebook-channel.php" to your project root.
 
@@ -63,9 +64,10 @@ Then, in your base Controller, add this function to override the afterRender cal
       return true;
     }
 
-==========================================================================================
+* * *
 
 USAGE:
+---------------------------------------------------------------------------
 
 Setting OG tags on a page (in view or action):
 
@@ -96,6 +98,8 @@ I also created a couple of little helper functions:
     <?php $imageUrl = Yii::app()->facebook->getProfilePicture($size) // gets the Facebook picture URL of the current user ?>
     <?php $userinfo = Yii::app()->facebook->getInfoById($openGraphId) // gets the Graph info of a given OG entity ?>
     <?php $imageUrl = Yii::app()->facebook->getProfilePictureById($openGraphId) // gets the Facebook picture URL of a given OG entity ?>
+
+* * *
 
 I plan on continuing to update and bugfix this extension as needed.
 
