@@ -25,14 +25,18 @@ class ActivityFeed extends SPluginBase
 	 * domain.
 	 */
 	public $site;
+  /**
+	 * @var string a comma separated list of actions to show activities for
+	 */
+	public $action;
+  /**
+	 * @var integer The width of the plugin in pixels. Default width: 300px.
+	 */
+	public $width;
 	/**
 	 * @var integer The height of the plugin in pixels. Default height: 300px.
 	 */
 	public $height;
-	/**
-	 * @var integer The width of the plugin in pixels. Default width: 300px.
-	 */
-	public $width;
 	/**
 	 * @var boolean Specifies whether to show the Facebook header.
 	 */
@@ -65,12 +69,25 @@ class ActivityFeed extends SPluginBase
 	 * parameters of the URL matches the filter, the URL will not be included.
 	 */
 	public $filter;
+  /**
+	 * @var string  This specifies the context in which content links are opened.
+   * By default all links within the plugin will open a new window. If you want
+   * the content links to open in the same window, you can set this parameter to
+   * _top or _parent. Links to Facebook URLs will always open in a new window.
+	 */
+	public $linktarget;
 	/**
 	 * @var string A label for tracking referrals; must be less than 50
 	 * characters and can contain alphanumeric characters and some punctuation
 	 * (currently +/=-.:_).
 	 */
 	public $ref;
+  /**
+	 * @var integer a limit on recommendation and creation time of articles that
+   * are surfaced in the plugins, the default is 0 (we don’t take age into account).
+   * Otherwise the valid values are 1-180, which specifies the number of days.
+	 */
+	public $max_age;
 
 	public function run()
 	{

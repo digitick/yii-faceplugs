@@ -28,6 +28,10 @@ class LiveStream extends SPluginBase
 	 * @var integer The height of the plugin in pixels. Default height: 500px.
 	 */
 	public $height;
+  /**
+	 * @var integer Id of the app to display
+	 */
+	public $app_id;
 	/**
 	 * @var string The URL that users are redirected to when they click on your
 	 * app name on a status (if not specified, your Connect URL is used).
@@ -38,6 +42,12 @@ class LiveStream extends SPluginBase
 	 * specify a unique xid for each.
 	 */
 	public $xid;
+	/**
+	 * @var bool If set, all user posts will always go to their profile. This option
+   * should only be used when users' posts are likey to make sense outside of the
+   * context of the event.
+	 */
+	public $always_post_to_friends;
 
 	public function run()
 	{

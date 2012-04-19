@@ -1,6 +1,6 @@
 <?php
 /**
- * FanBox class file.
+ * LikeBox class file.
  *
  * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @author Ianaré Sévi (original author) www.digitick.net
@@ -25,39 +25,29 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
-class FanBox extends SPluginBase
+class SendButton extends SPluginBase
 {
 	/**
-	 * @var integer The width of the plugin in pixels. Default width: 300px.
+	 * @var string The URL of the Facebook page for this Like Box.
 	 */
-	public $width;
-	/**
-	 * @var integer The height of the plugin in pixels.
+	public $href;
+  /**
+	 * @var string the font to display in the button. Options: 'arial',
+   * 'lucida grande', 'segoe ui', 'tahoma', 'trebuchet ms', 'verdana'
 	 */
-	public $height;
-	/**
-	 * @var boolean Specifies whether to display a stream of the latest posts
-	 * from the page's wall.
+	public $font;
+  /**
+	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
 	 */
-	public $stream;
-	/**
-	 * @var string Specifies the profile to be a fan of.
+	public $colorscheme;
+  /**
+	 * @var string a label for tracking referrals; must be less than 50 characters
+   * and can contain alphanumeric characters and some punctuation (currently +/=-.:_).
+   * The ref attribute causes two parameters to be added to the referrer URL when
+   * a user clicks a link from a stream story about a Send action:
+   * fb_ref and fb_source
 	 */
-	public $profile_id;
-	/**
-	 * @var boolean Specifies whether to display the Facebook logo at the top
-	 * of the plugin.
-	 */
-	public $logobar;
-	/**
-	 * @var integer Specify the number of connections (faces) to display in
-	 * the plugin.
-	 */
-	public $connections;
-	/**
-	 * @var string Absolute URL, specify a CSS file to use with the plugin.
-	 */
-	public $css;
+	public $ref;
 
 	public function run()
 	{
@@ -66,6 +56,6 @@ class FanBox extends SPluginBase
 			$this->profile_id = Yii::app()->facebook->appId;
 		}
 		$params = $this->getParams();
-		$this->renderTag('fan',$params);
+		$this->renderTag('send',$params);
 	}
 }

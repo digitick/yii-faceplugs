@@ -25,47 +25,33 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
-class LikeBox extends SPluginBase
+class SubscribeButton extends SPluginBase
 {
 	/**
 	 * @var string The URL of the Facebook page for this Like Box.
 	 */
 	public $href;
   /**
-	 * @var integer The width of the plugin in pixels. Default width: 300px.
+	 * @var string Three options : 'standard', 'button_count', 'box_count'
 	 */
-	public $width;
-	/**
-	 * @var integer The height of the plugin in pixels.
+	public $layout;
+  /**
+	 * @var boolean Display profile photos below the button (standard layout only).
 	 */
-	public $height;
+	public $show_faces;
   /**
 	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
 	 */
 	public $colorscheme;
-	/**
-	 * @var boolean Display profile photos in the plugin.
-	 */
-	public $show_faces;
-	/**
-	 * @var boolean Specifies whether to display a stream of the latest posts
-	 * from the page's wall.
-	 */
-	public $stream;
-	/**
-	 * @var boolean Specifies whether to display the Facebook header at the
-	 * top of the plugin.
-	 */
-	public $header;
   /**
-	 * @var string The border color of the plugin.
+	 * @var string the font to display in the button. Options: 'arial',
+   * 'lucida grande', 'segoe ui', 'tahoma', 'trebuchet ms', 'verdana'
 	 */
-	public $border_color;
-	/**
-	 * @var boolean for Places, specifies whether the stream contains posts
-	 * from the Place's wall or just checkins from friends. Default value: false.
+	public $font;
+  /**
+	 * @var integer Width of the plugin
 	 */
-	public $force_wall;
+	public $width;
 
 	public function run()
 	{
@@ -74,6 +60,6 @@ class LikeBox extends SPluginBase
 			$this->profile_id = Yii::app()->facebook->appId;
 		}
 		$params = $this->getParams();
-		$this->renderTag('like-box',$params);
+		$this->renderTag('subscribe',$params);
 	}
 }

@@ -27,6 +27,15 @@ class LikeButton extends SPluginBase
 	 * @var string The URL of the Facebook page for this Like button.
 	 */
 	public $href;
+  /**
+	 * @var boolean Specifies whether to include a Send button with the Like
+	 * button.
+	 */
+	public $send;
+  /**
+	 * @var string Three options : 'standard', 'button_count', 'box_count'
+	 */
+	public $layout;
 	/**
 	 * @var boolean Display profile photos below the button (standard layout only).
 	 */
@@ -35,10 +44,6 @@ class LikeButton extends SPluginBase
 	 * @var integer Width of the Like button, defults to 450px
 	 */
 	public $width;
-	/**
-	 * @var string Three options : 'standard', 'button_count', 'box_count'
-	 */
-	public $layout;
 	/**
 	 * @var string The verb to display on the button. Options: 'like', 'recommend'
 	 */
@@ -55,14 +60,12 @@ class LikeButton extends SPluginBase
 	/**
 	 * @var string A label for tracking referrals; must be less than 50
 	 * characters and can contain alphanumeric characters and some punctuation
-	 * (currently +/=-.:_).
+	 * (currently +/=-.:_). The ref attribute causes two parameters to be added to the
+   * referrer URL when a user clicks a link from a stream story about a Like action:
+   * fb_ref and fb_source
 	 */
 	public $ref;
-	/**
-	 * @var boolean Specifies whether to include a Send button with the Like
-	 * button.
-	 */
-	public $send;
+
 
 	public function run()
 	{

@@ -26,6 +26,10 @@ class Facepile extends SPluginBase
 	 * The plugin will display photos of users who have liked this page.
 	 */
 	public $href;
+  /**
+	 * @var string The plugin will display photos of users who have connected to your app via this action
+	 */
+	public $action;
 	/**
 	 * @var integer The maximum number of rows of faces to display.
 	 *
@@ -38,6 +42,15 @@ class Facepile extends SPluginBase
 	 * @var integer Width of the plugin in pixels. Default width: 200px.
 	 */
 	public $width;
+  /**
+	 * @var string size of the photos and social context. Default size: small.
+	 */
+	public $size;
+  /**
+	 * @var string the color scheme for the like button. Options: 'light', 'dark'.
+	 */
+	public $colorscheme;
+
 
 	public function run()
 	{

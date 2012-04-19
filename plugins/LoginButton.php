@@ -26,15 +26,15 @@ class LoginButton extends SPluginBase
 	 * The plugin will display photos of users who have liked this page.
 	 */
 	public $show_faces;
+  /**
+	 * @var integer The width of the plugin in pixels. Default width: 200px.
+	 */
+	public $width;
 	/**
 	 * @var integer The maximum number of rows of profile pictures to display.
 	 * Default value: 1.
 	 */
 	public $max_rows;
-	/**
-	 * @var integer The width of the plugin in pixels. Default width: 200px.
-	 */
-	public $width;
 	/**
 	 * @var string A comma separated list of extended permissions.
 	 *
@@ -44,7 +44,13 @@ class LoginButton extends SPluginBase
 	 *
 	 * @see http://developers.facebook.com/docs/authentication/permissions/
 	 */
-	public $perms;
+	public $scope;
+  /**
+	 * @var string registration page url. If the user has not registered for your
+   * site, they will be redirected to the URL you specify in the registration-url
+   * parameter.
+	 */
+	public $registration_url;
 
 	public function run()
 	{

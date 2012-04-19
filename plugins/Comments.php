@@ -20,18 +20,26 @@ require_once 'SPluginBase.php';
  */
 class Comments extends SPluginBase
 {
-	/**
-	 * @var integer Number of posts to show.
+  /**
+	 * @var string the URL for this Comments plugin. News feed stories on Facebook will link to this URL
 	 */
-	public $numposts;
-	/**
+	public $href;
+  /**
 	 * @var integer The width of the widget.
 	 */
 	public $width;
-	/**
-	 * @var boolean Specify whether to publish a comment on the user's wall.
+  /**
+	 * @var string the color scheme for the plugin. Options: 'light', 'dark'
 	 */
-	public $publish_feed = true;
+	public $colorscheme;
+	/**
+	 * @var integer the number of comments to show by default. Default: 10. Minimum: 1
+	 */
+	public $num_posts;
+  /**
+	 * @var string whether to show the mobile-optimized version. Default: auto-detect
+	 */
+	public $mobile;
 
 	public function run()
 	{
