@@ -241,6 +241,17 @@ abstract class EFaceplugsBase extends CWidget
 		foreach ($this->og as $type => $value)
 			$this->registerOpenGraph($type, $value);
 	}
+	
+	/**
+	 * Get the protocol used.
+	 * @return string 'http' or 'https'
+	 */
+	protected function getProtocol()
+	{
+		if(Yii::app()->getRequest()->isSecureConnection)
+			return 'https';
+		return 'http';
+    }
 
 	public function run()
 	{
@@ -254,11 +265,7 @@ abstract class EFaceplugsBase extends CWidget
 			else
 				$this->setScriptLocale();
 
-			$protocol = 'http';
-			if (Yii::app()->getRequest()->isSecureConnection)
-				$protocol .= 's';
-
-			$this->scriptFile = $protocol . '://' . $this->scriptFile;
+			$this->scriptFile = $this->getProtocol() . '://' . $this->scriptFile;
 			
 			echo CHtml::tag('div', array('id' => 'fb-root'));
 
@@ -288,7 +295,7 @@ abstract class EFaceplugsBase extends CWidget
 	}
 
 	/**
-	 * Register an opengraph property.
+	 * Register an OpenGraph property.
 	 * @param string $property
 	 * @param string $data
 	 */
