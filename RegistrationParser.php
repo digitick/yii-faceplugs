@@ -55,14 +55,13 @@ class RegistrationParser extends CComponent
 	 */
 	public function parse_signed_request($data=null)
 	{
-		if (!$data){
+		if (!$data)
 			$data = $this->testData;
-		}
+
 		$data = json_decode($this->testData);
 		if (strtoupper($data->algorithm) !== 'HMAC-SHA256') {
-			if (YII_DEBUG) {
+			if (YII_DEBUG)
 				throw new CException('Unknown algorithm : "'. $data->algorithm .'" . Expected HMAC-SHA256');
-			}
 			return null;
 		}
 		return $data->registration;

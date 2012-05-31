@@ -229,44 +229,36 @@ abstract class EFaceplugsBase extends CWidget
 
 	public function init()
 	{
-		if (property_exists($this, 'href') && $this->href === null) {
+		if (property_exists($this, 'href') && $this->href === null)
 			$this->href = $this->url;
-		}
-		if (!$this->app_id && isset(Yii::app()->params->fbAppId)) {
+		if (!$this->app_id && isset(Yii::app()->params->fbAppId))
 			$this->app_id = Yii::app()->params->fbAppId;
-		}
-		if ($this->url) {
+		if ($this->url)
 			$this->registerOpenGraph('url', $this->url);
-		}
-		if ($this->app_id) {
+		if ($this->app_id)
 			$this->registerOpenGraph('app_id', $this->app_id);
-		}
 
-		foreach ($this->og as $type => $value) {
+		foreach ($this->og as $type => $value)
 			$this->registerOpenGraph($type, $value);
-		}
 	}
 
 	public function run()
 	{
 		//run only once
 		if (!isset(Yii::app()->params->fbRootSet)) {
-			if ($this->debugMode === 'auto' && YII_DEBUG === true) {
+			if ($this->debugMode === 'auto' && YII_DEBUG === true)
 				$this->debugMode = 'on';
-			}
-			if ($this->debugMode === 'on') {
+
+			if ($this->debugMode === 'on')
 				$this->scriptFile = 'static.ak.fbcdn.net/connect/en_US/core.debug.js';
-			}
-			else {
+			else
 				$this->setScriptLocale();
-			}
 
 			$protocol = 'http';
-			if (Yii::app()->getRequest()->isSecureConnection) {
+			if (Yii::app()->getRequest()->isSecureConnection)
 				$protocol .= 's';
-			}
-			$this->scriptFile = $protocol . '://' . $this->scriptFile;
 
+			$this->scriptFile = $protocol . '://' . $this->scriptFile;
 			
 			echo CHtml::tag('div', array('id' => 'fb-root'));
 
@@ -286,9 +278,9 @@ abstract class EFaceplugsBase extends CWidget
 				e.src='{$this->scriptFile}';
 				document.getElementById('fb-root').appendChild(e);}());";
 			}
-			else {
+			else
 				Yii::app()->clientScript->registerScriptFile($this->scriptFile, CClientScript::POS_END);
-			}
+
 			Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
 
 			Yii::app()->params->fbRootSet = true;
@@ -302,21 +294,20 @@ abstract class EFaceplugsBase extends CWidget
 	 */
 	public function registerOpenGraph($property, $data)
 	{
-		if (!in_array($property, $this->openGraphProperties)) {
+		if (!in_array($property, $this->openGraphProperties))
 			throw new CException('Invalid open graph property : ' . $property);
-		}
+
 		$property = 'og:' . $property;
 		Yii::app()->clientScript->registerMetaTag($data, null, null, array('property' => $property));
 	}
 
 	protected function setScriptLocale()
 	{
-		if (isset($this->locale)) {
+		if (isset($this->locale))
 			$locale = strtolower($this->locale);
-		}
-		else {
+		else
 			$locale = Yii::app()->language;
-		}
+
 		// Adjustments, mainly because facebook doesn't have all countries
 		// of the same language translated.
 		$lang = substr($locale, 0, 2);
@@ -328,40 +319,35 @@ abstract class EFaceplugsBase extends CWidget
 			'ku' => 'ku_tr',
 		);
 		// single check languages, array above ...
-		if (isset($adjust[$lang])) {
+		if (isset($adjust[$lang]))
 			$locale = $adjust[$lang];
-		}
 		// english
 		else if ($lang === 'en' && !in_array($locale, array('en_us','en_pi','en_ud'))) {
 			// closer to US english
-			if ($locale === 'en_ca') {
+			if ($locale === 'en_ca')
 				$locale = 'en_us';
-			}
 			// closer to UK english
-			else {
+			else
 				$locale = 'en_gb';
-			}
 		}
 		// french
-		else if ($lang === 'fr' && $locale !== 'fr_ca') {
+		else if ($lang === 'fr' && $locale !== 'fr_ca')
 			$locale = 'fr_fr';
-		}
 		// spanish
-		else if ($lang === 'es' && !in_array($locale, array('es_es','es_cl','es_co','es_mx','es_ve'))) {
+		else if ($lang === 'es' && !in_array($locale, array('es_es','es_cl','es_co','es_mx','es_ve')))
 			$locale = 'es_la'; // non standard
-		}
 		// portuguese
-		else if ($lang === 'pt' && $locale !== 'pt_br') {
+		else if ($lang === 'pt' && $locale !== 'pt_br')
 			$locale = 'pt_pt';
-		}
+
 		$c = explode('_', $locale);
-		if (!isset($c[1])) {
+		if (!isset($c[1]))
 			throw new CException('Locale for Facebook plugins must be in the following format : ll_CC');
-		}
+
 		$locale = $c[0] . '_' . strtoupper($c[1]);
-		if (!in_array($locale, $this->locales)) {
+		if (!in_array($locale, $this->locales))
 			throw new CException('Invalid Facebook locale');
-		}
+
 		$this->scriptFile = str_replace('%%locale%%', $locale, $this->scriptFile);
 	}
 
@@ -380,12 +366,11 @@ abstract class EFaceplugsBase extends CWidget
 		foreach ($props as $k => $v) {
 			$name = $v->name;
 			if ($this->$name !== null && !is_array($this->$name) && !in_array($name, $ignore)) {
-				if (is_bool($this->$name)) {
+				if (is_bool($this->$name))
 					$value = ($this->$name === true) ? 'true' : 'false';
-				}
-				else {
+				else
 					$value = $this->$name;
-				}
+
 				$params[$name] = $value;
 			}
 		}
@@ -411,9 +396,9 @@ abstract class EFaceplugsBase extends CWidget
 	 */
 	protected function printTag($name, $params=false)
 	{
-		if (!$params) {
+		if (!$params)
 			$params = $this->getParams();	
-		}
+
 		$name = "fb:$name";
 		echo CHtml::openTag($name, $params), CHtml::closeTag($name);
 	}
