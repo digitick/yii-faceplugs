@@ -13,7 +13,7 @@ require_once 'EFaceplugsBase.php';
  *
  * When the user clicks the Like button on your site, a story appears in the
  * user's friends' News Feed with a link back to your website.
- * 
+ *
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
 class LikeButton extends EFaceplugsBase

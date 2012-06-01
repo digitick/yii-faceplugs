@@ -21,7 +21,6 @@ class RegistrationParser extends CComponent
 	public $app_id;
 	public $app_secret;
 	public $mapper;
-
 	protected $testData = '{
 					   "oauth_token": "...big long string...",
 					   "algorithm": "HMAC-SHA256",
@@ -53,7 +52,7 @@ class RegistrationParser extends CComponent
 	 * change the facebook response to an objet
 	 * @return Object $response
 	 */
-	public function parse_signed_request($data=null)
+	public function parse_signed_request($data = null)
 	{
 		if (!$data)
 			$data = $this->testData;
@@ -61,7 +60,7 @@ class RegistrationParser extends CComponent
 		$data = json_decode($this->testData);
 		if (strtoupper($data->algorithm) !== 'HMAC-SHA256') {
 			if (YII_DEBUG)
-				throw new CException('Unknown algorithm : "'. $data->algorithm .'" . Expected HMAC-SHA256');
+				throw new CException('Unknown algorithm : "' . $data->algorithm . '" . Expected HMAC-SHA256');
 			return null;
 		}
 		return $data->registration;

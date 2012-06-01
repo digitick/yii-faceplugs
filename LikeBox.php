@@ -58,12 +58,12 @@ class LikeBox extends EFaceplugsBase
 	 */
 	public $profile_id;
 	/**
-	 * @var string The border color of the plugin. 
+	 * @var string The border color of the plugin.
 	 */
 	public $border_color;
 	/**
 	 * @var boolean for Places, specifies whether the stream contains posts
-	 * from the Place's wall or just checkins from friends. Default value: false. 
+	 * from the Place's wall or just checkins from friends. Default value: false.
 	 */
 	public $force_wall;
 

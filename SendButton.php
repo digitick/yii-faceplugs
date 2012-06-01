@@ -10,12 +10,12 @@ require_once 'EFaceplugsBase.php';
 
 /**
  * The Send Button allows users to easily send content to their friends.
- * 
+ *
  * People will have the option to send your URL in a message to their Facebook friends,
  * to the group wall of one of their Facebook groups, and as an email to any email address.
  * While the Like Button allows users to share content with all of their friends, the
  * Send Button allows them to send a private message to just a few friends.
- * 
+ *
  * @see http://developers.facebook.com/docs/reference/plugins/send
  */
 class SendButton extends EFaceplugsBase

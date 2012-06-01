@@ -3,7 +3,7 @@
 /**
  * Wrappers for facebook plugins.
  * @see http://www.yiiframework.com/extension/faceplugs/
- * 
+ *
  * @copyright © Digitick <www.digitick.net> 2011
  * @license GNU Lesser General Public License v3.0
  * @version 1.3
@@ -18,7 +18,7 @@
  *
  * @see http://developers.facebook.com/plugins
  * @see http://developers.facebook.com/docs/opengraph
- * 
+ *
  */
 abstract class EFaceplugsBase extends CWidget
 {
@@ -58,7 +58,7 @@ abstract class EFaceplugsBase extends CWidget
 	public $async = true;
 	/**
 	 * @var string Override default locale for the widget.
-	 * 
+	 *
 	 * Normally locale is set automatically based on the Yii language settings,
 	 * setting it here allows a specific locale to be used.
 	 */
@@ -241,7 +241,7 @@ abstract class EFaceplugsBase extends CWidget
 		foreach ($this->og as $type => $value)
 			$this->registerOpenGraph($type, $value);
 	}
-	
+
 	/**
 	 * Get the protocol used.
 	 * @return string 'http' or 'https'
@@ -266,7 +266,7 @@ abstract class EFaceplugsBase extends CWidget
 				$this->setScriptLocale();
 
 			$this->scriptFile = $this->getProtocol() . '://' . $this->scriptFile;
-			
+
 			echo CHtml::tag('div', array('id' => 'fb-root'));
 
 			$init = $this->registerSDKScript('init', array(
@@ -395,7 +395,7 @@ abstract class EFaceplugsBase extends CWidget
 		$args = CJavaScript::encode($args);
 		return "FB.{$method}({$args});";
 	}
-	
+
 	/**
 	 * Render an HTML Facebook tag.
 	 * @param string $name The name of the FB plugin.
@@ -404,7 +404,7 @@ abstract class EFaceplugsBase extends CWidget
 	protected function printTag($name, $params=false)
 	{
 		if (!$params)
-			$params = $this->getParams();	
+			$params = $this->getParams();
 
 		$name = "fb:$name";
 		echo CHtml::openTag($name, $params), CHtml::closeTag($name);

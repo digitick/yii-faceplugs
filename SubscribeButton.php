@@ -10,7 +10,7 @@ require_once 'EFaceplugsBase.php';
 
 /**
  * The Subscribe button lets a user subscribe to your public updates on Facebook.
- * 
+ *
  * @see http://developers.facebook.com/docs/reference/plugins/subscribe
  */
 class SubscribeButton extends EFaceplugsBase

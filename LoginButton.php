@@ -34,11 +34,11 @@ class LoginButton extends EFaceplugsAppLink
 	public $width;
 	/**
 	 * @var string A comma separated list of extended permissions.
-	 * 
+	 *
 	 * By default the Login button prompts users for their public information.
 	 * If your application needs to access other parts of the user's profile
 	 * that may be private, your application can request extended permissions.
-	 * 
+	 *
 	 * @see http://developers.facebook.com/docs/authentication/permissions/
 	 */
 	public $perms;
