@@ -94,7 +94,7 @@ abstract class EFaceplugsBase extends CWidget
 		'latitude',
 		'longitude',
 		'street-address',
-		'locality',
+		'locale',
 		'region',
 		'postal-code',
 		'country-name',
