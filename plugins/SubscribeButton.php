@@ -1,6 +1,6 @@
 <?php
 /**
- * LikeBox class file.
+ * SubscribeButton class file.
  *
  * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @author Ianaré Sévi (original author) www.digitick.net
