@@ -94,7 +94,7 @@ abstract class EFaceplugsBase extends CWidget
 		'latitude',
 		'longitude',
 		'street-address',
-		'locality',
+		'locale',
 		'region',
 		'postal-code',
 		'country-name',
@@ -267,7 +267,7 @@ abstract class EFaceplugsBase extends CWidget
 
 			$this->scriptFile = $this->getProtocol() . '://' . $this->scriptFile;
 
-			echo CHtml::tag('div', array('id' => 'fb-root'));
+			echo CHtml::opentag('div', array('id' => 'fb-root'));
 
 			$init = $this->registerSDKScript('init', array(
 				'status' => $this->status,
@@ -276,20 +276,21 @@ abstract class EFaceplugsBase extends CWidget
 				'appId' => $this->app_id,
 				)
 			);
-
-			if ($this->async) {
+			
+			if ($this->async)
 				$init = "window.fbAsyncInit = function(){{$init}};
 				(function(){
 				var e=document.createElement('script');
 				e.async=true;
 				e.src='{$this->scriptFile}';
 				document.getElementById('fb-root').appendChild(e);}());";
-			}
 			else
 				Yii::app()->clientScript->registerScriptFile($this->scriptFile, CClientScript::POS_END);
+			
+			echo CHtml::closeTag('div');
 
 			Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
-
+			
 			Yii::app()->params->fbRootSet = true;
 		}
 	}
