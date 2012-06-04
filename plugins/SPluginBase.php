@@ -4,8 +4,8 @@
  *
  * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @link https://github.com/splashlab/yii-facebook-opengraph
- * @copyright Copyright &copy; 2011 SplashLab Social  http://splashlabsocial.com
- * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2
+ * @copyright Copyright &copy; 2012 SplashLab Social  http://splashlabsocial.com
+ * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License v3.0
  *
  */
 
