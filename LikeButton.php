@@ -23,6 +23,15 @@ class LikeButton extends EFaceplugsBase
 	 */
 	public $href;
 	/**
+	 * @var boolean Specifies whether to include a Send button with the Like
+	 * button.
+	 */
+	public $send;
+	/**
+	 * @var string Three options : 'standard', 'button_count', 'box_count'
+	 */
+	public $layout;
+	/**
 	 * @var boolean Display profile photos below the button (standard layout only).
 	 */
 	public $show_faces;
@@ -30,10 +39,6 @@ class LikeButton extends EFaceplugsBase
 	 * @var integer Width of the Like button, defults to 450px
 	 */
 	public $width;
-	/**
-	 * @var string Three options : 'standard', 'button_count', 'box_count'
-	 */
-	public $layout;
 	/**
 	 * @var string The verb to display on the button. Options: 'like', 'recommend'
 	 */
@@ -53,11 +58,6 @@ class LikeButton extends EFaceplugsBase
 	 * (currently +/=-.:_).
 	 */
 	public $ref;
-	/**
-	 * @var boolean Specifies whether to include a Send button with the Like
-	 * button.
-	 */
-	public $send;
 
 	public function run()
 	{

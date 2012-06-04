@@ -39,7 +39,7 @@ class SendButton extends EFaceplugsBase
 	 * (currently +/=-.:_).
 	 */
 	public $ref;
-
+	
 	public function run()
 	{
 		parent::run();

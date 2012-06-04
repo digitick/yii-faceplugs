@@ -19,7 +19,7 @@ require_once 'EFaceplugsBase.php';
  * <li>Like the page with one click, without needing to visit the page
  * </ul>
  *
- * @see http://developers.facebook.com/docs/reference/plugins/like
+ * @see http://developers.facebook.com/docs/reference/plugins/like-box
  */
 class LikeBox extends EFaceplugsBase
 {
@@ -28,10 +28,6 @@ class LikeBox extends EFaceplugsBase
 	 */
 	public $href;
 	/**
-	 * @var boolean Display profile photos in the plugin.
-	 */
-	public $show_faces;
-	/**
 	 * @var integer The width of the plugin in pixels. Default width: 300px.
 	 */
 	public $width;
@@ -39,6 +35,14 @@ class LikeBox extends EFaceplugsBase
 	 * @var integer The height of the plugin in pixels.
 	 */
 	public $height;
+	/**
+	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
+	 */
+	public $colorscheme;
+	/**
+	 * @var boolean Display profile photos in the plugin.
+	 */
+	public $show_faces;
 	/**
 	 * @var boolean Specifies whether to display a stream of the latest posts
 	 * from the page's wall.
@@ -50,14 +54,6 @@ class LikeBox extends EFaceplugsBase
 	 */
 	public $header;
 	/**
-	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
-	 */
-	public $colorscheme;
-	/**
-	 * @var string Specifies the profile to like.
-	 */
-	public $profile_id;
-	/**
 	 * @var string The border color of the plugin.
 	 */
 	public $border_color;
@@ -66,6 +62,10 @@ class LikeBox extends EFaceplugsBase
 	 * from the Place's wall or just checkins from friends. Default value: false.
 	 */
 	public $force_wall;
+	/**
+	 * @var string Specifies the profile to like.
+	 */
+	public $profile_id;
 
 	public function run()
 	{

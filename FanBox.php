@@ -19,7 +19,6 @@ require_once 'EFaceplugsBase.php';
  * <li>Like the page with one click, without needing to visit the page
  * </ul>
  *
- * @see http://developers.facebook.com/docs/reference/plugins/like
  */
 class FanBox extends EFaceplugsBase
 {

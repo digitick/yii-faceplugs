@@ -24,24 +24,26 @@ class LoginButton extends EFaceplugsAppLink
 	 */
 	public $show_faces;
 	/**
+	 * @var integer The width of the plugin in pixels. Default width: 200px.
+	 */
+	public $width;
+	/**
 	 * @var integer The maximum number of rows of profile pictures to display.
 	 * Default value: 1.
 	 */
 	public $max_rows;
 	/**
-	 * @var integer The width of the plugin in pixels. Default width: 200px.
+	 * @var string a comma separated list of extended permissions.By default the
+	 * Login button prompts users for their public information. 
 	 */
-	public $width;
+	public $scope;
 	/**
-	 * @var string A comma separated list of extended permissions.
-	 *
-	 * By default the Login button prompts users for their public information.
-	 * If your application needs to access other parts of the user's profile
-	 * that may be private, your application can request extended permissions.
-	 *
-	 * @see http://developers.facebook.com/docs/authentication/permissions/
+	 * @var string registration page url. If the user has not registered for your
+	 * site, they will be redirected to the URL you specify in the registration-url
+	 * parameter. 
 	 */
-	public $perms;
+	public $registration_url;
+	
 
 	public function run()
 	{

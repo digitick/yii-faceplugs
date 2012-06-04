@@ -17,16 +17,14 @@ require_once 'EFaceplugsAppLink.php';
 class Registration extends EFaceplugsAppLink
 {
 	/**
-	 * @var string If the user arrives logged into Facebook, but has not registered for
-	 * your site, the button will say Register and clicking it will take the
-	 * user to your registration-url.
+	 * @var integer your app ID.
 	 */
-	public $registration_url;
+	public $client_id;
 	/**
 	 * @var string The URI that will process the signed_request. It must be
 	 * prefixed by your Site URL.
 	 */
-	public $redirect_uri;
+	public $redirect_uri;	
 	/**
 	 * @var string Comma separated list of Named Fields, or JSON of Custom
 	 * Fields.
@@ -39,15 +37,24 @@ class Registration extends EFaceplugsAppLink
 	 */
 	public $fb_only;
 	/**
+	 * @var boolean Allow users to register for Facebook during the registration
+	 * process. Use this if you do not have your own registration system. Default:false. 
+	 */
+	public $fb_register;
+	/**
 	 * @var integer The width in pixels. If the width is < 520 the plugin will
 	 * render in a small layout.
 	 */
 	public $width;
 	/**
-	 * @var integer
+	 * @var integer the border color of the plugin. 
 	 */
-	public $client_id;
-
+	public $border_color;
+	/**
+	 * @var string The target of the form submission: _top(default),_parent of self.
+	 */
+	public $target;
+	
 	public function run()
 	{
 		parent::run();

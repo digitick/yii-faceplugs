@@ -37,19 +37,19 @@ class SubscribeButton extends EFaceplugsBase
 	 */
 	public $show_faces;
 	/**
-	 * @var integer The width of the plugin in pixels.
+	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
 	 */
-	public $width;
+	public $colorscheme;
 	/**
 	 * @var string The font to display in the button. Options: 'arial',
 	 * 'lucida grande', 'segoe ui', 'tahoma', 'trebuchet ms', 'verdana'
 	 */
 	public $font;
 	/**
-	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
+	 * @var integer The width of the plugin in pixels.
 	 */
-	public $colorscheme;
-
+	public $width;
+	
 	public function run()
 	{
 		parent::run();

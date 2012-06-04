@@ -23,6 +23,11 @@ class Facepile extends EFaceplugsBase
 	 */
 	public $href;
 	/**
+	 * @var string an action type. The plugin will display photos of users who
+	 * have connected to your app via this action. 
+	 */
+	public $action;
+	/**
 	 * @var integer The maximum number of rows of faces to display.
 	 *
 	 * Height is dynamically sized; if you specify a maximum of four rows of
@@ -34,6 +39,14 @@ class Facepile extends EFaceplugsBase
 	 * @var integer Width of the plugin in pixels. Default width: 200px.
 	 */
 	public $width;
+	/**
+	 * @var sting size of the photos and social context. Default size:medium. 
+	 */
+	public $size;
+	/**
+	 * @var string the color scheme for the like button.Option:'light','dark'. 
+	 */
+	public $colorscheme;
 
 	public function run()
 	{
