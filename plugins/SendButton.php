@@ -53,9 +53,6 @@ class SendButton extends SPluginBase
 	public function run()
 	{
 		parent::run();
-		if (!isset($this->profile_id)) {
-			$this->profile_id = Yii::app()->facebook->appId;
-		}
 		$params = $this->getParams();
 		$this->renderTag('send',$params);
 	}
