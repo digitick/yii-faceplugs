@@ -46,9 +46,13 @@ abstract class EFaceplugsBase extends CWidget
 	 */
 	public $cookie = true;
 	/**
-	 * @var boolean Parse XFBML.
+	 * @var boolean Whether or not to parse XFBML tags with the JS library (will render Plugins with iframes if false).
 	 */
 	public $xfbml = true;
+	/**
+	 * @var boolean Whether or not to use html5 social plugins instead of xfbml.
+	 */
+	public $html5 = false;
 	/**
 	 * @var boolean Load the Facebook init script asynchronously.
 	 *
@@ -75,10 +79,6 @@ abstract class EFaceplugsBase extends CWidget
 	 * </ul>
 	 */
 	public $debugMode = 'off';
-	/**
-	 * @var string URL of the script file to load.
-	 */
-	protected $scriptFile = 'connect.facebook.net/%%locale%%/all.js';
 	/**
 	 * @var array Allowed Open Graph properties.
 	 */
@@ -261,36 +261,45 @@ abstract class EFaceplugsBase extends CWidget
 				$this->debugMode = 'on';
 
 			if ($this->debugMode === 'on')
-				$this->scriptFile = 'static.ak.fbcdn.net/connect/en_US/core.debug.js';
+				$script = 'static.ak.fbcdn.net/connect/en_US/core.debug.js';
 			else
-				$this->setScriptLocale();
+				$script = 'connect.facebook.net/'.$this->getLocale().'/all.js';
 
-			$this->scriptFile = $this->getProtocol() . '://' . $this->scriptFile;
+			$script = $this->getProtocol() . '://' . $script;
 
 			echo CHtml::opentag('div', array('id' => 'fb-root'));
 
 			$init = $this->registerSDKScript('init', array(
+				'appId' => $this->app_id,
 				'status' => $this->status,
 				'cookie' => $this->cookie,
 				'xfbml' => $this->xfbml,
-				'appId' => $this->app_id,
 				)
 			);
 			
+//			if ($this->async)
+//				$init = "window.fbAsyncInit = function(){{$init}};
+//				(function(d){
+//				var js, id = 'facebook-jssdk'; 
+//				if (d.getElementById(id)) {return;}
+//				js = d.createElement('script'); js.id = id; js.async = true;
+//				js.src = '{$script}';
+//				d.getElementsByTagName('head')[0].appendChild(js);
+//				}(document));";
+		
 			if ($this->async)
 				$init = "window.fbAsyncInit = function(){{$init}};
 				(function(){
 				var e=document.createElement('script');
 				e.async=true;
-				e.src='{$this->scriptFile}';
+				e.src='{$script}';
 				document.getElementById('fb-root').appendChild(e);}());";
 			else
-				Yii::app()->clientScript->registerScriptFile($this->scriptFile, CClientScript::POS_END);
+				Yii::app()->clientScript->registerScriptFile($script, CClientScript::POS_END);
 			
 			echo CHtml::closeTag('div');
 
 			Yii::app()->getClientScript()->registerScript('fb-script', $init, CClientScript::POS_END);
-			
 			Yii::app()->params->fbRootSet = true;
 		}
 	}
@@ -309,7 +318,14 @@ abstract class EFaceplugsBase extends CWidget
 		Yii::app()->clientScript->registerMetaTag($data, null, null, array('property' => $property));
 	}
 
-	protected function setScriptLocale()
+	/**
+	 * Determine the script locale to load.
+	 * Looks at $locale variable declared in this file first
+	 * Then looks at the Yii application language
+	 * Defaults to en_US
+	 * @return string locale code
+	 */
+	protected function getLocale()
 	{
 		if (isset($this->locale))
 			$locale = strtolower($this->locale);
@@ -356,7 +372,7 @@ abstract class EFaceplugsBase extends CWidget
 		if (!in_array($locale, $this->locales))
 			throw new CException('Invalid Facebook locale');
 
-		$this->scriptFile = str_replace('%%locale%%', $locale, $this->scriptFile);
+		return $locale;
 	}
 
 	/**
@@ -398,17 +414,40 @@ abstract class EFaceplugsBase extends CWidget
 	}
 
 	/**
-	 * Render an HTML Facebook tag.
-	 * @param string $name The name of the FB plugin.
-	 * @param array $params Plugin parameters. If set, don't get parameters automatically.
+	 * @param $name the name of the Facebook Social Plugin
+	 * @param $params the parameters for the Facebook Social Plugin
+	 * @return void
 	 */
-	protected function printTag($name, $params=false)
+	protected function renderTag($name, $params)
 	{
-		if (!$params)
-			$params = $this->getParams();
+		if ($this->html5)
+			$this->makeHtml5Tag('fb-'.$name,$params);
+        else
+			$this->makeXfbmlTag('fb:'.$name,$params);
+    }
 
-		$name = "fb:$name";
-		echo CHtml::openTag($name, $params), CHtml::closeTag($name);
-	}
+	/**
+	 * @param $class the name of the Facebook Social Plugin
+	 * @param $params the parameters for the Facebook Social Plugin
+	 * @return void
+	 */
+    protected function makeHtml5Tag($class, $params)
+    {
+		$newParams = array();
+        foreach($params as $key=>$data)
+			$newParams['data-'.$key] = $data;
 
+        $newParams['class'] = $class;
+        echo CHtml::openTag('div', $newParams), CHtml::closeTag('div');
+    }
+
+    /**
+	 * @param $tagName the name of the Facebook Social Plugin
+	 * @param $params the parameters for the Facebook Social Plugin
+	 * @return void
+	 */
+    protected function makeXfbmlTag($tagName, $params)
+    {
+        echo CHtml::openTag($tagName, $params), CHtml::closeTag($tagName);
+    }
 }
