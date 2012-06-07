@@ -60,6 +60,6 @@ class FanBox extends EFaceplugsBase
 		if (!isset($this->profile_id)) {
 			$this->profile_id = $this->app_id;
 		}
-		$this->printTag('fan');
+		$this->renderTag('fan');
 	}
 }

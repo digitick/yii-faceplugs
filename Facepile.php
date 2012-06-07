@@ -51,7 +51,7 @@ class Facepile extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-		$this->printTag('facepile');
+		$this->renderTag('facepile');
 	}
 
 }

@@ -48,7 +48,7 @@ class LoginButton extends EFaceplugsAppLink
 	public function run()
 	{
 		parent::run();
-		$this->printTag('login-button');
+		$this->renderTag('login-button');
 	}
 
 }

@@ -59,7 +59,7 @@ class Registration extends EFaceplugsAppLink
 	{
 		parent::run();
 		$this->client_id = $this->app_id;
-		$this->printTag('registration');
+		$this->renderTag('registration');
 	}
 
 }

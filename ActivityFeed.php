@@ -89,7 +89,7 @@ class ActivityFeed extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-		$this->printTag('activity');
+		$this->renderTag('activity');
 	}
 
 }

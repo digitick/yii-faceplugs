@@ -42,7 +42,7 @@ class Comments extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-		$this->printTag('comments');
+		$this->renderTag('comments');
 	}
 
 }

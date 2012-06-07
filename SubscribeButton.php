@@ -53,6 +53,6 @@ class SubscribeButton extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-		$this->printTag('subscribe');
+		$this->renderTag('subscribe');
 	}
 }

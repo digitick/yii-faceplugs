@@ -72,7 +72,7 @@ class Recommendations extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-		$this->printTag('recommendations');
+		$this->renderTag('recommendations');
 	}
 
 }

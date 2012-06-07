@@ -38,7 +38,7 @@ class LiveStream extends EFaceplugsAppLink
 	public function run()
 	{
 		parent::run();
-		$this->printTag('live-stream');
+		$this->renderTag('live-stream');
 	}
 
 }

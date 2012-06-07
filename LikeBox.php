@@ -73,6 +73,6 @@ class LikeBox extends EFaceplugsBase
 		if (!isset($this->profile_id)) {
 			$this->profile_id = $this->app_id;
 		}
-		$this->printTag('like-box');
+		$this->renderTag('like-box');
 	}
 }

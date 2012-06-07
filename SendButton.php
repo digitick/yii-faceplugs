@@ -43,6 +43,6 @@ class SendButton extends EFaceplugsBase
 	public function run()
 	{
 		parent::run();
-		$this->printTag('send');
+		$this->renderTag('send');
 	}
 }

@@ -308,6 +308,7 @@ abstract class EFaceplugsBase extends CWidget
 	 * Register an OpenGraph property.
 	 * @param string $property
 	 * @param string $data
+	 * @return void
 	 */
 	public function registerOpenGraph($property, $data)
 	{
@@ -415,11 +416,11 @@ abstract class EFaceplugsBase extends CWidget
 
 	/**
 	 * @param $name the name of the Facebook Social Plugin
-	 * @param $params the parameters for the Facebook Social Plugin
 	 * @return void
 	 */
-	protected function renderTag($name, $params)
+	protected function renderTag($name)
 	{
+		$params = $this->getParams();
 		if ($this->html5)
 			$this->makeHtml5Tag('fb-'.$name,$params);
         else
