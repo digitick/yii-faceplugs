@@ -32,7 +32,6 @@ abstract class EFaceplugsBase extends CWidget
 	 * @var string Page URL, for Open Graph
 	 */
 	public $url;
-	public $css;
 	/**
 	 * @var array Open Graph properties.
 	 */
@@ -79,6 +78,10 @@ abstract class EFaceplugsBase extends CWidget
 	 * </ul>
 	 */
 	public $debugMode = 'off';
+	/**
+	 * @var boolean Force usage of https. False by default.  
+	 */
+	public $https = false;
 	/**
 	 * @var array Allowed Open Graph properties.
 	 */
@@ -248,7 +251,7 @@ abstract class EFaceplugsBase extends CWidget
 	 */
 	protected function getProtocol()
 	{
-		if(Yii::app()->getRequest()->isSecureConnection)
+		if($this->https==true || Yii::app()->getRequest()->getIsSecureConnection())
 			return 'https';
 		return 'http';
     }
@@ -383,7 +386,7 @@ abstract class EFaceplugsBase extends CWidget
 	protected function getParams()
 	{
 		$ignore = array('skin', 'actionPrefix', 'app_id', 'url', 'status',
-			'cookie', 'async', 'debugMode', 'xfbml');
+			'cookie', 'async', 'debugMode', 'xfbml', 'https', 'html5');
 		$ref = new ReflectionObject($this);
 		$props = $ref->getProperties(ReflectionProperty::IS_PUBLIC);
 
