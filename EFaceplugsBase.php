@@ -279,17 +279,6 @@ abstract class EFaceplugsBase extends CWidget
 				'xfbml' => $this->xfbml,
 				)
 			);
-			
-//			if ($this->async)
-//				$init = "window.fbAsyncInit = function(){{$init}};
-//				(function(d){
-//				var js, id = 'facebook-jssdk'; 
-//				if (d.getElementById(id)) {return;}
-//				js = d.createElement('script'); js.id = id; js.async = true;
-//				js.src = '{$script}';
-//				d.getElementsByTagName('head')[0].appendChild(js);
-//				}(document));";
-		
 			if ($this->async)
 				$init = "window.fbAsyncInit = function(){{$init}};
 				(function(){
@@ -316,7 +305,7 @@ abstract class EFaceplugsBase extends CWidget
 	public function registerOpenGraph($property, $data)
 	{
 		if (!in_array($property, $this->openGraphProperties))
-			throw new CException('Invalid open graph property : ' . $property);
+			throw new CException('Invalid open graph property: ' . $property);
 
 		$property = 'og:' . $property;
 		Yii::app()->clientScript->registerMetaTag($data, null, null, array('property' => $property));
