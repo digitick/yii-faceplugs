@@ -1,0 +1,116 @@
+A wrapper for Facebook plugins using the Javascript SDK and the Open Graph protocol.
+
+All Facebook plugins are available.
+
+Current Version: 1.7.1
+
+##Requirements
+
+Developed and tested on Yii 1.1.5-10. Should work on all 1.1.x branch.
+
+##Installation
+####Normal
+Download and extract the tarball to your extensions folder.
+
+####Git Submodule
+Alternatively, you may checkout the project as a submodule in Git. This will allow you to update to the latest version right in your Git-enabled project. [More on Git submodules.](http://git-scm.com/book/en/Git-Tools-Submodules "More on Git submodules.")
+~~~
+$ git submodule add git@github.com:digitick/yii-faceplugs.git protected/extensions/faceplugs
+$ git submodule init
+$ git submodule update
+~~~
+
+
+##Usage
+####Application ID
+Some plugins _will not work_ without a Facebook application ID. The easiest way is to set it for **all facebook plugins in your site** in your Yii configuration file, as the 'fbAppId' parameter :
+~~~
+[php]
+return array(
+[...]
+    // application-level parameters that can be accessed
+    // using Yii::app()->params['paramName']
+    'params' => array(
+        'fbAppId' => '123456789',
+    ),
+);
+~~~
+Note that you can override this setting when creating the widget.
+
+You may also set the application ID for **all plugins of the same type**. In your Yii configuration file :
+~~~
+[php]
+return array(
+    'components' => array(
+        'widgetFactory' => array(
+            'widgets' => array(
+                'LiveStream' => array(
+                    'app_id' => '123456789',
+                ),
+            ),
+        ),
+    ),
+);
+~~~
+
+
+Finally, you can set the application ID at **each instance of plugin creation**, this is done by passing the 'app_id' parameter.
+
+####Creating the widget
+The extension uses the javascript SDK version of the facebook plugins, which work with the Open Graph protocol.
+
+Open Graph properties, except for 'url', are passed as the 'og' parameter to the plugin.
+~~~
+[php]
+$og = array(
+    'title' => 'The coolest site on the WWW',
+    'type' => 'website',
+    'site_name' => 'My Awesome Site',
+    'image' => $this->createAbsoluteUrl('/images/logo.gif'),
+);
+~~~
+
+To instantiate the plugin, pass the Open Graph properties and the URL of the current page. The application ID should also be set if it isn't defined in the config file.
+~~~
+[php]
+$this->widget('ext.faceplugs.LikeButton', array(
+   'app_id'=>'APPID', // not needed if set in Yii configuration file
+   'url' => $this->createAbsoluteUrl('/'),
+   'og' => $og
+));
+~~~
+
+####Setting options
+All the Facebook plugins have options, check the [Facebook plugins documentation pages](http://developers.facebook.com/plugins "Facebook plugins") or simply look at the classes. Options are set as normal widget parameters.
+~~~
+[php]
+$this->widget('ext.faceplugs.LikeButton', array(
+   'url' => $this->createAbsoluteUrl('/'),
+   'og' => $og,
+   'layout' => 'button_count',
+   'action' => 'recommend',
+   'colorscheme' => 'dark',
+));
+~~~
+
+####Setting plugin options
+These are set as normal widget parameters, and control the initialization and behavior of the plugin.
+
+ * status : Check user's login status.
+ * cookie : Enable cookies to allow the server to access the session.
+ * xfbml : Parse XFBML.
+ * async : Load the Facebook init script asynchronously.
+ * debugMode : When active, it loads the debug version of the SDK (en_US only).
+
+####Setting the locale
+In normal use, the plugin loader will attempt to use the locale of the Yii application automatically. However, not all locales defined by Yii are available in Facebook. Some common fallbacks have been defined (should cover 98% of all internet users), but in some cases you may want to define the locale manually. This is done by passing the 'locale' parameter on widget creation.
+
+##Resources
+
+* [Facebook plugins](http://developers.facebook.com/plugins "Facebook plugins") Official documentation
+* [Open Graph protocol](http://developers.facebook.com/docs/opengraph "Open Graph") Official documentation
+* [Yii Extension Page](http://www.yiiframework.com/extension/faceplugs)
+* [Yii Forum topic](http://www.yiiframework.com/forum/index.php?/topic/15636-extension-faceplugs "forum")
+* [Github](https://github.com/digitick/yii-faceplugs) Fork it !
+
+###[Version History](https://github.com/digitick/yii-faceplugs/wiki/Version-History)
