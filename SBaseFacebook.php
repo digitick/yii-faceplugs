@@ -11,7 +11,7 @@
  *
  */
 
-require_once "php-sdk-3.1.1/base_facebook.php";
+require_once "php-sdk-3.2/base_facebook.php";
 
 /**
  * Extends the BaseFacebook class with the intent of using
@@ -19,24 +19,82 @@ require_once "php-sdk-3.1.1/base_facebook.php";
  */
 class SBaseFacebook extends BaseFacebook
 {
+  const FBSS_COOKIE_NAME = 'fbss';
+
+  // We can set this to a high number because the main session
+  // expiration will trump this.
+  const FBSS_COOKIE_EXPIRE = 31556926; // 1 year
+
+  // Stores the shared session ID if one is set.
+  protected $sharedSessionID;
+
   /**
    * Identical to the parent constructor, except that
    * we start a PHP session to store the user ID and
    * access token if during the course of execution
    * we discover them.
    *
-   * @param Array $config the application configuration.
+   * @param Array $config the application configuration. Additionally
+   * accepts "sharedSession" as a boolean to turn on a secondary
+   * cookie for environments with a shared session (that is, your app
+   * shares the domain with other apps).
    * @see BaseFacebook::__construct in facebook.php
    */
-  /*public function __construct($config) {
-    if (!session_id()) { // Yii should already have started the session
-      session_start();
-    }
+  public function __construct($config) {
     parent::__construct($config);
-  }*/
+    if (!empty($config['sharedSession'])) {
+      $this->initSharedSession();
+    }
+  }
 
   protected static $kSupportedKeys =
-    array('state', 'code', 'access_token', 'user_id');
+      array('state', 'code', 'access_token', 'user_id');
+
+  protected function initSharedSession() {
+    $cookie_name = $this->getSharedSessionCookieName();
+    if (isset(Yii::app()->request->cookies[$cookie_name])) {
+      $data = $this->parseSignedRequest(Yii::app()->request->cookies[$cookie_name]);
+      if ($data && !empty($data['domain']) &&
+          self::isAllowedDomain($this->getHttpHost(), $data['domain'])) {
+        // good case
+        $this->sharedSessionID = $data['id'];
+        return;
+      }
+      // ignoring potentially unreachable data
+    }
+    // evil/corrupt/missing case
+    $base_domain = $this->getBaseDomain();
+    $this->sharedSessionID = md5(uniqid(mt_rand(), true));
+    $cookie_value = $this->makeSignedRequest(
+      array(
+        'domain' => $base_domain,
+        'id' => $this->sharedSessionID,
+      )
+    );
+    Yii::app()->request->cookies[$cookie_name] = $cookie_value;
+    if (!headers_sent()) {
+      $expire = time() + self::FBSS_COOKIE_EXPIRE;
+      //setcookie($cookie_name, $cookie_value, $expire, '/', '.'.$base_domain);
+      Yii::app()->request->cookies[$cookie_name] =
+          new CHttpCookie(
+            $cookie_name,
+            $cookie_value,
+            array(
+              'expire'=>$expire,
+              'path'=>'/',
+              'domain'=>'.'.$base_domain,
+            )
+          );
+    } else {
+      // @codeCoverageIgnoreStart
+      self::errorLog(
+        'Shared session ID cookie could not be set! You must ensure you '.
+            'create the Facebook instance before headers have been sent. This '.
+            'will cause authentication issues after the first request.'
+      );
+      // @codeCoverageIgnoreEnd
+    }
+  }
 
   /**
    * Provides the implementations of the inherited abstract
@@ -62,7 +120,7 @@ class SBaseFacebook extends BaseFacebook
 
     $session_var_name = $this->constructSessionVariableName($key);
     return isset(Yii::app()->session[$session_var_name]) ?
-      Yii::app()->session[$session_var_name] : $default;
+        Yii::app()->session[$session_var_name] : $default;
   }
 
   protected function clearPersistentData($key) {
@@ -79,12 +137,37 @@ class SBaseFacebook extends BaseFacebook
     foreach (self::$kSupportedKeys as $key) {
       $this->clearPersistentData($key);
     }
+    if ($this->sharedSessionID) {
+      $this->deleteSharedSessionCookie();
+    }
+  }
+
+  protected function deleteSharedSessionCookie() {
+    $cookie_name = $this->getSharedSessionCookieName();
+    unset(Yii::app()->request->cookies[$cookie_name]);
+    $base_domain = $this->getBaseDomain();
+    //setcookie($cookie_name, '', 1, '/', '.'.$base_domain);
+    Yii::app()->request->cookies[$cookie_name] = new CHttpCookie(
+      $cookie_name,
+      '',
+      array(
+        'expire'=>1,
+        'path'=>'/',
+        'domain'=>'.'.$base_domain,
+      )
+    );
+  }
+
+  protected function getSharedSessionCookieName() {
+    return self::FBSS_COOKIE_NAME . '_' . $this->getAppId();
   }
 
   protected function constructSessionVariableName($key) {
-    return implode('_', array('fb',
-                              $this->getAppId(),
-                              $key));
+    $parts = array('fb', $this->getAppId(), $key);
+    if ($this->sharedSessionID) {
+      array_unshift($parts, $this->sharedSessionID);
+    }
+    return implode('_', $parts);
   }
 
   /**
@@ -104,4 +187,5 @@ class SBaseFacebook extends BaseFacebook
     // print 'error_log: '.$msg."\n";
     // @codeCoverageIgnoreEnd
   }
+
 }

@@ -37,6 +37,8 @@ Include the extension in your Yii config:
         'class' => 'ext.yii-facebook-opengraph.SFacebook',
         'appId'=>'YOUR_FACEBOOK_APP_ID', // needed for JS SDK, Social Plugins and PHP SDK
         'secret'=>'YOUR_FACEBOOK_APP_SECRET', // needed for the PHP SDK
+        //'fileUpload'=>false, // needed to support API POST requests which send files
+        //'trustForwarded'=>false, // trust HTTP_X_FORWARDED_* headers ?
         //'locale'=>'en_US', // override locale setting (defaults to en_US)
         //'jsSdk'=>true, // don't include JS SDK
         //'async'=>true, // load JS SDK asynchronously
@@ -72,7 +74,7 @@ USAGE:
 
 Setting OG tags on a page (in view or action):
 
-    <?php Yii::app()->facebook->ogTags['title'] = "My Page Title"; ?>
+    <?php Yii::app()->facebook->ogTags['og:title'] = "My Page Title"; ?>
 
 Render Facebook Social Plugins using helper Yii widgets:
 
@@ -102,6 +104,19 @@ I also created a couple of little helper functions:
 
 * * *
 
+BREAKING CHANGES:
+---------------------------------------------------------------------------
+* __Before version 0.6__ you didn't need to include the full OG meta tag (including the "og:" bit). Now you need to, to allow for new custom graph objects and actions. If you were setting OG meta tags like this `Yii::app()->facebook->ogTags['title']` it now needs to be like this `Yii::app()->facebook->ogTags['og:title']`.
+
+* * *
+
+CHANGE LOG:
+---------------------------------------------------------------------------
+
+* 0.6 Added support for custom OG meta tags, upgraded PHP SDK to 3.2, +some bugfixes
+
+* * *
+
 I plan on continuing to update and bugfix this extension as needed.
 
 Please log bugs to the GitHub tracker here.
@@ -109,5 +124,5 @@ Please log bugs to the GitHub tracker here.
 Extension is posted on Yii website also:
 http://www.yiiframework.com/extension/facebook-opengraph/
 
-Updated 01/04/2012 by Evan Johnson
+Updated Oct 7 2012 by Evan Johnson
 http://splashlabsocial.com
