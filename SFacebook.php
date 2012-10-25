@@ -11,7 +11,7 @@
  *
  */
 
-Yii::import("ext.facebook.SBaseFacebook");
+Yii::import("ext.yii-facebook-opengraph.SBaseFacebook");
 class SFacebook extends CApplicationComponent
 {
   /**
