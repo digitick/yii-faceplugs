@@ -83,40 +83,6 @@ abstract class EFaceplugsBase extends CWidget
 	 */
 	public $https = false;
 	/**
-	 * @var array Allowed Open Graph properties.
-	 */
-	protected $openGraphProperties = array(
-		'admins',
-		'app_id',
-		'title',
-		'type',
-		'image',
-		'url',
-		'description',
-		'site_name',
-		'latitude',
-		'longitude',
-		'street-address',
-		'locale',
-		'region',
-		'postal-code',
-		'country-name',
-		'email',
-		'phone_number',
-		'fax_number',
-		'upc',
-		'isbn',
-		'video',
-		'video:height',
-		'video:width',
-		'video:type',
-		'audio',
-		'audio:title',
-		'audio:artist',
-		'audio:album',
-		'audio:type',
-	);
-	/**
 	 * @var array Valid Facebook locales.
 	 */
 	protected $locales = array(
@@ -237,12 +203,12 @@ abstract class EFaceplugsBase extends CWidget
 		if (!$this->app_id && isset(Yii::app()->params->fbAppId))
 			$this->app_id = Yii::app()->params->fbAppId;
 		if ($this->url)
-			$this->registerOpenGraph('url', $this->url);
+			self::registerOpenGraph('url', $this->url);
 		if ($this->app_id)
-			$this->registerOpenGraph('app_id', $this->app_id);
+			self::registerOpenGraph('app_id', $this->app_id);
 
 		foreach ($this->og as $type => $value)
-			$this->registerOpenGraph($type, $value);
+			self::registerOpenGraph($type, $value);
 	}
 
 	/**
@@ -302,11 +268,8 @@ abstract class EFaceplugsBase extends CWidget
 	 * @param string $data
 	 * @return void
 	 */
-	public function registerOpenGraph($property, $data)
+	public static function registerOpenGraph($property, $data)
 	{
-		if (!in_array($property, $this->openGraphProperties))
-			throw new CException('Invalid open graph property: ' . $property);
-
 		$property = 'og:' . $property;
 		Yii::app()->clientScript->registerMetaTag($data, null, null, array('property' => $property));
 	}
