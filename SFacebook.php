@@ -304,11 +304,11 @@ class SFacebook extends CApplicationComponent
    */
   public function renderOGMetaTags() {
     $this->ogTags['fb:app_id'] = $this->appId; // set this app ID og tag, for Facebook insights and administration
-    if (!isset($this->ogTags['type']))
+    if (!isset($this->ogTags['og:type']))
       $this->ogTags['og:type'] = 'website'; // set website as the default type
-    if (!isset($this->ogTags['title']))
+    if (!isset($this->ogTags['og:title']))
       $this->ogTags['og:title'] = Yii::app()->name; // default to App name
-    if (!isset($this->ogTags['url']))
+    if (!isset($this->ogTags['og:url']))
       $this->ogTags['og:url'] = $this->getProtocol()."://".Yii::app()->request->serverName.Yii::app()->request->requestUri; // defaults to current URL
     foreach ($this->ogTags as $type => $value) { // loop through any other OG tags declared
       $this->registerOpenGraph($type, $value);
