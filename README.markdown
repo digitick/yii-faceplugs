@@ -114,6 +114,7 @@ CHANGE LOG:
 ---------------------------------------------------------------------------
 
 * 0.6 Added support for custom OG meta tags, upgraded PHP SDK to 3.2, +some bugfixes
+* 0.6.1 Bugfix for the custom OG meta tags, which were overwriting the type, title and url tags
 
 * * *
 
