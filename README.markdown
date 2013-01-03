@@ -6,7 +6,7 @@
 
 Facebook PHP SDK:
 http://developers.facebook.com/docs/reference/php/
-https://github.com/facebook/php-sdk
+https://github.com/facebook/facebook-php-sdk
 
 Facebook JS SDK:
 http://developers.facebook.com/docs/reference/javascript/
@@ -115,6 +115,7 @@ CHANGE LOG:
 
 * 0.6 Added support for custom OG meta tags, upgraded PHP SDK to 3.2, +some bugfixes
 * 0.6.1 Bugfix for the custom OG meta tags, which were overwriting the type, title and url tags
+* 0.7 Upgraded to PHP SDK 3.2.2
 
 * * *
 
@@ -125,5 +126,5 @@ Please log bugs to the GitHub tracker here.
 Extension is posted on Yii website also:
 http://www.yiiframework.com/extension/facebook-opengraph/
 
-Updated Oct 7 2012 by Evan Johnson
+Updated Jan 3rd 2013 by Evan Johnson
 http://splashlabsocial.com
