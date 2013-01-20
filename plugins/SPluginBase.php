@@ -22,6 +22,8 @@
  */
 abstract class SPluginBase extends CWidget
 {
+    public $skin = null; // unset this from CWidget to fix and error where it was passing data-skin="default" to the Social plugins
+
     /**
      * @return void Make sure that the JS SDK is enabled
      */
@@ -51,12 +53,17 @@ abstract class SPluginBase extends CWidget
      * @return void
      */
     protected function makeHtml5Tag($class, $params) {
-        $newParams = array();
-        foreach($params as $key=>$data) {
-            $newParams["data-".$key] = $data;
+        $content = '';
+        if (isset($params['text'])) {
+            $content = $params['text'];
+            unset($params['text']);
         }
+        $newParams = array();
         $newParams['class'] = $class;
-        echo CHtml::openTag('div', $newParams), CHtml::closeTag('div');
+        foreach($params as $key=>$data) {
+          $newParams["data-".str_replace('_','-',$key)] = $data;
+        }
+        echo CHtml::openTag('div', $newParams).$content.CHtml::closeTag('div');
     }
 
     /**
@@ -65,7 +72,12 @@ abstract class SPluginBase extends CWidget
      * @return void
      */
     protected function makeXfbmlTag($tagName, $params) {
-        echo CHtml::openTag($tagName, $params), CHtml::closeTag($tagName);
+        $content = '';
+        if (isset($params['text'])) {
+            $content = $params['text'];
+            unset($params['text']);
+        }
+        echo CHtml::openTag($tagName, $params),$content, CHtml::closeTag($tagName);
     }
 
 	/**

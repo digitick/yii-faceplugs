@@ -98,9 +98,10 @@ To use the PHP SDK anywhere in your application, just call it like so (there pas
 I also created a couple of little helper functions:
 
     <?php $userinfo = Yii::app()->facebook->getInfo() // gets the Graph info of the current user ?>
-    <?php $imageUrl = Yii::app()->facebook->getProfilePicture($size) // gets the Facebook picture URL of the current user ?>
+    <?php $imageUrl = Yii::app()->facebook->getProfilePicture('large') // gets the Facebook picture URL of the current user ?>
+    <?php $imageUrl = Yii::app()->facebook->getProfilePicture(array('height'=>300,'width'=>300)) // $size can also be specific ?>
     <?php $userinfo = Yii::app()->facebook->getInfoById($openGraphId) // gets the Graph info of a given OG entity ?>
-    <?php $imageUrl = Yii::app()->facebook->getProfilePictureById($openGraphId) // gets the Facebook picture URL of a given OG entity ?>
+    <?php $imageUrl = Yii::app()->facebook->getProfilePictureById($openGraphId, $size) // gets the Facebook picture URL of a given OG entity ?>
 
 * * *
 

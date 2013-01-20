@@ -52,6 +52,22 @@ class LoginButton extends SPluginBase
    * parameter.
 	 */
 	public $registration_url;
+  /**
+	 * @var string Different sized buttons: small, medium, large, xlarge (default: medium)
+	 */
+	public $size;
+  /**
+	 * @var string When a user logs into Facebook with the Login Button, and the user
+   * has already authorized your application, the function specified for on-login
+   * will be called. Otherwise the user will be redirected to the specified registration URL.
+   *
+   * @see http://developers.facebook.com/docs/user_registration/flows/
+	 */
+	public $on_login;
+  /**
+	 * @var string text of the login button
+	 */
+	public $text;
 
 	public function run()
 	{

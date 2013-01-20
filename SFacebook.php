@@ -583,7 +583,7 @@ class SFacebook extends CApplicationComponent
   /**
    * Get the Facebook profile picture for the currently logged in user
    *
-   * @param size facebook image size (square, small, normal, large)
+   * @param mixed size facebook image size (square, small, normal, large)
    * @return url of Facebook profile picture
    */
   public function getProfilePicture($size = null){
@@ -594,16 +594,19 @@ class SFacebook extends CApplicationComponent
   /**
    * Get the Facebook user profile picture for a given Open Graph object
    *
-   * @param id Facebook user id
-   * @param size (optional) size of the facebook image to return (square, small, normal, large)
+   * @param mixed id Facebook user id
+   * @param mixed size (optional) size of the facebook image to return (square, small, normal, large),
+   * or an array specifying width and height
    * @return url of Facebook profile picture
    */
-  public function getProfilePictureById($id, $size = null){
-    if (!$size)
-      return $this->getProtocol().'://graph.facebook.com/'.$id.'/picture';
-    else {
-      return $this->getProtocol().'://graph.facebook.com/'.$id.'/picture?type='.$size;
+  public function getProfilePictureById($id, $size = null) {
+    $params = null;
+    if ($size && is_array($size) && isset($size['height']) && isset($size['width'])) {
+      $params = '?width='.$size['width'].'&height='.$size['height'];
+    } elseif ($size) {
+      $params = '?type='.$size;
     }
+    return $this->getProtocol().'://graph.facebook.com/'.$id.'/picture'.$params;
   }
 
   /**
