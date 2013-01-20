@@ -117,15 +117,16 @@ CHANGE LOG:
 * 0.6 Added support for custom OG meta tags, upgraded PHP SDK to 3.2, +some bugfixes
 * 0.6.1 Bugfix for the custom OG meta tags, which were overwriting the type, title and url tags
 * 0.7 Upgraded to PHP SDK 3.2.2
+* 0.8 Fixed error with LoginButton plugin where inherited CWidget 'skin' property caused display error, added missing attributes to LoginButton, and added ability to specify custom profile image size
 
 * * *
 
 I plan on continuing to update and bugfix this extension as needed.
 
-Please log bugs to the GitHub tracker here.
+Please log bugs to the GitHub tracker.
 
 Extension is posted on Yii website also:
 http://www.yiiframework.com/extension/facebook-opengraph/
 
-Updated Jan 3rd 2013 by Evan Johnson
+Updated Jan 20th 2013 by Evan Johnson
 http://splashlabsocial.com
