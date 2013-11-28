@@ -1,23 +1,27 @@
 <?php
 /**
- * LikeBox class file.
+ * Copyright 2011 Facebook, Inc.
  *
- * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
- * @author Ianaré Sévi (original author) www.digitick.net
- * @link https://github.com/splashlab/yii-facebook-opengraph
- * @copyright &copy; Digitick <www.digitick.net> 2011
- * @copyright Copyright &copy; 2012 SplashLab Social  http://splashlabsocial.com
- * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License v3.0
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain
+ * a copy of the License at
  *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  */
 
-require_once "php-sdk-3.2.3/base_facebook.php";
+require_once "base_facebook.php";
 
 /**
  * Extends the BaseFacebook class with the intent of using
  * PHP sessions to store user ids and access tokens.
  */
-class SBaseFacebook extends BaseFacebook
+class Facebook extends BaseFacebook
 {
   const FBSS_COOKIE_NAME = 'fbss';
 
@@ -41,19 +45,32 @@ class SBaseFacebook extends BaseFacebook
    * @see BaseFacebook::__construct in facebook.php
    */
   public function __construct($config) {
+    if (!session_id()) {
+      session_start();
+    }
     parent::__construct($config);
     if (!empty($config['sharedSession'])) {
       $this->initSharedSession();
+
+      // re-load the persisted state, since parent
+      // attempted to read out of non-shared cookie
+      $state = $this->getPersistentData('state');
+      if (!empty($state)) {
+        $this->state = $state;
+      } else {
+        $this->state = null;
+      }
+
     }
   }
 
   protected static $kSupportedKeys =
-      array('state', 'code', 'access_token', 'user_id');
+    array('state', 'code', 'access_token', 'user_id');
 
   protected function initSharedSession() {
     $cookie_name = $this->getSharedSessionCookieName();
-    if (isset(Yii::app()->request->cookies[$cookie_name])) {
-      $data = $this->parseSignedRequest(Yii::app()->request->cookies[$cookie_name]);
+    if (isset($_COOKIE[$cookie_name])) {
+      $data = $this->parseSignedRequest($_COOKIE[$cookie_name]);
       if ($data && !empty($data['domain']) &&
           self::isAllowedDomain($this->getHttpHost(), $data['domain'])) {
         // good case
@@ -71,26 +88,16 @@ class SBaseFacebook extends BaseFacebook
         'id' => $this->sharedSessionID,
       )
     );
-    Yii::app()->request->cookies[$cookie_name] = $cookie_value;
+    $_COOKIE[$cookie_name] = $cookie_value;
     if (!headers_sent()) {
       $expire = time() + self::FBSS_COOKIE_EXPIRE;
-      //setcookie($cookie_name, $cookie_value, $expire, '/', '.'.$base_domain);
-      Yii::app()->request->cookies[$cookie_name] =
-          new CHttpCookie(
-            $cookie_name,
-            $cookie_value,
-            array(
-              'expire'=>$expire,
-              'path'=>'/',
-              'domain'=>'.'.$base_domain,
-            )
-          );
+      setcookie($cookie_name, $cookie_value, $expire, '/', '.'.$base_domain);
     } else {
       // @codeCoverageIgnoreStart
       self::errorLog(
         'Shared session ID cookie could not be set! You must ensure you '.
-            'create the Facebook instance before headers have been sent. This '.
-            'will cause authentication issues after the first request.'
+        'create the Facebook instance before headers have been sent. This '.
+        'will cause authentication issues after the first request.'
       );
       // @codeCoverageIgnoreEnd
     }
@@ -109,7 +116,7 @@ class SBaseFacebook extends BaseFacebook
     }
 
     $session_var_name = $this->constructSessionVariableName($key);
-    Yii::app()->session[$session_var_name] = $value;
+    $_SESSION[$session_var_name] = $value;
   }
 
   protected function getPersistentData($key, $default = false) {
@@ -119,8 +126,8 @@ class SBaseFacebook extends BaseFacebook
     }
 
     $session_var_name = $this->constructSessionVariableName($key);
-    return isset(Yii::app()->session[$session_var_name]) ?
-        Yii::app()->session[$session_var_name] : $default;
+    return isset($_SESSION[$session_var_name]) ?
+      $_SESSION[$session_var_name] : $default;
   }
 
   protected function clearPersistentData($key) {
@@ -130,7 +137,9 @@ class SBaseFacebook extends BaseFacebook
     }
 
     $session_var_name = $this->constructSessionVariableName($key);
-    unset(Yii::app()->session[$session_var_name]);
+    if (isset($_SESSION[$session_var_name])) {
+      unset($_SESSION[$session_var_name]);
+    }
   }
 
   protected function clearAllPersistentData() {
@@ -144,18 +153,9 @@ class SBaseFacebook extends BaseFacebook
 
   protected function deleteSharedSessionCookie() {
     $cookie_name = $this->getSharedSessionCookieName();
-    unset(Yii::app()->request->cookies[$cookie_name]);
+    unset($_COOKIE[$cookie_name]);
     $base_domain = $this->getBaseDomain();
-    //setcookie($cookie_name, '', 1, '/', '.'.$base_domain);
-    Yii::app()->request->cookies[$cookie_name] = new CHttpCookie(
-      $cookie_name,
-      '',
-      array(
-        'expire'=>1,
-        'path'=>'/',
-        'domain'=>'.'.$base_domain,
-      )
-    );
+    setcookie($cookie_name, '', 1, '/', '.'.$base_domain);
   }
 
   protected function getSharedSessionCookieName() {
@@ -169,23 +169,4 @@ class SBaseFacebook extends BaseFacebook
     }
     return implode('_', $parts);
   }
-
-  /**
-   * Prints to the error log if you aren't in command line mode.
-   * Overidden to use the Yii log instead of the default server log.
-   *
-   * @param string $msg Log message
-   */
-  protected static function errorLog($msg) {
-    // disable error log if we are running in a CLI environment
-    // @codeCoverageIgnoreStart
-    if (php_sapi_name() != 'cli') {
-      //error_log($msg);
-      Yii::log($msg,CLogger::LEVEL_ERROR,'ext.SBaseFacebook');
-    }
-    // uncomment this if you want to see the errors on the page
-    // print 'error_log: '.$msg."\n";
-    // @codeCoverageIgnoreEnd
-  }
-
 }
