@@ -1,6 +1,6 @@
 {
     "name": "splashlab/yii-facebook-opengraph",
-    "description": "Yii 1 Extension for the Facebook Open Graph PHP SDK",
+    "description": "Yii 1 Extension for the Facebook Open Graph PHP SDK 3.0",
     "keywords": ["facebook", "opengraph", "yii"],
     "type": "library",
     "homepage": "https://github.com/splashlab/yii-facebook-opengraph",

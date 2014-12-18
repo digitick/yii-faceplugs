@@ -9,13 +9,14 @@
  *
  */
 namespace YiiFacebook;
+use Yii;
 
 /**
  * FBUserIdentity represents the data needed to identity a user to log in with Facebook.
  * It contains the authentication method that checks if the provided
  * data can identity the user.
  */
-class FBUserIdentity extends CBaseUserIdentity
+class FBUserIdentity extends \CBaseUserIdentity
 {
     const ERROR_UNKNOWN_FACEBOOK_ID = 10;
 
@@ -81,9 +82,9 @@ class FBUserIdentity extends CBaseUserIdentity
     {
         if (!$this->_record) {
             if ($this->_fbid) {
-                $userCriteria = new CDbCriteria;
-                $userCriteria->addNotInCondition('status', array(User::STATUS_BLOCKED, User::STATUS_PENDING));
-                $this->_record = User::model()->findByAttributes(array('facebookid' => $this->_fbid), $userCriteria);
+                $userCriteria = new \CDbCriteria;
+                $userCriteria->addNotInCondition('status', array(\User::STATUS_BLOCKED, \User::STATUS_PENDING));
+                $this->_record = \User::model()->findByAttributes(array('facebookid' => $this->_fbid), $userCriteria);
             }
         }
         return $this->_record;
@@ -92,23 +93,23 @@ class FBUserIdentity extends CBaseUserIdentity
     public function mapUser()
     {
         // attempt to map user and update id
-        if (Yii::app()->facebook->getUser() && $this->findUser() === null && isset(Yii::app()->params['update_fb_id']) && Yii::app()->params['update_fb_id'] == true) {
+        if (Yii::app()->facebook->getUserId() && $this->findUser() === null && isset(Yii::app()->params['update_fb_id']) && Yii::app()->params['update_fb_id'] == true) {
 
             try {
-                $info = Yii::app()->facebook->api('/me');
+                $info = Yii::app()->facebook->getMe();
 
-                if ($info && isset($info['email'])){
+                if ($info && $info->getProperty('email')) {
                     $userCriteria = new CDbCriteria;
-                    $userCriteria->addNotInCondition('status', array(User::STATUS_BLOCKED, User::STATUS_PENDING));
-                    $this->_record = User::model()->findByAttributes(array('username' => $info['email']), $userCriteria);
+                    $userCriteria->addNotInCondition('status', array(\User::STATUS_BLOCKED, \User::STATUS_PENDING));
+                    $this->_record = \User::model()->findByAttributes(array('username' => $info->getProperty('email')), $userCriteria);
                     // update facebook id
                     if ($this->_record) {
-                        $this->_record->facebookid = $info['id'];
+                        $this->_record->facebookid = $info->getI();
                         $this->_fbid = $info['id'];
                         $this->_record->save(true,array('facebookid'));
                     }
                 }
-            } catch (FacebookApiException $e) {
+            } catch (\Facebook\FacebookRequestException $e) {
                 Yii::app()->user->setFlash('error',"There was a problem connecting Facebook. Please try again later.");
             }
         }

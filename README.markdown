@@ -1,40 +1,38 @@
-### This is mainly a wrapper for the Facebook PHP SDK class.
+### Update to Facebook PHP SDK 4.0 and and Open Graph API 2.x IN PROGRESS
 
-### You can also use it to include the Facebook JS SDK on your pages, and easily set Open Graph meta tags.
+The master branch is currently under development to update to the new SDK and API. The previous stable branch with support for the old API is now under the opengraph-v1.0 branch.
 
-### Also included are helper widgets for all of the Facebook Social Plugins.
+## This is mainly a wrapper for the Facebook PHP SDK.
+
+## You can also use it to include the Facebook JS SDK on your pages, and easily set Open Graph meta tags.
+
+## Also included are helper widgets for all of the Facebook Social Plugins.
 
 Facebook PHP SDK:
-http://developers.facebook.com/docs/reference/php/
-https://github.com/facebook/facebook-php-sdk
+https://developers.facebook.com/docs/reference/php/4.0.0
+https://github.com/facebook/facebook-php-sdk-v4
 
 Facebook JS SDK:
-http://developers.facebook.com/docs/reference/javascript/
+https://developers.facebook.com/docs/javascript
 
 Facebook Social Plugins:
-http://developers.facebook.com/docs/reference/plugins
+https://developers.facebook.com/docs/plugins/
 
 Open Graph Protocol:
-http://developers.facebook.com/docs/opengraph/
-
-A lot of this comes from forking ianare's faceplugs Yii extension:
-http://www.yiiframework.com/extension/faceplugs
-https://github.com/digitick/yii-faceplugs
+https://developers.facebook.com/docs/graph-api
 
 * * *
 
 INSTALLATION:
 ---------------------------------------------------------------------------
 
-Copy the file "facebook-channel.php" to your project root.
-
-Copy the rest of this extension in to your project's protected/extensions directory.
+Composer installation instructions coming soon.
 
 Include the extension in your Yii config:
 
     'components'=>array(
       'facebook'=>array(
-        'class' => 'ext.yii-facebook-opengraph.SFacebook',
+        'class' => '\YiiFacebook\SFacebook',
         'appId'=>'YOUR_FACEBOOK_APP_ID', // needed for JS SDK, Social Plugins and PHP SDK
         'secret'=>'YOUR_FACEBOOK_APP_SECRET', // needed for the PHP SDK
         //'fileUpload'=>false, // needed to support API POST requests which send files
@@ -78,7 +76,7 @@ Setting OG tags on a page (in view or action):
 
 Render Facebook Social Plugins using helper Yii widgets:
 
-    <?php $this->widget('ext.yii-facebook-opengraph.plugins.LikeButton', array(
+    <?php $this->widget('\YiiFacebook\Plugins\LikeButton', array(
        //'href' => 'YOUR_URL', // if omitted Facebook will use the OG meta tag
        'show_faces'=>true,
        'send' => true
@@ -91,7 +89,7 @@ using the initJs() call in afterRender():
 
 To use the PHP SDK anywhere in your application, just call it like so (there pass-through the Facebook class):
 
-    <?php $userid = Yii::app()->facebook->getUser() ?>
+    <?php $userid = Yii::app()->facebook->getUserId() ?>
     <?php $loginUrl = Yii::app()->facebook->getLoginUrl() ?>
     <?php $results = Yii::app()->facebook->api('/me') ?>
 
@@ -107,20 +105,13 @@ I also created a couple of little helper functions:
 
 BREAKING CHANGES:
 ---------------------------------------------------------------------------
-* __Before version 0.6__ you didn't need to include the full OG meta tag (including the "og:" bit). Now you need to, to allow for new custom graph objects and actions. If you were setting OG meta tags like this `Yii::app()->facebook->ogTags['title']` it now needs to be like this `Yii::app()->facebook->ogTags['og:title']`.
+* New version 2.x breaks everything and requires PHP 5.4
 
 * * *
 
 CHANGE LOG:
 ---------------------------------------------------------------------------
-
-* 0.6 Added support for custom OG meta tags, upgraded PHP SDK to 3.2, +some bugfixes
-* 0.6.1 Bugfix for the custom OG meta tags, which were overwriting the type, title and url tags
-* 0.7 Upgraded to PHP SDK 3.2.2
-* 0.8 Fixed error with LoginButton plugin where inherited CWidget 'skin' property caused display error, added missing attributes to LoginButton, and added ability to specify custom profile image size
-* 0.8.1 Updated the PHP SDK cert chain bundle which was not update to date for some reason, and copied in a security fix from the PHP SDK as well
-* 0.9 Upgraded to PHP SDK 3.2.3
-* 0.10 Updated Social Plugins - removed LiveStream and added RecommendationsBar, EmbeddedPost and FollowButton (used to be SubscribeButton)
+* beta-1.0.1 Updating or PHP SDK 4.0
 
 * * *
 
@@ -131,5 +122,9 @@ Please log bugs to the GitHub tracker.
 Extension is posted on Yii website also:
 http://www.yiiframework.com/extension/facebook-opengraph/
 
-Updated Nov 27th 2013 by Evan Johnson
+The original version with support for SDK 3.x and API 1x was forked from ianare's faceplugs Yii extension:
+http://www.yiiframework.com/extension/faceplugs
+https://github.com/digitick/yii-faceplugs
+
+Updated Dec 14th 2014 by Evan Johnson
 http://splashlabsocial.com
