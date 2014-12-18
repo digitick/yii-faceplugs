@@ -1,12 +1,12 @@
-### Update to Facebook PHP SDK 4.0 and and Open Graph API 2.x IN PROGRESS
+## IN PROGRESS: Update to Facebook PHP SDK 4.0 and and Open Graph API 2.x
 
 The master branch is currently under development to update to the new SDK and API. The previous stable branch with support for the old API is now under the opengraph-v1.0 branch.
 
-## This is mainly a wrapper for the Facebook PHP SDK.
+### This is mainly a wrapper for the Facebook PHP SDK.
 
-## You can also use it to include the Facebook JS SDK on your pages, and easily set Open Graph meta tags.
+#### You can also use it to include the Facebook JS SDK on your pages, and easily set Open Graph meta tags.
 
-## Also included are helper widgets for all of the Facebook Social Plugins.
+#### Also included are helper widgets for all of the Facebook Social Plugins.
 
 Facebook PHP SDK:
 https://developers.facebook.com/docs/reference/php/4.0.0
