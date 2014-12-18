@@ -1,6 +1,6 @@
 <?php
 /**
- * SPluginBase widget class file.
+ * OpenGraphPluginBase widget class file.
  *
  * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @author Ianaré Sévi (original author) www.digitick.net
@@ -10,6 +10,8 @@
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License v3.0
  *
  */
+namespace YiiFacebook\Plugins;
+use Yii;
 
 /**
  * Base class for all facebook widgets.
@@ -20,7 +22,7 @@
  * @see http://developers.facebook.com/docs/opengraph
  *
  */
-abstract class SPluginBase extends CWidget
+abstract class OpenGraphPluginBase extends \CWidget
 {
     public $skin = null; // unset this from CWidget to fix and error where it was passing data-skin="default" to the Social plugins
 
@@ -63,7 +65,7 @@ abstract class SPluginBase extends CWidget
         foreach($params as $key=>$data) {
           $newParams["data-".str_replace('_','-',$key)] = $data;
         }
-        echo CHtml::openTag('div', $newParams).$content.CHtml::closeTag('div');
+        echo \CHtml::openTag('div', $newParams).$content.\CHtml::closeTag('div');
     }
 
     /**
@@ -77,7 +79,7 @@ abstract class SPluginBase extends CWidget
             $content = $params['text'];
             unset($params['text']);
         }
-        echo CHtml::openTag($tagName, $params),$content, CHtml::closeTag($tagName);
+        echo \CHtml::openTag($tagName, $params),$content, \CHtml::closeTag($tagName);
     }
 
 	/**
@@ -86,8 +88,8 @@ abstract class SPluginBase extends CWidget
 	 */
 	protected function getParams()
 	{
-		$ref = new ReflectionObject($this);
-		$props = $ref->getProperties(ReflectionProperty::IS_PUBLIC);
+		$ref = new \ReflectionObject($this);
+		$props = $ref->getProperties(\ReflectionProperty::IS_PUBLIC);
 
 		$params = array();
 		foreach ($props as $k => $v) {

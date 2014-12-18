@@ -10,8 +10,7 @@
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License v3.0
  *
  */
-
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Like button lets a user share your content with friends on Facebook.
@@ -22,7 +21,7 @@ require_once 'SPluginBase.php';
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
 
-class LikeButton extends SPluginBase
+class LikeButton extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The URL of the Facebook page for this Like button.

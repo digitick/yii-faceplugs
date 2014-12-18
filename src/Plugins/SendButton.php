@@ -1,6 +1,6 @@
 <?php
 /**
- * LikeBox class file.
+ * SendButton class file.
  *
  * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @author Ianaré Sévi (original author) www.digitick.net
@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Like Box is a social plugin that enables Facebook Page owners to
@@ -26,52 +26,42 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/like
  */
-class LikeBox extends SPluginBase
+class SendButton extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The URL of the Facebook page for this Like Box.
 	 */
 	public $href;
   /**
-	 * @var integer The width of the plugin in pixels. Default width: 300px.
+	 * @var integer Width of the Send button, defaults to 51px
 	 */
 	public $width;
-	/**
-	 * @var integer The height of the plugin in pixels.
+  /**
+	 * @var integer Height of the Send button, defaults to 450px
 	 */
 	public $height;
   /**
 	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
 	 */
 	public $colorscheme;
-	/**
-	 * @var boolean Display profile photos in the plugin.
-	 */
-	public $show_faces;
-	/**
-	 * @var boolean Specifies whether to display a stream of the latest posts
-	 * from the page's wall.
-	 */
-	public $stream;
-	/**
-	 * @var boolean Specifies whether to display the Facebook header at the
-	 * top of the plugin.
-	 */
-	public $header;
   /**
-	 * @var boolean Specifies whether or not to show a border around the plugin. Default: true
+	 * @var string If your web site or online service, or a portion of your service,
+   * is directed to children under 13 you must enable this
 	 */
-	public $show_border;
-	/**
-	 * @var boolean for Places, specifies whether the stream contains posts
-	 * from the Place's wall or just checkins from friends. Default value: false.
+	public $kid_directed_site;
+  /**
+	 * @var string a label for tracking referrals; must be less than 50 characters
+   * and can contain alphanumeric characters and some punctuation (currently +/=-.:_).
+   * The ref attribute causes two parameters to be added to the referrer URL when
+   * a user clicks a link from a stream story about a Send action:
+   * fb_ref and fb_source
 	 */
-	public $force_wall;
+	public $ref;
 
 	public function run()
 	{
 		parent::run();
 		$params = $this->getParams();
-		$this->renderTag('like-box',$params);
+		$this->renderTag('send',$params);
 	}
 }

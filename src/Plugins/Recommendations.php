@@ -11,14 +11,14 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Recommendations plugin shows personalized recommendations to your users.
  *
  * @see http://developers.facebook.com/docs/reference/plugins/recommendations
  */
-class Recommendations extends SPluginBase
+class Recommendations extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The domain to show activity for. Defaults to the current domain.

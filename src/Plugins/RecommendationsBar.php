@@ -11,14 +11,14 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Recommendations bar lets people 'like' content, get recommendations, and share what they're reading with their friends.
  *
  * @see https://developers.facebook.com/docs/plugins/recommendations-bar/
  */
-class RecommendationsBar extends SPluginBase
+class RecommendationsBar extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The domain to show activity for. Defaults to the current domain.

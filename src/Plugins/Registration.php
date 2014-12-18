@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The registration plugin allows users to easily sign up for your website with
@@ -19,7 +19,7 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/plugins/registration
  */
-class Registration extends SPluginBase
+class Registration extends OpenGraphPluginBase
 {
   /**
 	 * @var integer Your App ID.

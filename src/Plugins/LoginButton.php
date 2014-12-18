@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Login Button shows profile pictures of the user's friends who have
@@ -19,7 +19,7 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/login
  */
-class LoginButton extends SPluginBase
+class LoginButton extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The URL of the page.

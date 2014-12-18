@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * Embedded Posts are a simple way to put public posts - by a Page or a person on Facebook -
@@ -20,7 +20,7 @@ require_once 'SPluginBase.php';
  *
  * @see https://developers.facebook.com/docs/plugins/embedded-posts/
  */
-class EmbeddedPost extends SPluginBase
+class EmbeddedPost extends OpenGraphPluginBase
 {
   /**
 	 * @var string the URL for this Comments plugin. News feed stories on Facebook will link to this URL

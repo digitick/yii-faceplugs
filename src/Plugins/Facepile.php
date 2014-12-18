@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Facepile plugin displays the Facebook profile pictures of users who
@@ -19,7 +19,7 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/facepile/
  */
-class Facepile extends SPluginBase
+class Facepile extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The URL of the page.

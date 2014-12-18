@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Comments Box easily enables your users to comment on your site's content —
@@ -19,7 +19,7 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/comments
  */
-class Comments extends SPluginBase
+class Comments extends OpenGraphPluginBase
 {
   /**
 	 * @var string the URL for this Comments plugin. News feed stories on Facebook will link to this URL

@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Share button lets a user share your content with friends on Facebook.
@@ -23,7 +23,7 @@ require_once 'SPluginBase.php';
  * @see https://developers.facebook.com/docs/plugins/share-button/
  */
 
-class ShareButton extends SPluginBase
+class ShareButton extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The URL to share

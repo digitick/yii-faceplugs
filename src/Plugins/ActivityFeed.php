@@ -11,7 +11,7 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Activity Feed plugin displays the most interesting recent activity
@@ -19,7 +19,7 @@ require_once 'SPluginBase.php';
  *
  * @see http://developers.facebook.com/docs/reference/plugins/activity
  */
-class ActivityFeed extends SPluginBase
+class ActivityFeed extends OpenGraphPluginBase
 {
 	/**
 	 * @var string The domain to show activity for. Defaults to the current

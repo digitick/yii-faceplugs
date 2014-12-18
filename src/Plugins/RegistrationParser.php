@@ -7,6 +7,9 @@
  * @author Ianaré Sévi
  */
 
+namespace YiiFacebook\Plugins;
+use Yii;
+
 /**
  * The registration parser is used to convert the JSON response from Facebook
  * into a format easily inserted into Yii applications.
@@ -15,7 +18,7 @@
  *
  * Contributions welcome :-)
  */
-class RegistrationParser extends CComponent
+class RegistrationParser extends \CComponent
 {
 	public $data;
 	public $app_id;
@@ -69,7 +72,7 @@ class RegistrationParser extends CComponent
 	}
 
 	/**
-	 * 
+	 *
 	 * @param $input
 	 * @return string
 	 */

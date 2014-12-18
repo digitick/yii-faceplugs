@@ -11,14 +11,14 @@
  *
  */
 
-require_once 'SPluginBase.php';
+namespace YiiFacebook\Plugins;
 
 /**
  * The Follow button lets people subscribe to the public updates of others on Facebook.
  *
  * @see https://developers.facebook.com/docs/plugins/follow-button/
  */
-class FollowButton extends SPluginBase
+class FollowButton extends OpenGraphPluginBase
 {
   /**
 	 * @var string URL of Facebook Profile to follow
