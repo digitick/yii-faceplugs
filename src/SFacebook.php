@@ -33,7 +33,7 @@ class SFacebook extends \CApplicationComponent
     /**
      * @var string cached FacebookRedirectLoginHelper
      */
-    private $_redirectHelper;
+    private $_sessionExpired = false;
 
     /**
      * @var string Facebook Application ID
@@ -127,6 +127,16 @@ class SFacebook extends \CApplicationComponent
      * loading other elements of the page.
      */
     public $async = true;
+
+    /**
+     * @var int user attribute where Facebook Id is stored
+     */
+    public $userFbidAttribute;
+
+    /**
+     * @var string url of page to link Facebook account to user account
+     */
+    public $accountLinkUrl;
 
     /**
      * @var string Override default locale for the widget.
@@ -484,7 +494,7 @@ class SFacebook extends \CApplicationComponent
      */
     protected function getSession()
     {
-        if (is_null($this->_session)) {
+        if (is_null($this->_session) && !$this->_sessionExpired) {
 
             // check for cached accessToken, and try to get session from it
             if ($this->getToken()) {
@@ -516,6 +526,8 @@ class SFacebook extends \CApplicationComponent
                 try {
                     $this->_session = $helper->getSession();
                 } catch (\Facebook\FacebookAuthorizationException $e) {
+                    $this->_sessionExpired = true;
+                    $this->destroySession();
                     // if there is an re-authorize callback for expired sessions, run it if that's the problem
                     if (!$this->expiredSessionCallback($e)) {
                         throw $e; // throw exception if unable to renew facebook session
@@ -611,9 +623,10 @@ class SFacebook extends \CApplicationComponent
     public function destroySession()
     {
         $this->_session = null;
+        $this->_token = null;
+        $this->_userId = null;
         // unset the cached session variables
         if (Yii::app()->session && isset(Yii::app()->session['fb_token'])) {
-
             unset(Yii::app()->session['fb_token']);
             unset(Yii::app()->session['fb_userId']);
         }
@@ -769,16 +782,19 @@ class SFacebook extends \CApplicationComponent
     public function makeRequest($path, $method = 'GET', $parameters = null, $etag = null)
     {
         if ($this->getSession()) {
-            try {
-                return (new \Facebook\FacebookRequest(
-                    $this->getSession(), $method, $path, $parameters, $this->version, $etag
-                ))->execute();
-            } catch (\Facebook\FacebookAuthorizationException $e) {
-                // if there is an re-authorize callback for expired sessions, run it if that's the problem
+            //try {
+            if ($request = new \Facebook\FacebookRequest(
+                $this->getSession(), $method, $path, $parameters, $this->version, $etag
+            )) {
+                return $request->execute();
+            }
+            /*} catch (\Facebook\FacebookAuthorizationException $e) {
+                $this->_sessionExpired = true;
+                $this->destroySession();
                 if (!$this->expiredSessionCallback($e)) {
                     throw $e; // throw exception if unable to renew facebook session
                 }
-            }
+            }*/
         }
         return null;
     }

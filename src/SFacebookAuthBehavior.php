@@ -19,34 +19,32 @@ use Yii;
 class SFacebookAuthBehavior extends \CBehavior
 {
 
-    //public static function fbLoginPrompt($successJs = "window.location.reload();")
-    public static function fbLoginPrompt(
-        $successJs = "var url = window.location.href; if (url.indexOf('?') > -1){ url += '&fblogin=1' } else { url += '?fblogin=1' } window.location.href = url;"
-    )
-    {
-        $script = "
-                FB.Event.subscribe('auth.login', function(response) {
-                  $successJs
-                });
-            ";
+    public static function fbLoginPrompt($scope = null) {
+        $fbLoginCallback = "
+            function fbLoginCallback(response) {
+                location.reload();
+            }
+        ";
+        Yii::app()->getClientScript()->registerScript('fb-login-callback', $fbLoginCallback, \CClientScript::POS_END);
         $model = Yii::app()->user->model;
-        if ($model && !$model->facebookid) {
 
-            Yii::app()->facebook->addJsCallback($script);
-
+        // if user, but no linked Facebook ID, prompt to link
+        if ($model && !$model->{Yii::app()->facebook->userFbidAttribute }) {
             Yii::app()->user->setFlash('notice', '<strong>You have not linked your Facebook account.</strong><br /> ' .
-                'Some SplashLab features will not work unless you are logged in to Facebook: ' .
-                self::getWidget('\YiiFacebook\Plugins\LoginButton', array(
-                        'size' => 'small',
-                        'text' => 'Link Facebook Account')
-                ));
-        } elseif (!Yii::app()->user->isGuest && Yii::app()->user->userModel->status != 'admin') {
-            Yii::app()->facebook->addJsCallback($script);
+                'Some SplashLab features will not work unless you are logged in to Facebook. '.
+                \CHtml::link('Link Facebook Account', Yii::app()->facebook->accountLinkUrl)
+                );
+
+        // user is logged in and does have a linked facebook account
+        } elseif (!Yii::app()->user->isGuest) {
+            //Yii::app()->facebook->addJsCallback($script);
             Yii::app()->user->setFlash('notice', '<strong>You are not currently logged in with Facebook.</strong><br /> ' .
                 'Some SplashLab features will not work unless you are logged in to Facebook: ' .
                 self::getWidget('\YiiFacebook\Plugins\LoginButton', array(
                         'size' => 'small',
-                        'text' => 'Click here to Log In to Facebook')
+                        'text' => 'Click here to Log In to Facebook',
+                        'onlogin' => 'fbLoginCallback()',
+                        'scope' => $scope)
                 ));
         }
     }
