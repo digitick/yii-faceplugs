@@ -46,9 +46,9 @@ class SFacebook extends \CApplicationComponent
     public $secret;
 
     /**
-     * @var string Facebook OpenGraph version to request i.e. v2.0, v2.1
+     * @var string Facebook OpenGraph version to request i.e. v2.0, v2.1, v2.2
      */
-    public $version = 'v2.1';
+    public $version = 'v2.2';
 
     /**
      * @var callable Callback method to run when Facebook session needs to be renewed
