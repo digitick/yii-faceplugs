@@ -4,7 +4,7 @@
     "keywords": ["facebook", "opengraph", "yii"],
     "type": "library",
     "homepage": "https://github.com/splashlab/yii-facebook-opengraph",
-    "license": "http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License v3.0",
+    "license": "GNU Lesser General Public License v3.0",
     "authors": [
         {
             "name": "SplashLab Social",
