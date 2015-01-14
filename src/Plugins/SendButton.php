@@ -14,54 +14,54 @@
 namespace YiiFacebook\Plugins;
 
 /**
- * The Like Box is a social plugin that enables Facebook Page owners to
- * attract and gain Likes from their own website.
+ * The Send button lets people privately send content on your site to one or
+ * more friends in a Facebook message, to an email address, or share it with a
+ * Facebook group.
  *
- * The Like Box enables users to:
- * <ul>
- * <li>See how many users already like this page, and which of their friends like it too
- * <li>Read recent posts from the page
- * <li>Like the page with one click, without needing to visit the page
- * </ul>
- *
- * @see http://developers.facebook.com/docs/reference/plugins/like
+ * @see https://developers.facebook.com/docs/plugins/send-button
  */
 class SendButton extends OpenGraphPluginBase
 {
-	/**
-	 * @var string The URL of the Facebook page for this Like Box.
-	 */
-	public $href;
-  /**
-	 * @var integer Width of the Send button, defaults to 51px
-	 */
-	public $width;
-  /**
-	 * @var integer Height of the Send button, defaults to 450px
-	 */
-	public $height;
-  /**
-	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
-	 */
-	public $colorscheme;
-  /**
-	 * @var string If your web site or online service, or a portion of your service,
-   * is directed to children under 13 you must enable this
-	 */
-	public $kid_directed_site;
-  /**
-	 * @var string a label for tracking referrals; must be less than 50 characters
-   * and can contain alphanumeric characters and some punctuation (currently +/=-.:_).
-   * The ref attribute causes two parameters to be added to the referrer URL when
-   * a user clicks a link from a stream story about a Send action:
-   * fb_ref and fb_source
-	 */
-	public $ref;
 
-	public function run()
-	{
-		parent::run();
-		$params = $this->getParams();
-		$this->renderTag('send',$params);
-	}
+    /**
+     * @var string Name of plugin to render
+     */
+    protected $tagName = 'send';
+
+    /**
+     * @var string The absolute URL of the page that will be sent.
+     * Default: current url
+     */
+    public $href;
+
+    /**
+     * @var integer Width of the Send button, defaults to 51px
+     */
+    public $width;
+    /**
+     * @var integer Height of the Send button, defaults to 450px
+     */
+    public $height;
+
+    /**
+     * @var string The color scheme used by the plugin. Can be "light" or "dark".
+     * Default: light
+     */
+    public $colorscheme;
+
+    /**
+     * @var string If your web site or online service, or a portion of your service,
+     * is directed to children under 13 you must enable this
+     * Default: false
+     */
+    public $kid_directed_site;
+
+    /**
+     * @var string A label for tracking referrals which must be less than 50 characters,
+     * and can contain alphanumeric characters and some punctuation (currently +/=-.:_).
+     * See the FAQ for more details.
+     * @see https://developers.facebook.com/docs/plugins/send-button#faqref
+     */
+    public $ref;
+
 }

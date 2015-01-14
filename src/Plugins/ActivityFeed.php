@@ -14,83 +14,92 @@
 namespace YiiFacebook\Plugins;
 
 /**
- * The Activity Feed plugin displays the most interesting recent activity
- * taking place on your site.
+ * The Activity feed displays the most interesting, recent activity taking place on your site,
+ * using actions (such as likes) by your friends and other people.
  *
- * @see http://developers.facebook.com/docs/reference/plugins/activity
+ * @see https://developers.facebook.com/docs/plugins/activity
  */
 class ActivityFeed extends OpenGraphPluginBase
 {
-	/**
-	 * @var string The domain to show activity for. Defaults to the current
-	 * domain.
-	 */
-	public $site;
-  /**
-	 * @var string a comma separated list of actions to show activities for
-	 */
-	public $action;
-	/**
-	 * @var string Display all actions associated with this app ID. This is
-   * usually inferred from the app ID you use to initiate the [JavaScript SDK].
-	 */
-	public $app_id;
-  /**
-	 * @var integer The width of the plugin in pixels. Default width: 300px.
-	 */
-	public $width;
-	/**
-	 * @var integer The height of the plugin in pixels. Default height: 300px.
-	 */
-	public $height;
-	/**
-	 * @var boolean Specifies whether to show the Facebook header.
-	 */
-	public $header;
-	/**
-	 * @var string The color scheme for the plugin. Options: 'light', 'dark'
-	 */
-	public $colorscheme;
-	/**
-	 * @var boolean Specifies whether to always show recommendations in the plugin.
-	 *
-	 * If set to true, the plugin will display recommendations in the bottom
-	 * half.
-	 */
-	public $recomendations;
-	/**
-	 * @var string Allows you to filter which URLs are shown in the plugin.
-	 *
-	 * The plugin will only include URLs which contain the filter in the first
-	 * two path parameters of the URL. If nothing in the first two path
-	 * parameters of the URL matches the filter, the URL will not be included.
-	 */
-	public $filter;
-  /**
-	 * @var string  This specifies the context in which content links are opened.
-   * By default all links within the plugin will open a new window. If you want
-   * the content links to open in the same window, you can set this parameter to
-   * _top or _parent. Links to Facebook URLs will always open in a new window.
-	 */
-	public $linktarget;
-	/**
-	 * @var string A label for tracking referrals; must be less than 50
-	 * characters and can contain alphanumeric characters and some punctuation
-	 * (currently +/=-.:_).
-	 */
-	public $ref;
-  /**
-	 * @var integer a limit on recommendation and creation time of articles that
-   * are surfaced in the plugins, the default is 0 (we don’t take age into account).
-   * Otherwise the valid values are 1-180, which specifies the number of days.
-	 */
-	public $max_age;
 
-	public function run()
-	{
-		parent::run();
-		$params = $this->getParams();
-        $this->renderTag('activity',$params);
-	}
+    /**
+     * @var string Name of plugin to render
+     */
+    protected $tagName = 'activity';
+
+    /**
+     * @var string A comma-separated list of Open Graph action types to show in the feed.
+     * @see https://developers.facebook.com/docs/opengraph/creating-action-types/
+     */
+    public $action;
+
+    /**
+     * @var integer Display all actions associated with this app ID. This is usually
+     * inferred from the app ID you use to initiate the [JavaScript SDK].
+     */
+    public $app_id;
+
+    /**
+     * @var string The color scheme for the plugin. Options: 'light', 'dark'
+     * Default: light
+     */
+    public $colorscheme;
+
+    /**
+     * @var string Allows you to filter which URLs are shown in the plugin. For example,
+     * if the site parameter is set to 'www.example.com' and the filter parameter was set to
+     * '/section1/section2' then only pages which matched 'http://www.example.com/section1/section2/*'
+     * would be included in the activity feed section of this plugin. This filter does not apply to
+     * any recommendations which may appear in this plugin (see recommendations setting).
+     */
+    public $filter;
+
+    /**
+     * @var boolean Show the "Recent Activity" header above the feed. Can be "true" or "false"
+     * Default: true
+     */
+    public $header;
+
+    /**
+     * @var string TDetermines what happens when people click on the links in the feed.
+     * Can be any of the standard HTML target values.
+     * Default: "_blank"
+     */
+    public $linktarget;
+
+    /**
+     * @var integer Limit the created time of articles that are shown in the feed.
+     * Valid values are 1-180, which represents the age in days to limit to.
+     * Default: 0 (no limit)
+     */
+    public $max_age;
+
+    /**
+     * @var boolean Specifies whether to always show recommendations
+     * (Articles liked by a high amount of people) in the bottom half of the
+     * feed. Can be "true" or "false".
+     * Default: false
+     */
+    public $recomendations;
+
+    /**
+     * @var string A label for tracking referrals which must be less than 50
+     * characters and can contain alphanumeric characters and some punctuation
+     * (currently +/=-.:_). See the FAQ for more details.
+     * @see https://developers.facebook.com/docs/plugins/activity#faqref
+     */
+    public $ref;
+
+    /**
+     * @var string The domain for which to show activity.
+     * Default: current domain
+     */
+    public $site;
+
+    /**
+     * @var integer The width of the plugin in pixels.
+     * Default: 300
+     */
+    public $width;
 
 }

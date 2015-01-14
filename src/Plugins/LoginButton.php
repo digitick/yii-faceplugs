@@ -14,76 +14,74 @@
 namespace YiiFacebook\Plugins;
 
 /**
- * The Login Button shows profile pictures of the user's friends who have
- * already signed up for your site in addition to a login button.
+ * The Login Button is a simple way to trigger the Facebook Login process on your website or web app.
  *
- * @see http://developers.facebook.com/docs/reference/plugins/login
+ * If someone hasn't logged into your app yet, they'll see this button, and clicking it will popup a
+ * Login dialog, starting the login flow. People who have already logged in won't see any button, or
+ * you can also choose to show a logout button to them.
+ *
+ * The Login Button is only designed to work in connection with the JavaScript SDK - if you're building
+ * a mobile app or can't use our JavaScript SDK, you should follow the login flow guide for that type of
+ * app instead.
+ *
+ * @see https://developers.facebook.com/docs/plugins/login-button
+ * @see https://developers.facebook.com/docs/facebook-login/login-flow-for-web/
  */
 class LoginButton extends OpenGraphPluginBase
 {
+
     /**
-     * @var string The URL of the page.
-     *
-     * The plugin will display photos of users who have liked this page.
+     * @var string Name of plugin to render
+     */
+    protected $tagName = 'login';
+
+    /**
+     * @var boolean The plugin will display photos of users who have liked this page.
      */
     public $show_faces;
+
     /**
-     * @var integer The width of the plugin in pixels. Default width: 200px.
-     */
-    public $width;
-    /**
-     * @var integer The maximum number of rows of profile photos in the Facepile when show_faces is enabled.
-     * The actual number of rows shown may be shorter if there aren't enough faces to fill the number you specify.
+     * @var integer Determines whether a Facepile of logged-in friends is shown below the button.
+     * When this is enabled, a logged-in user will only see the Facepile, and no login or logout button.
      * Default value: 1.
      */
     public $max_rows;
+
     /**
-     * @var string A comma separated list of extended permissions.
+     * @var string The list of permissions to request during login.
      *
-     * By default the Login button prompts users for their public information.
-     * If your application needs to access other parts of the user's profile
-     * that may be private, your application can request extended permissions.
-     *
-     * @see http://developers.facebook.com/docs/authentication/permissions/
+     * @see https://developers.facebook.com/docs/facebook-login/permissions/v2.2
      */
     public $scope;
-    /**
-     * @var string registration page url.
-     * If the user has not registered for your
-     * site, they will be redirected to the URL you specify in the registration-url
-     * parameter.
-     */
-    public $registration_url;
+
     /**
      * @var string Picks one of the size options for the button. Options: small, medium, large, xlarge
-     * Default value: small
+     * Default: small
      */
     public $size;
+
     /**
      * @var string A JavaScript function to trigger when the login process is complete.
-     *
-     * @see http://developers.facebook.com/docs/user_registration/flows/
      */
     public $onlogin;
+
     /**
-     * @var string text of the login button
+     * @var string Text of the login button
      */
     public $text;
+
     /**
      * @var bool If enabled, the button will change to a logout button when the user is logged in
+     * Default: false
      */
     public $auto_logout_link;
+
     /**
      * Determines what audience will be selected by default, when requesting write permissions.
-     * @var bool Everyone, friends, only_me (Default: friends)
+     * @var string Everyone, friends, only_me
+     * Default: friends
      */
     public $default_audience;
 
-    public function run()
-    {
-        parent::run();
-        $params = $this->getParams();
-        $this->renderTag('login-button', $params);
-    }
 
 }

@@ -25,6 +25,11 @@ use Yii;
  */
 abstract class OpenGraphPluginBase extends \CWidget
 {
+    /**
+     * @var string Name of plugin to render
+     */
+    protected $tagName;
+
     public $skin = null; // unset this from CWidget to fix and error where it was passing data-skin="default" to the Social plugins
 
     /**
@@ -111,6 +116,17 @@ abstract class OpenGraphPluginBase extends \CWidget
             }
         }
         return $params;
+    }
+
+    /**
+     * Render the widget
+     * Uses the subclass $tagName property to render tag
+     */
+    public function run()
+    {
+        parent::run();
+        $params = $this->getParams();
+        $this->renderTag($this->tagName, $params);
     }
 
 }

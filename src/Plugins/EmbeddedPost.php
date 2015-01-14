@@ -18,20 +18,24 @@ namespace YiiFacebook\Plugins;
  * into the content of your web site or web page. Only public posts from Facebook Pages and
  * profiles can be embedded.
  *
- * @see https://developers.facebook.com/docs/plugins/embedded-posts/
+ * @see https://developers.facebook.com/docs/plugins/embedded-posts
  */
 class EmbeddedPost extends OpenGraphPluginBase
 {
-  /**
-	 * @var string the URL for this Comments plugin. News feed stories on Facebook will link to this URL
-	 */
-	public $href;
 
-	public function run()
-	{
-		parent::run();
-		$params = $this->getParams();
-        $this->renderTag('post',$params);
-	}
+    /**
+     * @var string Name of plugin to render
+     */
+    protected $tagName = 'post';
+
+    /**
+     * @var string URL of the Facebook post to embed
+     */
+    public $href;
+
+    /**
+     * @var integer The pixel width of the post (between 350 and 750)
+     */
+    public $width;
 
 }

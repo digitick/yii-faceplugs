@@ -14,45 +14,58 @@
 namespace YiiFacebook\Plugins;
 
 /**
- * The Comments Box easily enables your users to comment on your site's content —
- * whether it's for a web page, article, photo, or other piece of content.
+ * The Comments box lets people comment on content on your site using their Facebook profile
+ * and shows this activity to their friends in news feed. It also contains built-in moderation
+ * tools and special social relevance ranking.
  *
- * @see http://developers.facebook.com/docs/reference/plugins/comments
+ * @see https://developers.facebook.com/docs/plugins/comments
  */
 class Comments extends OpenGraphPluginBase
 {
-  /**
-	 * @var string the URL for this Comments plugin. News feed stories on Facebook will link to this URL
-	 */
-	public $href;
-  /**
-	 * @var integer The width of the widget.
-	 */
-	public $width;
-  /**
-	 * @var string the color scheme for the plugin. Options: 'light', 'dark'
-	 */
-	public $colorscheme;
-	/**
-	 * @var integer the number of comments to show by default. Default: 10. Minimum: 1
-	 */
-	public $num_posts;
-	/**
-	 * @var integer The order to use when displaying comments. Default: "social"
-   * Can be "social", "reverse_time", or "time". The different order types are explained here:
-   * https://developers.facebook.com/docs/plugins/comments/#faqorder
-	 */
-	public $order_by;
-  /**
-	 * @var string whether to show the mobile-optimized version. Default: auto-detect
-	 */
-	public $mobile;
+    /**
+     * @var string Name of plugin to render
+     */
+    protected $tagName = 'comments';
 
-	public function run()
-	{
-		parent::run();
-		$params = $this->getParams();
-        $this->renderTag('comments',$params);
-	}
+    /**
+     * @var string The color scheme for the plugin. Options: 'light', 'dark'
+     * Default: light
+     */
+    public $colorscheme;
+
+    /**
+     * @var string The absolute URL that comments posted in the plugin will
+     * be permanently associated with. Stories on Facebook about comments
+     * posted in the plugin will link to this URL.
+     * Default: current url
+     */
+    public $href;
+
+    /**
+     * @var string A boolean value that specifies whether to show the mobile-optimized version or not.
+     * Default: auto-detected
+     */
+    public $mobile;
+
+    /**
+     * @var integer The number of comments to show by default. The minimum value is 1.
+     * Default: 10
+     */
+    public $num_posts;
+
+    /**
+     * @var integer The order to use when displaying comments. Can be "social", "reverse_time",
+     * or "time". The different order types are explained in the FAQ
+     * @see https://developers.facebook.com/docs/plugins/comments#faqorder
+     */
+    public $order_by;
+
+    /**
+     * @var integer The width of the plugin. Either a pixel value or the literal 100%
+     * for fluid width. The mobile version of the Comments plugin ignores the width
+     * parameter, and instead has a fluid width of 100%.
+     * Default: 550
+     */
+    public $width;
 
 }

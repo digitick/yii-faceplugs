@@ -14,37 +14,30 @@
 namespace YiiFacebook\Plugins;
 
 /**
- * The Share button lets a user share your content with friends on Facebook.
+ * The Share button lets people add a personalized message to links before
+ * sharing on their timeline, in groups, or to their friends via a Facebook Message.
  *
- * When the user clicks the Share button on your site, the Share dialog pops,
- * and the user can choose to post the link (along with a comment) to their
- * Timeline, a friend's Timeline, a Group or a Facebook Page
- *
- * @see https://developers.facebook.com/docs/plugins/share-button/
+ * @see https://developers.facebook.com/docs/plugins/share-button
  */
 
 class ShareButton extends OpenGraphPluginBase
 {
-	/**
-	 * @var string The URL to share
-	 */
-	public $href;
-  /**
-	 * @var string the layout of the button: box_count, button_count, button,
-   * icon_link, icon, link
-   * Default: button_count
-	 */
-	public $type;
-	/**
-	 * @var integer Width of the Share button, defaults to ~100px
-	 */
-	public $width;
 
+    /**
+     * @var string Name of plugin to render
+     */
+    protected $tagName = 'share-button';
 
-	public function run()
-	{
-		parent::run();
-		$params = $this->getParams();
-        $this->renderTag('share-button',$params);
-	}
+    /**
+     * @var string The URL to share
+     */
+    public $href;
+
+    /**
+     * @var string tSelects one of the different layouts that are available for the plugin.
+     * Can be one of "box_count", "button_count", "button", "link", "icon_link", or "icon".
+     * Default: icon_link
+     */
+    public $layout;
+
 }

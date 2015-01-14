@@ -14,50 +14,61 @@
 namespace YiiFacebook\Plugins;
 
 /**
- * The Facepile plugin displays the Facebook profile pictures of users who
- * have liked your page or have signed up for your site.
+ * The Facepile plugin displays the Facebook profile photos of people who have
+ * connected with your Facebook page or app.
  *
- * @see http://developers.facebook.com/docs/reference/plugins/facepile/
+ * @see https://developers.facebook.com/docs/plugins/facepile
  */
 class Facepile extends OpenGraphPluginBase
 {
-	/**
-	 * @var string The URL of the page.
-	 *
-	 * The plugin will display photos of users who have liked this page.
-	 */
-	public $href;
-  /**
-	 * @var string The plugin will display photos of users who have connected to your app via this action
-	 */
-	public $action;
-	/**
-	 * @var integer The maximum number of rows of faces to display.
-	 *
-	 * Height is dynamically sized; if you specify a maximum of four rows of
-	 * faces, but there are only enough friends to fill two rows, the plugin
-	 * will set its height for two rows of faces. Default: 1.
-	 */
-	public $max_rows;
-	/**
-	 * @var integer Width of the plugin in pixels. Default width: 200px.
-	 */
-	public $width;
-  /**
-	 * @var string size of the photos and social context. Default size: small.
-	 */
-	public $size;
-  /**
-	 * @var string the color scheme for the like button. Options: 'light', 'dark'.
-	 */
-	public $colorscheme;
 
+    /**
+     * @var string Name of plugin to render
+     */
+    protected $tagName = 'facepile';
 
-	public function run()
-	{
-		parent::run();
-		$params = $this->getParams();
-		$this->renderTag('facepile',$params);
-	}
+    /**
+     * @var string An Open Graph action type, such as like or customapp:run
+     * @see https://developers.facebook.com/docs/opengraph/creating-action-types/
+     * Default: like
+     */
+    public $action;
+
+    /**
+     * @var integer Specify this if you want the plugin to display users who have connected to your site using Facebook Login. If you are using the JavaScript SDK, this will be automatically specified.
+     */
+    public $app_id;
+
+    /**
+     * @var string The color scheme for the plugin. Options: 'light', 'dark'
+     * Default: light
+     */
+    public $colorscheme;
+
+    /**
+     * @var string Display photos of the people who have liked this absolute URL.
+     */
+    public $href;
+
+    /**
+     * @var integer The maximum number of rows of faces to display. Note that if
+     * there are fewer faces to display than rows specified, the plugin will pick
+     * the next lowest number of rows.
+     * Default: 1
+     */
+    public $max_rows;
+
+    /**
+     * @var string Controls the size of the photos shown in the plugin.
+     * Can be "small", "medium" or "large".
+     * Default: small
+     */
+    public $size;
+
+    /**
+     * @var integer The width of the plugin in pixels, minimum of 200.
+     * Default: 300
+     */
+    public $width;
 
 }
