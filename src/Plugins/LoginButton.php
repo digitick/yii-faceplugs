@@ -33,7 +33,7 @@ class LoginButton extends OpenGraphPluginBase
     /**
      * @var string Name of plugin to render
      */
-    protected $tagName = 'login';
+    protected $tagName = 'login-button';
 
     /**
      * @var boolean The plugin will display photos of users who have liked this page.
