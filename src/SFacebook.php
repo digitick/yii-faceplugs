@@ -6,7 +6,7 @@
  * @author Ianaré Sévi (original author) www.digitick.net
  * @link https://github.com/splashlab/yii-facebook-opengraph
  * @copyright &copy; Digitick <www.digitick.net> 2011
- * @copyright Copyright &copy; 2014 SplashLab Social  http://splashlabsocial.com
+ * @copyright Copyright &copy; 2015 SplashLab Social  http://splashlabsocial.com
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License v3.0
  *
  */
@@ -54,7 +54,6 @@ class SFacebook extends \CApplicationComponent
      * @var callable Callback method to run when Facebook session needs to be renewed
      */
     public $expiredSessionCallback;
-
 
     /**
      * @var string default login redirect url
@@ -310,7 +309,7 @@ class SFacebook extends \CApplicationComponent
         if ($this->jsSdk) {
             $script = '//connect.facebook.net/' . $this->getLocale() . '/sdk.js';
             $init = $this->registerSDKScript('init', array(
-                    // https://developers.facebook.com/docs/javascript/reference/FB.init/v2.1
+                    // https://developers.facebook.com/docs/javascript/reference/FB.init/v2.2
                     'appId' => $this->appId, // application ID
                     'version' => $this->version, // OpenGraph API version to request
                     'cookie' => $this->cookie, // enable cookies to allow the server to access the session
@@ -502,21 +501,12 @@ class SFacebook extends \CApplicationComponent
                     $this->_session = new \Facebook\FacebookSession($accessToken);
                 }
             }
-            // todo possibly store the expiration date and re-validate after ?
-            //$date = $this->_session->getSessionInfo()->getExpiresAt();
 
             // if no session
             if (!$this->_session) {
                 // try to get session from redirect login
                 $helper = new \Facebook\FacebookRedirectLoginHelper($this->redirectUrl);
-                //try {
                 $this->_session = $helper->getSessionFromRedirect();
-                /*} catch (\Facebook\FacebookAuthorizationException $e) {
-                    // if there is an re-authorize callback for expired sessions, run it if that's the problem
-                    if (!$this->expiredSessionCallback($e)) {
-                        throw $e; // throw exception if unable to renew facebook session
-                    }
-                }*/
             }
 
             // if no session
@@ -533,9 +523,6 @@ class SFacebook extends \CApplicationComponent
                         throw $e; // throw exception if unable to renew facebook session
                     }
                 }
-                //} catch (\Exception $ex) { // catch generaic exception or no?
-                //    Yii::log($ex->getMessage(), \CLogger::LEVEL_ERROR, 'YiiFacebook.SFacebook');
-                //}
             }
             // cache token and userId
             if ($this->_session) {
@@ -543,9 +530,6 @@ class SFacebook extends \CApplicationComponent
                 $this->setUserId($this->_session->getUserId());
             }
         }
-        /*if (!is_object($this->_session)) {
-            throw new \CException('Facebook API could not be initialized.');
-        }*/
         return $this->_session;
     }
 
@@ -683,7 +667,6 @@ class SFacebook extends \CApplicationComponent
         }
     }
 
-
     /**
      * Returns a property from the signed request data if available.
      *
@@ -706,7 +689,8 @@ class SFacebook extends \CApplicationComponent
     public function getLongLivedSession()
     {
         if ($this->getSession()) {
-            return $this->getSession()->getLongLivedSession();
+            $this->_session = $this->getSession()->getLongLivedSession();
+            return $this->_session;
         }
     }
 
@@ -782,19 +766,11 @@ class SFacebook extends \CApplicationComponent
     public function makeRequest($path, $method = 'GET', $parameters = null, $etag = null)
     {
         if ($this->getSession()) {
-            //try {
             if ($request = new \Facebook\FacebookRequest(
                 $this->getSession(), $method, $path, $parameters, $this->version, $etag
             )) {
                 return $request->execute();
             }
-            /*} catch (\Facebook\FacebookAuthorizationException $e) {
-                $this->_sessionExpired = true;
-                $this->destroySession();
-                if (!$this->expiredSessionCallback($e)) {
-                    throw $e; // throw exception if unable to renew facebook session
-                }
-            }*/
         }
         return null;
     }
