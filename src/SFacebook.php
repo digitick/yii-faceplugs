@@ -31,7 +31,7 @@ class SFacebook extends \CApplicationComponent
     private $_userId;
 
     /**
-     * @var string cached FacebookRedirectLoginHelper
+     * @var string cached sessionExpired flag
      */
     private $_sessionExpired = false;
 
@@ -46,7 +46,8 @@ class SFacebook extends \CApplicationComponent
     public $secret;
 
     /**
-     * @var string Facebook OpenGraph version to request i.e. v2.0, v2.1, v2.2
+     * @var string Facebook OpenGraph version to request i.e. v1.0, v2.0, v2.1, v2.2
+     * @see https://developers.facebook.com/docs/apps/changelog/
      */
     public $version = 'v2.2';
 
@@ -56,19 +57,22 @@ class SFacebook extends \CApplicationComponent
     public $expiredSessionCallback;
 
     /**
-     * @var string default login redirect url
+     * @var string Default login redirect url
      */
     public $redirectUrl;
 
     /**
-     * @var bool whether or not to check login status
+     * @var bool Determines whether the current login status of the user is freshly retrieved on every page load.
+     * If this is disabled, that status will have to be manually retrieved using .getLoginStatus().
+     * Defaults to false.
      */
-    public $status = true;
+    public $status = false;
 
     /**
-     * @var bool whether or not use a cookie
+     * @var bool Determines whether a cookie is created for the session or not. If enabled,
+     * it can be accessed by server-side code. Defaults to false.
      */
-    public $cookie = true;
+    public $cookie = false;
 
     /**
      * @var bool With xfbml set to true, the SDK will parse your page's DOM to find and initialize any
@@ -90,22 +94,23 @@ class SFacebook extends \CApplicationComponent
     private $callbackScripts = '';
 
     /**
-     * @var array the default permissions to ask for on facebook login
+     * @var array the default permissions to ask for on facebook Login buttons
      */
     public $defaultScope = array();
 
     /**
-     * @var bool whether or not to use frictionlessRequests on request dialogs
+     * @var bool Frictionless Requests are available to games on Facebook.com or on mobile web using the JavaScript SDK.
+     * This parameter determines whether they are enabled.
+     * Defaults to false.
      */
     public $frictionlessRequests = false;
 
     /**
-     * This specifies a function that is called whenever it is necessary to hide Adobe Flash objects on a page.
+     * @var bool This specifies a function that is called whenever it is necessary to hide Adobe Flash objects on a page.
      * This is used when FB.api() JS requests are made, as Flash objects will always have a higher z-index than
      * any other DOM element. See our Custom Flash Hide Callback for more details on what to put in this function:
      * https://developers.facebook.com/docs/games/canvas/handling-popups#flash_hide_callback
      * Defaults to null.
-     * @var bool whether or not to use frictionlessRequests on request dialogs
      */
     public $hideFlashCallback = null;
 

@@ -30,7 +30,12 @@ abstract class OpenGraphPluginBase extends \CWidget
      */
     protected $tagName;
 
-    public $skin = null; // unset this from CWidget to fix and error where it was passing data-skin="default" to the Social plugins
+    /**
+     * Unset this from \CWidget property to fix and error where it was passing
+     * data-skin="default" to the Social plugins
+     * @var null
+     */
+    public $skin = null;
 
     /**
      * @return void Make sure that the JS SDK is enabled
@@ -41,6 +46,9 @@ abstract class OpenGraphPluginBase extends \CWidget
         parent::init();
         if (!Yii::app()->facebook->jsSdk) {
             throw new \CException('Facebook JS SDK not enabled.');
+        }
+        if (!Yii::app()->facebook->xfbml) {
+            throw new \CException('Facebook XFBML parsing is not enabled.');
         }
     }
 
