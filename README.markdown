@@ -56,8 +56,8 @@ Configure Yii application component SFacebook in your yii config file:
         //'defaultScope'=>array(), // default Facebook Login permissions to request
         //'redirectUrl'=>null, // default Facebook post-Login redirect URL
         //'expiredSessionCallback'=>null, // PHP callable method to run if expired Facebook session is detected
-        //'userFbidAttribute'=>null, // if using SFacebookAuthBehavior, declare Facebook ID attribute on user model here
-        //'accountLinkUrl'=>null, // if using SFacebookAuthBehavior, declare link to user account page here
+        //'userFbidAttribute'=>null, // if using FBAuthRequest, declare Facebook ID attribute on user model here
+        //'accountLinkUrl'=>null, // if using FBAuthRequest, declare link to user account page here
         //'ogTags'=>array(  // set default OG tags
             //'og:title'=>'MY_WEBSITE_NAME',
             //'og:description'=>'MY_WEBSITE_DESCRIPTION',

@@ -9,10 +9,11 @@
  *
  */
 namespace YiiFacebook;
+
 use Yii;
 
 /**
- * FBUserIdentity represents the data needed to identity a user to log in with Facebook.
+ * FBUserIdentity represents the data needed to identity a user to log in with Facebook via Facebook ID.
  * It contains the authentication method that checks if the provided
  * data can identity the user.
  */
@@ -20,53 +21,43 @@ class FBUserIdentity extends \CBaseUserIdentity
 {
     const ERROR_UNKNOWN_FACEBOOK_ID = 10;
 
-    /**
-     * @var string username
-     */
-    public $username;
-
     private $_fbid;
-    private $_id;
-    private $_record;
+    protected $_id;
+    protected $_record;
 
     /**
      * Constructor.
-     * @param string $fbid facebook user ID
+     * @param integer $fbid Facebook user ID
+     * @throws \CException If userFbidAttribute is not set
      */
     public function __construct($fbid)
     {
+        if (!Yii::app()->facebook->userFbidAttribute) {
+            throw new \CException('YiiFacebook userFbidAttribute property must be declared.');
+        }
         $this->_fbid = $fbid;
     }
 
-    // accessor method
-    public function getId()
-    {
-        return $this->_id;
-    }
-
     /**
-     * Returns the display name for the identity.
-     * The default implementation simply returns {@link username}.
-     * This method is required by {@link IUserIdentity}.
-     * @return string the display name for the identity.
+     * Get user Facebook ID
+     * @return integer
      */
-    public function getName()
+    public function getFbid()
     {
-        return $this->username;
+        return $this->_fbid;
     }
 
     /**
-     * Authenticates a user.
+     * Authenticates a user by Facebook ID
      * @return boolean whether authentication succeeds.
      */
     public function authenticate()
     {
-        // now find the user using the Facebook ID
-        $record = $this->mapUser();
+        $record = $this->findUser();
         if ($record === null) { // if no user is found
             $this->errorCode = self::ERROR_UNKNOWN_FACEBOOK_ID; // error
+            $this->errorMessage = "Unknown Facebook ID";
         } else {
-            $this->username = $record->username;
             $this->_id = $record->id;
             $this->errorCode = self::ERROR_NONE;
         }
@@ -74,44 +65,15 @@ class FBUserIdentity extends \CBaseUserIdentity
     }
 
     /**
-     * Find user based on the Facebook Id (fbid) field set on this Identity
-     * Ensure the user does not have a blocked status.
-     * @return CActiveRecord|the
+     * Find user based on the Facebook ID (fbid) field set on this Identity
+     * @return CActiveRecord|the user linked to this facebook account
      */
     public function findUser()
     {
-        if (!$this->_record) {
-            if ($this->_fbid) {
-                $userCriteria = new \CDbCriteria;
-                $userCriteria->addNotInCondition('status', array(\User::STATUS_BLOCKED, \User::STATUS_PENDING));
-                $this->_record = \User::model()->findByAttributes(array('facebookid' => $this->_fbid), $userCriteria);
-            }
-        }
-        return $this->_record;
-    }
-
-    public function mapUser()
-    {
-        // attempt to map user and update id
-        if (Yii::app()->facebook->getUserId() && $this->findUser() === null && isset(Yii::app()->params['update_fb_id']) && Yii::app()->params['update_fb_id'] == true) {
-
-            try {
-                $info = Yii::app()->facebook->getMe();
-
-                if ($info && $info->getProperty('email')) {
-                    $userCriteria = new CDbCriteria;
-                    $userCriteria->addNotInCondition('status', array(\User::STATUS_BLOCKED, \User::STATUS_PENDING));
-                    $this->_record = \User::model()->findByAttributes(array('username' => $info->getProperty('email')), $userCriteria);
-                    // update facebook id
-                    if ($this->_record) {
-                        $this->_record->facebookid = $info->getI();
-                        $this->_fbid = $info['id'];
-                        $this->_record->save(true,array('facebookid'));
-                    }
-                }
-            } catch (\Facebook\FacebookRequestException $e) {
-                Yii::app()->user->setFlash('error',"There was a problem connecting Facebook. Please try again later.");
-            }
+        if (!$this->_record && $this->_fbid) {
+            $this->_record = \User::model()->findByAttributes(
+                array(Yii::app()->facebook->userFbidAttribute => $this->_fbid)
+            );
         }
         return $this->_record;
     }
