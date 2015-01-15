@@ -1,6 +1,6 @@
 <?php
 /**
- * SFacebookAuthBehavior class file.
+ * FBAuthRequest class file.
  *
  * @author Evan Johnson <thaddeusmt - AT - gmail - DOT - com>
  * @link https://github.com/splashlab/yii-facebook-opengraph
@@ -9,16 +9,20 @@
  *
  */
 namespace YiiFacebook;
-
 use Yii;
 
 /**
- * SFacebookAuthBehavior is a behavior for a CController
+ * Class can be used statically
  * If prompts the user to log in with Facebook if no linked Facebook Account or no Active Facebook session is detected
  */
-class SFacebookAuthBehavior extends \CBehavior
+class FBAuthRequest
 {
 
+    /**
+     * Prompt for Facebook login via Flash messages
+     * @param null $scope Optional default Facebook permissions to request
+     * @throws \CException
+     */
     public static function fbLoginPrompt($scope = null)
     {
         if (Yii::app()->facebook->accountLinkUrl && Yii::app()->facebook->userFbidAttribute) {
@@ -60,6 +64,8 @@ class SFacebookAuthBehavior extends \CBehavior
                     )
                 );
             }
+        } else {
+            throw new \CException('YiiFacebook userFbidAttribute and accountLinkUrl property must be declared.');
         }
     }
 
