@@ -31,9 +31,9 @@ class SFacebook extends \CApplicationComponent
     private $_userId;
 
     /**
-     * @var string cached sessionExpired flag
+     * @var \DateTime cached session expiration date
      */
-    private $_sessionExpired = false;
+    protected $_expiresAt;
 
     /**
      * @var string Facebook Application ID
@@ -498,7 +498,14 @@ class SFacebook extends \CApplicationComponent
      */
     protected function getSession()
     {
-        if (is_null($this->_session) && !$this->_sessionExpired) {
+        // if our cached expiration date is old, clear the token so we have to request a new one
+        if ($this->_session && $this->isExpired()) {
+            $this->_session = null;
+            $this->setToken(null);
+            $this->setUserId(null);
+        }
+
+        if (is_null($this->_session)) {
 
             // check for cached accessToken, and try to get session from it
             if ($this->getToken()) {
@@ -511,7 +518,9 @@ class SFacebook extends \CApplicationComponent
             if (!$this->_session) {
                 // try to get session from redirect login
                 $helper = new \Facebook\FacebookRedirectLoginHelper($this->redirectUrl);
-                $this->_session = $helper->getSessionFromRedirect();
+                if ($this->_session = $helper->getSessionFromRedirect()) {
+                    $this->setExpiresAt($this->_session->getAccessToken()->getExpiresAt());
+                }
             }
 
             // if no session
@@ -519,9 +528,11 @@ class SFacebook extends \CApplicationComponent
                 // try to get session for JavaScript SDK cookie
                 $helper = new \Facebook\FacebookJavaScriptLoginHelper();
                 try {
-                    $this->_session = $helper->getSession();
+                    if ($this->_session = $helper->getSession()) {
+                        $this->setExpiresAt($this->_session->getAccessToken()->getExpiresAt());
+                    }
                 } catch (\Facebook\FacebookAuthorizationException $e) {
-                    $this->_sessionExpired = true;
+                    $this->setExpiresAt(null);
                     $this->destroySession();
                     // if there is an re-authorize callback for expired sessions, run it if that's the problem
                     if (!$this->expiredSessionCallback($e)) {
@@ -576,6 +587,46 @@ class SFacebook extends \CApplicationComponent
             Yii::app()->session['fb_token'] = $token;
         }
         $this->_token = $token;
+    }
+
+    /**
+     * Get the cached session expiration
+     * @return string cached access token
+     */
+    public function isExpired()
+    {
+        if ($expiresAt = $this->getExpiresAt()) {
+            if ($this->getExpiresAt()->getTimestamp() > time()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Get the cached session expiration
+     * @return string cached access token
+     */
+    public function getExpiresAt()
+    {
+        if (!$this->_expiresAt) {
+            if (Yii::app()->session && isset(Yii::app()->session['fb_expiresAt'])) {
+                $this->_expiresAt = Yii::app()->session['fb_expiresAt'];
+            }
+        }
+        return $this->_expiresAt;
+    }
+
+    /**
+     * Cache the Facebook session expiration
+     * @param string $expiresAt
+     */
+    protected function setExpiresAt($expiresAt)
+    {
+        if (Yii::app()->session) {
+            Yii::app()->session['fb_expiresAt'] = $expiresAt;
+        }
+        $this->_expiresAt = $expiresAt;
     }
 
     /**
