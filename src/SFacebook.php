@@ -517,8 +517,9 @@ class SFacebook extends \CApplicationComponent
             // if no session
             if (!$this->_session) {
                 // try to get session from redirect login
-                $helper = new \Facebook\FacebookRedirectLoginHelper($this->redirectUrl);
+                $helper = new SFacebookRedirectLoginHelper($this->redirectUrl);
                 if ($this->_session = $helper->getSessionFromRedirect()) {
+                    $this->_session = $this->_session->getLongLivedSession();
                     $this->setExpiresAt($this->_session->getAccessToken()->getExpiresAt());
                 }
             }
@@ -765,12 +766,12 @@ class SFacebook extends \CApplicationComponent
     /**
      * Redirect urls helper function
      * @param string $redirectUrl
-     * @return \Facebook\FacebookRedirectLoginHelper | cached
+     * @return SFacebookRedirectLoginHelper | cached
      */
     protected function getRedirectLoginHelper($redirectUrl = null)
     {
         if (!$redirectUrl) $redirectUrl = $this->redirectUrl;
-        return new \Facebook\FacebookRedirectLoginHelper($redirectUrl);
+        return new SFacebookRedirectLoginHelper($redirectUrl);
     }
 
     /**
