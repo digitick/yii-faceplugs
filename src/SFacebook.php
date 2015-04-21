@@ -683,7 +683,7 @@ class SFacebook extends \CApplicationComponent
      */
     public function getAccessToken()
     {
-        if ($this->getSession()) {
+        if ($this->getSession() && $this->getSession() instanceof \Facebook\FacebookSession) {
             return $this->getSession()->getAccessToken();
         }
     }

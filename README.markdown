@@ -1,4 +1,5 @@
-The master branch is not stable, please use tagged release branches. The previous stable branch with support for the old API is now under the opengraph-v1.0 branch.
+The master branch is not stable, please use tagged release branches. The previous stable branch with support for the
+old API is now under the `opengraph-v1.0` branch.
 
 ### This is a Yii application component wrapper for the official Facebook PHP SDK 4.0
 
