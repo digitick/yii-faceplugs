@@ -546,6 +546,10 @@ class SFacebook extends \CApplicationComponent
                 $this->setUserId($this->_session->getUserId());
             }
         }
+        // if not a FacebookSession for some reason, set to null
+        if ($this->_session instanceof \Facebook\FacebookSession) {
+            $this->_session = null;
+        }
         return $this->_session;
     }
 
@@ -683,7 +687,7 @@ class SFacebook extends \CApplicationComponent
      */
     public function getAccessToken()
     {
-        if ($this->getSession() && $this->getSession() instanceof \Facebook\FacebookSession) {
+        if ($this->getSession()) {
             return $this->getSession()->getAccessToken();
         }
     }
