@@ -547,7 +547,7 @@ class SFacebook extends \CApplicationComponent
             }
         }
         // if not a FacebookSession for some reason, set to null
-        if ($this->_session instanceof \Facebook\FacebookSession) {
+        if (!$this->_session instanceof \Facebook\FacebookSession) {
             $this->_session = null;
         }
         return $this->_session;
