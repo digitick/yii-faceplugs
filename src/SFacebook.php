@@ -687,8 +687,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getAccessToken()
     {
-        if ($this->getSession()) {
-            return $this->getSession()->getAccessToken();
+        if ($sess = $this->getSession()) {
+            return $sess->getAccessToken();
         }
     }
 
@@ -698,8 +698,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getSessionInfo()
     {
-        if ($this->getSession()) {
-            return $this->getSession()->getSessionInfo();
+        if ($sess = $this->getSession()) {
+            return $sess->getSessionInfo();
         }
     }
 
@@ -710,8 +710,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getSignedRequest()
     {
-        if ($this->getSession()) {
-            return $this->getSession()->getSignedRequest();
+        if ($sess = $this->getSession()) {
+            return $sess->getSignedRequest();
         }
     }
 
@@ -722,8 +722,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getSignedRequestData()
     {
-        if ($this->getSession()) {
-            return $this->getSession()->getSignedRequestData();
+        if ($sess = $this->getSession()) {
+            return $sess->getSignedRequestData();
         }
     }
 
@@ -736,8 +736,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getSignedRequestProperty($key)
     {
-        if ($this->getSession()) {
-            return $this->getSession()->getSignedRequestProperty($key);
+        if ($sess = $this->getSession()) {
+            return $sess->getSignedRequestProperty($key);
         }
     }
 
@@ -748,8 +748,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getLongLivedSession()
     {
-        if ($this->getSession()) {
-            $this->_session = $this->getSession()->getLongLivedSession();
+        if ($sess = $this->getSession()) {
+            $this->_session = $sess->getLongLivedSession();
             return $this->_session;
         }
     }
@@ -761,8 +761,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getExchangeToken()
     {
-        if ($this->getSession()) {
-            return $this->getSession()->getExchangeToken();
+        if ($sess = $this->getSession()) {
+            return $sess->getExchangeToken();
         }
     }
 
@@ -808,8 +808,8 @@ class SFacebook extends \CApplicationComponent
      */
     public function getLogoutUrl($next)
     {
-        if ($this->getSession() && ($loginHelper = $this->getRedirectLoginHelper())) {
-            return $loginHelper->getLogoutUrl($this->getSession(), $next);
+        if (($sess = $this->getSession()) && ($loginHelper = $this->getRedirectLoginHelper())) {
+            return $loginHelper->getLogoutUrl($sess, $next);
         }
     }
 
@@ -825,9 +825,9 @@ class SFacebook extends \CApplicationComponent
      */
     public function makeRequest($path, $method = 'GET', $parameters = null, $etag = null)
     {
-        if ($this->getSession()) {
+        if ($sess = $this->getSession()) {
             if ($request = new \Facebook\FacebookRequest(
-                $this->getSession(), $method, $path, $parameters, $this->version, $etag
+                $sess, $method, $path, $parameters, $this->version, $etag
             )) {
                 return $request->execute();
             }
