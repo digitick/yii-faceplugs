@@ -519,7 +519,6 @@ class SFacebook extends \CApplicationComponent
                 // try to get session from redirect login
                 $helper = new SFacebookRedirectLoginHelper($this->redirectUrl);
                 if ($this->_session = $helper->getSessionFromRedirect()) {
-                    $this->_session = $this->_session->getLongLivedSession();
                     $this->setExpiresAt($this->_session->getAccessToken()->getExpiresAt());
                 }
             }
