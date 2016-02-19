@@ -1,7 +1,7 @@
 The master branch is not stable, please use tagged release branches. The previous stable branch with support for the
 old API is now under the `opengraph-v1.0` branch.
 
-### This is a Yii application component wrapper for the official Facebook PHP SDK 4.0
+### This is a Yii application component wrapper for the official Facebook PHP SDK 5.0
 
 Also included are some helper functions that:
 
@@ -10,14 +10,15 @@ Also included are some helper functions that:
   * Easy rendering of Facebook Social Plugins.
 
 Facebook PHP SDK:
-https://developers.facebook.com/docs/reference/php/4.0.0
+https://developers.facebook.com/docs/reference/php
+https://developers.facebook.com/docs/php/gettingstarted
 https://github.com/facebook/facebook-php-sdk-v4
 
 Facebook JS SDK:
 https://developers.facebook.com/docs/javascript
 
 Facebook Social Plugins:
-https://developers.facebook.com/docs/plugins/
+https://developers.facebook.com/docs/plugins
 
 Open Graph Protocol:
 https://developers.facebook.com/docs/graph-api
@@ -45,7 +46,7 @@ Configure Yii application component SFacebook in your yii config file:
             'class' => '\YiiFacebook\SFacebook',
             'appId'=>'YOUR_FACEBOOK_APP_ID', // needed for JS SDK, Social Plugins and PHP SDK
             'secret'=>'YOUR_FACEBOOK_APP_SECRET', // needed for the PHP SDK
-            //'version'=>'v2.2', // Facebook APi version to default to
+            //'version'=>'v2.5', // Facebook APi version to default to
             //'locale'=>'en_US', // override locale setting (defaults to en_US)
             //'jsSdk'=>true, // include JavaScript SDK on all pages
             //'async'=>true, // load JavaScript SDK asynchronously
@@ -140,7 +141,7 @@ To use the PHP SDK anywhere in your application, just call it like so (there pas
     <?php $signedRequest = Yii::app()->facebook->getSignedRequest() ?>
     <?php $logoutUrl = Yii::app()->facebook->getLogoutUrl('http://example.com/after-logout') ?>
 
-## Graph API Calls
+### Graph API Calls
 
 Calling API methods directly on the `Yii::app()->facebook` component will automatically check for and add the proper
 accessToken for the logged in user. Call them like so:
@@ -151,7 +152,7 @@ accessToken for the logged in user. Call them like so:
                         'message' => 'User provided message'
                     ])->getGraphObject() ?>
 
-## Exception Handlers
+### Exception Handlers
 
 If you call the SDK methods directly on the `Yii::app()->facebook` component then some default error handling
 logic will run. You can override this logic by specifying 3 different global Facebook error handlers:
@@ -160,7 +161,7 @@ logic will run. You can override this logic by specifying 3 different global Fac
 * authorizationErrorCallback => `function(\Facebook\Exceptions\FacebookAuthorizationException $e)`
 * sdkErrorCallback => `function(\Facebook\Exceptions\FacebookSDKException $e)`
 
-## Direct API Calls
+### Direct API Calls
 
 If you want to make API calls without the default accessToken or without the error handlers, call it on the `fb`
 property like this (`Yii::app()->facebook->fb`):
@@ -185,7 +186,7 @@ property like this (`Yii::app()->facebook->fb`):
     ?>
     <?php Yii::app()->facebook->destroySession() ?>
 
-## Convenience Methods
+### Convenience Methods
 
 There are a couple of additional convenience methods added the component:
 
@@ -233,5 +234,5 @@ The original version with support for Facebook SDK 3.x and Open Graph API 1.x wa
 http://www.yiiframework.com/extension/faceplugs
 https://github.com/digitick/yii-faceplugs
 
-Updated Jan 15th 2015 by Evan Johnson
+Updated Feb 19th 2016 by Evan Johnson
 http://splashlabsocial.com
