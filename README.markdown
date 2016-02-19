@@ -105,6 +105,12 @@ add this function to override the `afterRender()` callback:
         return true;
     }
 
+#### Installation without Composer
+
+Included is an `autoload.php` file to assist in installing this extension without Composer. YMMV.
+* https://www.sammyk.me/using-the-facebook-sdk-v4-without-composer
+* https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader-examples.md
+
 * * *
 
 USAGE:
@@ -142,13 +148,11 @@ At any point you can add additional JavaScript code to run after the Facebook JS
 
 To use the PHP SDK anywhere in your application, just call it like so (there pass-through the Facebook class):
 
-    <?php $userid = Yii::app()->facebook->getUserId() ?>
     <?php $accessToken = Yii::app()->facebook->getAccessToken() ?>
     <?php $accessToken = Yii::app()->facebook->getLongLivedAccessToken() ?>
-    <?php $loginUrl = Yii::app()->facebook->getLoginUrl() ?>
+    <?php $loginUrl = Yii::app()->facebook->getLoginUrl($redirect_url_after_login) ?>
     <?php $reRequestUrl = Yii::app()->facebook->getReRequestUrl() ?>
     <?php $reAuthenticationUrl = Yii::app()->facebook->getReAuthenticationUrl() ?>
-    <?php $sessionInfo = Yii::app()->facebook->getSessionInfo() ?>
     <?php $signedRequest = Yii::app()->facebook->getSignedRequest() ?>
     <?php $logoutUrl = Yii::app()->facebook->getLogoutUrl('http://example.com/after-logout') ?>
 
@@ -196,6 +200,7 @@ via the `fb` property like this (`Yii::app()->facebook->fb`):
 
 There are a couple of additional convenience methods added the component:
 
+    <?php $fb_user_id = Yii::app()->facebook->getUserId() ?>
     <?php $graphUserObject = Yii::app()->facebook->getMe() // gets the Graph info of the current user ?>
     <?php $graphUserObject = Yii::app()->facebook->getGraphUser($user_id) // gets the Graph object of the current user ?>
     <?php $imageUrl = Yii::app()->facebook->getProfilePicture('large') // gets the Facebook picture URL of the current user ?>
