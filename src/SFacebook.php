@@ -537,12 +537,6 @@ class SFacebook extends \CApplicationComponent
                 $this->saveSignedRequest($helper);
                 return $accessToken;
             } elseif ($helper->getError()) {
-                // The user denied the request
-                // You could log this data . . .
-                //var_dump($helper->getError());
-                //var_dump($helper->getErrorCode());
-                //var_dump($helper->getErrorReason());
-                //var_dump($helper->getErrorDescription());
                 Yii::log("FacebookRedirectLoginHelper: " . $helper->getErrorDescription(), 'error', 'SFacebook');
                 Yii::app()->user->setFlash('error', "FacebookRedirectLoginHelper: " . $helper->getErrorDescription());
             }
@@ -688,7 +682,9 @@ class SFacebook extends \CApplicationComponent
             if (Yii::app()->session && isset(Yii::app()->session['fb_token']) && Yii::app()->session['fb_token']) {
                 $this->setAccessToken(Yii::app()->session['fb_token']);
             } else {
-                $this->setAccessToken($this->_token = $this->getNewAccessToken());
+                if ($accessToken = $this->getNewAccessToken()) {
+                    $this->getLongLivedAccessToken($accessToken);
+                }
             }
         }
         return $this->_token;
@@ -783,22 +779,24 @@ class SFacebook extends \CApplicationComponent
     }
 
     /**
-     * Returns the signed request payload.
-     *
-     * @return null|array
+     * Get an extended access token
+     * @param $accessToken
+     * @return AccessToken
      */
-    public function getLongLivedAccessToken()
+    public function getLongLivedAccessToken($accessToken = null)
     {
-        if ($this->getAccessToken() && ($client = $this->_fb->getOAuth2Client())) {
+        if (!$accessToken) $accessToken = $this->getAccessToken();
+        if ($accessToken && ($client = $this->_fb->getOAuth2Client())) {
             try {
                 // Returns a long-lived access token
-                if ($accessToken = $client->getLongLivedAccessToken($this->getAccessToken())) {
+                if ($accessToken = $client->getLongLivedAccessToken($accessToken)) {
                     $this->setAccessToken($accessToken);
                 }
             } catch(FacebookSDKException $e) {
                 $this->sdkError($e);
             }
         }
+        return $this->_token;
     }
 
     /*** RedirectLogin methods ***/

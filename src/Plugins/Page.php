@@ -6,7 +6,7 @@
  * @author Ianaré Sévi (original author) www.digitick.net
  * @link https://github.com/splashlab/yii-facebook-opengraph
  * @copyright &copy; Digitick <www.digitick.net> 2011
- * @copyright Copyright &copy; 2012 SplashLab Social  http://splashlabsocial.com
+ * @copyright Copyright &copy; 2016 SplashLab Social  http://splashlabsocial.com
  * @license http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License v3.0
  *
  */

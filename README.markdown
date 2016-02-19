@@ -49,8 +49,13 @@ Configure Yii application component SFacebook in your yii config file:
             'class' => '\YiiFacebook\SFacebook',
             'appId'=>'YOUR_FACEBOOK_APP_ID', // needed for JS SDK, Social Plugins and PHP SDK
             'secret'=>'YOUR_FACEBOOK_APP_SECRET', // needed for the PHP SDK
-            //'version'=>'v2.5', // Facebook APi version to default to
-            //'locale'=>'en_US', // override locale setting (defaults to en_US)
+            //'version'=>'v2.5', // Facebook API version to default to i.e. default_graph_version
+            //'enable_beta_mode' => null, // optional Facebook\Facebook setting
+            //'http_client_handler' => null, // optional Facebook\Facebook setting
+            //'persistent_data_handler' => null, // optional Facebook\Facebook setting
+            //'url_detection_handler' => null, // optional Facebook\Facebook setting
+            //'pseudo_random_string_generator' => null, // optional Facebook\Facebook setting
+            //'locale'=>'en_US', // override JS SDK locale setting (defaults to en_US)
             //'jsSdk'=>true, // include JavaScript SDK on all pages
             //'async'=>true, // load JavaScript SDK asynchronously
             //'jsCallback'=>false, // declare if you are going to be inserting any JS callbacks to the async JS SDK loader
@@ -63,7 +68,6 @@ Configure Yii application component SFacebook in your yii config file:
             //'html5'=>true,  // use html5 Social Plugins instead of older XFBML
             //'defaultScope'=>[], // default Facebook Login permissions to request with Login button
             //'redirectUrl'=>null, // default Facebook post-Login redirect URL
-            //'expiredSessionCallback'=>null, // PHP callable method to run if expired Facebook session is detected
             //'userFbidAttribute'=>null, // if using FBAuthRequest, declare Facebook ID attribute on user model here
             //'accountLinkUrl'=>null, // if using FBAuthRequest, declare link to user account page here
             //'ogTags'=>[  // set default OG tags
@@ -161,11 +165,13 @@ To use the PHP SDK anywhere in your application, just call it like so (there pas
 Calling API methods directly on the `Yii::app()->facebook` component will automatically check for and add the proper
 accessToken for the logged in user. Call them like so:
 
-    <?php $graphPageObject = Yii::app()->facebook->get('/SOME_PAGE_ID')->getPageObject() ?>
+    <?php $graphPageObject = Yii::app()->facebook->get('/me')->getUserNode() ?>
+    <?php $graphPageObject = Yii::app()->facebook->get('/SOME_PAGE_ID')->getPageNode() ?>
     <?php $response = Yii::app()->facebook->post('/me/feed', [
-                        'link' => 'www.example.com',
                         'message' => 'User provided message'
-                    ])->getGraphObject() ?>
+                        'link' => 'www.example.com',
+                    ])->getGraphNode() ?>
+    <?php Yii::app()->facebook->$fb->delete('/{node-id}') ?>
 
 ### Facebook Exception Handlers
 
@@ -186,7 +192,7 @@ via the `fb` property like this (`Yii::app()->facebook->fb`):
         $response = Yii::app()->facebook->fb->post('/me/feed', [
             'link' => 'www.example.com',
             'message' => 'User provided message'
-        ])->getGraphObject()
+        ])->getGraphNode()
         echo "Posted with id: " . $response->getField('id');
     } catch (\Facebook\Exceptions\FacebookSDKException $e) {
         // your own error handlers
