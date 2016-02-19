@@ -12,28 +12,34 @@
  */
 namespace YiiFacebook;
 use Yii;
+use \Facebook\Facebook;
+use Facebook\Authentication\AccessToken;
+use Facebook\SignedRequest;
+use Facebook\Exceptions\FacebookSDKException;
+use Facebook\Exceptions\FacebookAuthenticationException;
+use Facebook\Exceptions\FacebookAuthorizationException;
 
 class SFacebook extends \CApplicationComponent
 {
     /**
-     * @var \Facebook\FacebookSession instance of the Facebook Session class
+     * @var Facebook instance of the Facebook app class
      */
-    private $_session;
+    private $_fb;
 
     /**
-     * @var string cached Facebook access token
+     * @var AccessToken cached Facebook access token
      */
     private $_token;
+
+    /**
+     * @var SignedRequest cached Facebook signed request
+     */
+    private $_signedRequest;
 
     /**
      * @var string cached Facebook user id
      */
     private $_userId;
-
-    /**
-     * @var \DateTime cached session expiration date
-     */
-    protected $_expiresAt;
 
     /**
      * @var string Facebook Application ID
@@ -49,12 +55,22 @@ class SFacebook extends \CApplicationComponent
      * @var string Facebook OpenGraph version to request i.e. v1.0, v2.0, v2.1, v2.2
      * @see https://developers.facebook.com/docs/apps/changelog/
      */
-    public $version = 'v2.2';
+    public $version = 'v2.5';
 
     /**
      * @var callable Callback method to run when Facebook session needs to be renewed
      */
-    public $expiredSessionCallback;
+    public $authenticationErrorCallback;
+
+    /**
+     * @var callable Callback method to run when Facebook API permissions are missing
+     */
+    public $authorizationErrorCallback;
+
+    /**
+     * @var callable Callback method to run when Facebook SDK exception
+     */
+    public $sdkErrorCallback;
 
     /**
      * @var string Default login redirect url
@@ -96,7 +112,7 @@ class SFacebook extends \CApplicationComponent
     /**
      * @var array the default permissions to ask for on facebook Login buttons
      */
-    public $defaultScope = array();
+    public $defaultScope = [];
 
     /**
      * @var bool Frictionless Requests are available to games on Facebook.com or on mobile web using the JavaScript SDK.
@@ -154,12 +170,12 @@ class SFacebook extends \CApplicationComponent
     /**
      * @var array Open Graph Meta Tags
      */
-    public $ogTags = array();
+    public $ogTags = [];
 
     /**
      * @var array Valid Facebook locales.
      */
-    protected $locales = array(
+    protected $locales = [
         'az_AZ',
         'be_BY',
         'bg_BG',
@@ -268,19 +284,29 @@ class SFacebook extends \CApplicationComponent
         'se_NO',
         'ps_AF',
         'tl_ST',
-    );
+    ];
 
     public function init()
     {
         if ($this->appId && $this->secret) {
             parent::init();
-            \Facebook\FacebookSession::setDefaultApplication($this->appId, $this->secret);
+            $this->_fb = new Facebook([
+                'app_id'     => $this->appId,
+                'app_secret' => $this->secret,
+                'default_graph_version' => $this->version,
+                'persistent_data_handler' => new YiiFacebookSessionPersistentDataHandler()
+            ]);
         } else {
             if (!$this->appId)
                 throw new \CException('Facebook application ID not specified.');
             elseif (!$this->secret)
                 throw new \CException('Facebook application secret not specified.');
         }
+    }
+
+    public function getFb()
+    {
+        return $this->_fb;
     }
 
 
@@ -313,7 +339,7 @@ class SFacebook extends \CApplicationComponent
         // initialize the Facebook JS
         if ($this->jsSdk) {
             $script = '//connect.facebook.net/' . $this->getLocale() . '/sdk.js';
-            $init = $this->registerSDKScript('init', array(
+            $init = $this->registerSDKScript('init', [
                     // https://developers.facebook.com/docs/javascript/reference/FB.init/v2.2
                     'appId' => $this->appId, // application ID
                     'version' => $this->version, // OpenGraph API version to request
@@ -322,7 +348,7 @@ class SFacebook extends \CApplicationComponent
                     'xfbml' => $this->xfbml, // parse XFBML
                     'frictionlessRequests' => $this->frictionlessRequests, // Enable frictionless requests on requests dialog
                     'hideFlashCallback' => $this->hideFlashCallback, // This specifies a function that is called whenever it is necessary to hide Adobe Flash objects on a page.
-                )
+                ]
             );
             if ($this->async) {
                 $init = "window.fbAsyncInit = function(){{$init}};
@@ -392,7 +418,7 @@ class SFacebook extends \CApplicationComponent
      * @param array $args args to use in the method
      * @return string the js created
      */
-    protected function registerSDKScript($method, $args = array())
+    protected function registerSDKScript($method, $args = [])
     {
         $args = \CJavaScript::encode($args); // Initalize Facebook JS
         if ($this->jsCallback)
@@ -423,7 +449,7 @@ class SFacebook extends \CApplicationComponent
      */
     public function registerOpenGraph($property, $data)
     {
-        Yii::app()->clientScript->registerMetaTag($data, null, null, array('property' => $property));
+        Yii::app()->clientScript->registerMetaTag($data, null, null, ['property' => $property]);
     }
 
     /**
@@ -447,18 +473,18 @@ class SFacebook extends \CApplicationComponent
             // Adjustments, mainly because facebook doesn't have all countries
             // of the same language translated.
             $lang = substr($locale, 0, 2);
-            $adjust = array(
+            $adjust = [
                 'de' => 'de_de',
                 'nl' => 'nl_nl',
                 'ru' => 'ru_ru',
                 'ar' => 'ar_ar', // non standard
                 'ku' => 'ku_tr',
-            );
+            ];
             // single check languages, array above ...
             if (isset($adjust[$lang])) {
                 $locale = $adjust[$lang];
             } // english
-            else if ($lang === 'en' && !in_array($locale, array('en_us', 'en_pi', 'en_ud'))) {
+            else if ($lang === 'en' && !in_array($locale, ['en_us', 'en_pi', 'en_ud'])) {
                 // closer to US english
                 if ($locale === 'en_ca') {
                     $locale = 'en_us';
@@ -470,7 +496,7 @@ class SFacebook extends \CApplicationComponent
             else if ($lang === 'fr' && $locale !== 'fr_ca') {
                 $locale = 'fr_fr';
             } // spanish
-            else if ($lang === 'es' && !in_array($locale, array('es_es', 'es_cl', 'es_co', 'es_mx', 'es_ve'))) {
+            else if ($lang === 'es' && !in_array($locale, ['es_es', 'es_cl', 'es_co', 'es_mx', 'es_ve'])) {
                 $locale = 'es_la'; // non standard
             } // portuguese
             else if ($lang === 'pt' && $locale !== 'pt_br') {
@@ -489,93 +515,180 @@ class SFacebook extends \CApplicationComponent
         return $this->_locale;
     }
 
-    /*** PHP SDK functions **/
+    /**
+     * Get AccessToken from various login methods
+     * @return AccessToken|null|void
+     */
+    protected function getNewAccessToken()
+    {
+        $accessToken = null;
+        try {
+
+            // else try to get a token from the JS
+            $helper = $this->_fb->getJavaScriptHelper();
+            if ($accessToken = $helper->getAccessToken()) {
+                $this->saveSignedRequest($helper);
+                return $accessToken;
+            }
+
+            // else try to get a token from the redirect login
+            $helper = $this->_fb->getRedirectLoginHelper();
+            if ($accessToken = $helper->getAccessToken()) {
+                $this->saveSignedRequest($helper);
+                return $accessToken;
+            } elseif ($helper->getError()) {
+                // The user denied the request
+                // You could log this data . . .
+                //var_dump($helper->getError());
+                //var_dump($helper->getErrorCode());
+                //var_dump($helper->getErrorReason());
+                //var_dump($helper->getErrorDescription());
+                Yii::log("FacebookRedirectLoginHelper: " . $helper->getErrorDescription(), 'error', 'SFacebook');
+                Yii::app()->user->setFlash('error', "FacebookRedirectLoginHelper: " . $helper->getErrorDescription());
+            }
+
+            // else try to get a token from the PageTab
+            $helper = $this->_fb->getPageTabHelper();
+            if ($accessToken = $helper->getAccessToken()) {
+                $this->saveSignedRequest($helper);
+                return $accessToken;
+            }
+
+            // this means the token may have expired, so we may want to run to code to prompt to renew
+        } catch (FacebookAuthenticationException $e) {
+            $this->authenticationError($e);
+
+            // this means the token may have expired, so we may want to run to code to prompt to renew
+        } catch (FacebookAuthorizationException $e) {
+            $this->authorizationError($e);
+
+            // general Facebook SDK exceptions
+        } catch(FacebookSDKException $e) {
+            if ($previous = $e->getPrevious()) {
+                if ($previous instanceof FacebookAuthenticationException) {
+                    return $this->authenticationError($previous);
+                }
+                if ($previous instanceof FacebookAuthorizationException) {
+                    return $this->authorizationError($previous);
+                }
+            }
+            $this->sdkError($e);
+        }
+        return $accessToken;
+    }
 
     /**
-     * Finds and loads active Facebook session
-     * @throws \Facebook\FacebookRequestException if exception fails
-     * @return \Facebook\FacebookSession instance of Facebook PHP SDK FacebookSession class
+     * Store the signed request and cache the Facebook User ID
+     * @param $helper
      */
-    protected function getSession()
+    protected function saveSignedRequest($helper)
     {
-        // if our cached expiration date is old, clear the token so we have to request a new one
-        if ($this->_session && $this->isExpired()) {
-            $this->_session = null;
-            $this->setToken(null);
-            $this->setUserId(null);
-        }
-
-        if (is_null($this->_session)) {
-
-            // check for cached accessToken, and try to get session from it
-            if ($this->getToken()) {
-                if ($accessToken = new \Facebook\Entities\AccessToken($this->getToken())) {
-                    $this->_session = new \Facebook\FacebookSession($accessToken);
-                }
-            }
-
-            // if no session
-            if (!$this->_session) {
-                // try to get session from redirect login
-                $helper = new SFacebookRedirectLoginHelper($this->redirectUrl);
-                if ($this->_session = $helper->getSessionFromRedirect()) {
-                    $this->setExpiresAt($this->_session->getAccessToken()->getExpiresAt());
-                }
-            }
-
-            // if no session
-            if (!$this->_session) {
-                // try to get session for JavaScript SDK cookie
-                $helper = new \Facebook\FacebookJavaScriptLoginHelper();
-                try {
-                    if ($this->_session = $helper->getSession()) {
-                        $this->setExpiresAt($this->_session->getAccessToken()->getExpiresAt());
-                    }
-                } catch (\Facebook\FacebookAuthorizationException $e) {
-                    $this->setExpiresAt(null);
-                    $this->destroySession();
-                    // if there is an re-authorize callback for expired sessions, run it if that's the problem
-                    if (!$this->expiredSessionCallback($e)) {
-                        throw $e; // throw exception if unable to renew facebook session
-                    }
-                }
-            }
-            // cache token and userId
-            if ($this->_session) {
-                $this->setToken($this->_session->getToken());
-                $this->setUserId($this->_session->getUserId());
+        if ($signedRequest = $helper->getSignedRequest()) {
+            $this->_signedRequest = $signedRequest;
+            if ($user_id = $signedRequest->getUserId()) {
+                $this->setUserId($user_id);
             }
         }
-        // if not a FacebookSession for some reason, set to null
-        if (!$this->_session instanceof \Facebook\FacebookSession) {
-            $this->_session = null;
+    }
+
+    /**
+     * Handler SDK errors
+     * @param FacebookSDKException $e
+     * @throws FacebookSDKException
+     */
+    protected function sdkError(FacebookSDKException $e)
+    {
+        // There was an error communicating with Graph
+        // Or there was a problem validating the signed request
+        if ($e && !$this->sdkErrorCallback($e)) {
+            Yii::log("FacebookSDKException: " . $e, 'error', 'SFacebook');
+            Yii::app()->user->setFlash('error', "FacebookSDKException: " . $e->getMessage());
+            //throw $e; // throw exception if unable to renew facebook session
         }
-        return $this->_session;
     }
 
     /**
      * If the Facebook session has expired, possibly run code here to renew it
-     * @param \Exception $e The exception we are handling
+     * @param FacebookSDKException $e The exception we are handling
      * @return bool true if exception is handled, false to continue throwing exception
      */
-    protected function expiredSessionCallback(\Exception $e)
+    protected function sdkErrorCallback(FacebookSDKException $e)
+    {
+        // if there is an exception callback for eSDK errors, run it if that's the problem
+        if (is_callable($this->sdkErrorCallback)) {
+            return call_user_func($this->sdkErrorCallback, $e);
+        }
+        return false;
+    }
+
+    /**
+     * Handle missing permissions errors
+     * @param FacebookAuthorizationException $e
+     * @throws FacebookAuthorizationException
+     */
+    protected function authorizationError(FacebookAuthorizationException $e = null)
+    {
+        $this->destroySession();
+        // if there is an re-authorize callback for expired sessions, run it if that's the problem
+        if ($e && !$this->authorizationErrorCallback($e)) {
+            throw $e; // throw exception if unable to renew facebook session
+        }
+    }
+
+    /**
+     * If the Facebook API permissions are missing
+     * @param FacebookAuthorizationException $e The exception we are handling
+     * @return bool true if exception is handled, false to continue throwing exception
+     */
+    protected function authorizationErrorCallback(FacebookAuthorizationException $e)
     {
         // if there is an re-authorize callback for expired sessions, run it if that's the problem
-        if (is_callable($this->expiredSessionCallback)) {
-            return call_user_func($this->expiredSessionCallback);
+        if (is_callable($this->authorizationErrorCallback)) {
+            return call_user_func($this->authorizationErrorCallback, $e);
+        }
+        return false;
+    }
+
+    /**
+     * Handle expired auth
+     * @param FacebookAuthenticationException $e
+     * @throws FacebookAuthenticationException
+     */
+    protected function authenticationError(FacebookAuthenticationException $e = null)
+    {
+        $this->destroySession();
+        // if there is an re-authorize callback for expired sessions, run it if that's the problem
+        if ($e && !$this->authenticationErrorCallback($e)) {
+            throw $e; // throw exception if unable to renew facebook session
+        }
+    }
+
+    /**
+     * If the Facebook session has expired, possibly run code here to renew it
+     * @param FacebookAuthenticationException $e The exception we are handling
+     * @return bool true if exception is handled, false to continue throwing exception
+     */
+    protected function authenticationErrorCallback(FacebookAuthenticationException $e)
+    {
+        // if there is an re-authorize callback for expired sessions, run it if that's the problem
+        if (is_callable($this->authenticationErrorCallback)) {
+            return call_user_func($this->authenticationErrorCallback, $e);
         }
         return false;
     }
 
     /**
      * Get the cached access token string
-     * @return string cached access token
+     *
+     * @return AccessToken cached access token
      */
-    public function getToken()
+    public function getAccessToken()
     {
         if (!$this->_token) {
-            if (Yii::app()->session && isset(Yii::app()->session['fb_token'])) {
-                $this->_token = Yii::app()->session['fb_token'];
+            if (Yii::app()->session && isset(Yii::app()->session['fb_token']) && Yii::app()->session['fb_token']) {
+                $this->setAccessToken(Yii::app()->session['fb_token']);
+            } else {
+                $this->setAccessToken($this->_token = $this->getNewAccessToken());
             }
         }
         return $this->_token;
@@ -583,69 +696,57 @@ class SFacebook extends \CApplicationComponent
 
     /**
      * Cache the Facebook access token string
-     * @param string $token
+     * @param AccessToken|string $accessToken
+     * @throws FacebookAuthenticationException
      */
-    protected function setToken($token)
+    protected function setAccessToken($accessToken)
     {
-        if (Yii::app()->session) {
-            Yii::app()->session['fb_token'] = $token;
+        if ($accessToken && Yii::app()->session) {
+            Yii::app()->session['fb_token'] = (string) $accessToken;
         }
-        $this->_token = $token;
+        if (is_string($accessToken)) {
+            $accessToken = new AccessToken($accessToken);
+        }
+        if ($accessToken instanceof AccessToken) {
+            if ($this->isExpired($accessToken)) {
+                throw new FacebookAuthenticationException;
+            } else {
+                $this->_token = $accessToken;
+                // this way it will automatically be used by all API requests
+                $this->_fb->setDefaultAccessToken($accessToken);
+            }
+        }
     }
 
     /**
      * Get the cached session expiration
+     * @param AccessToken $accessToken
      * @return string cached access token
      */
-    public function isExpired()
+    public function isExpired($accessToken)
     {
-        if ($expiresAt = $this->getExpiresAt()) {
-            if ($this->getExpiresAt()->getTimestamp() > time()) {
-                return false;
-            }
+        $expiresAt = null;
+        if ($accessToken && ($expiresAt = $accessToken->getExpiresAt())) {
+            Yii::app()->session['fb_token_expires'] = $expiresAt;
+
+        } elseif (Yii::app()->session['fb_token_expires']) {
+            $expiresAt = Yii::app()->session['fb_token_expires'];
+        }
+        if ($expiresAt && $expiresAt->getTimestamp() > time()) {
+            return false;
         }
         return true;
     }
 
     /**
-     * Get the cached session expiration
-     * @return string cached access token
+     * Returns the SignedRequest entity.
+     * @return SignedRequest
      */
-    public function getExpiresAt()
+    public function getSignedRequest()
     {
-        if (!$this->_expiresAt) {
-            if (Yii::app()->session && isset(Yii::app()->session['fb_expiresAt'])) {
-                $this->_expiresAt = Yii::app()->session['fb_expiresAt'];
-            }
+        if ($this->getAccessToken()) {
+            return $this->_signedRequest;
         }
-        return $this->_expiresAt;
-    }
-
-    /**
-     * Cache the Facebook session expiration
-     * @param string $expiresAt
-     */
-    protected function setExpiresAt($expiresAt)
-    {
-        if (Yii::app()->session) {
-            Yii::app()->session['fb_expiresAt'] = $expiresAt;
-        }
-        $this->_expiresAt = $expiresAt;
-    }
-
-    /**
-     * Get the user's Facebook ID.
-     *
-     * @return string the user id
-     */
-    public function getUserId()
-    {
-        if (!$this->_userId) {
-            if ($this->getSession() && Yii::app()->session && isset(Yii::app()->session['fb_userId'])) {
-                $this->_userId = Yii::app()->session['fb_userId'];
-            }
-        }
-        return $this->_userId;
     }
 
     /**
@@ -666,12 +767,13 @@ class SFacebook extends \CApplicationComponent
      */
     public function destroySession()
     {
-        $this->_session = null;
         $this->_token = null;
         $this->_userId = null;
+        $this->_signedRequest = null;
         // unset the cached session variables
         if (Yii::app()->session && isset(Yii::app()->session['fb_token'])) {
             unset(Yii::app()->session['fb_token']);
+            unset(Yii::app()->session['fb_token_expires']);
             unset(Yii::app()->session['fb_userId']);
         }
         // remove the JavaScript cookie as well
@@ -681,164 +783,152 @@ class SFacebook extends \CApplicationComponent
     }
 
     /**
-     * Returns the access token entity.
-     *
-     * @return \Facebook\Entities\AccessToken
-     */
-    public function getAccessToken()
-    {
-        if ($sess = $this->getSession()) {
-            return $sess->getAccessToken();
-        }
-    }
-
-    /**
-     * Get the Facebook session info
-     * @return \Facebook\GraphSessionInfo
-     */
-    public function getSessionInfo()
-    {
-        if ($sess = $this->getSession()) {
-            return $sess->getSessionInfo();
-        }
-    }
-
-    /**
-     * Returns the SignedRequest entity.
-     *
-     * @return \Facebook\Entities\SignedRequest
-     */
-    public function getSignedRequest()
-    {
-        if ($sess = $this->getSession()) {
-            return $sess->getSignedRequest();
-        }
-    }
-
-    /**
      * Returns the signed request payload.
      *
      * @return null|array
      */
-    public function getSignedRequestData()
+    public function getLongLivedAccessToken()
     {
-        if ($sess = $this->getSession()) {
-            return $sess->getSignedRequestData();
-        }
-    }
-
-    /**
-     * Returns a property from the signed request data if available.
-     *
-     * @param string $key
-     *
-     * @return null|mixed
-     */
-    public function getSignedRequestProperty($key)
-    {
-        if ($sess = $this->getSession()) {
-            return $sess->getSignedRequestProperty($key);
-        }
-    }
-
-    /**
-     * Returns the signed request payload.
-     *
-     * @return null|array
-     */
-    public function getLongLivedSession()
-    {
-        if ($sess = $this->getSession()) {
-            $this->_session = $sess->getLongLivedSession();
-            return $this->_session;
-        }
-    }
-
-    /**
-     * Returns the signed request payload.
-     *
-     * @return null|array
-     */
-    public function getExchangeToken()
-    {
-        if ($sess = $this->getSession()) {
-            return $sess->getExchangeToken();
-        }
-    }
-
-    /**
-     * Redirect urls helper function
-     * @param string $redirectUrl
-     * @return SFacebookRedirectLoginHelper | cached
-     */
-    protected function getRedirectLoginHelper($redirectUrl = null)
-    {
-        if (!$redirectUrl) $redirectUrl = $this->redirectUrl;
-        return new SFacebookRedirectLoginHelper($redirectUrl);
-    }
-
-    /**
-     * @param string $redirectUrl (optional)
-     * @param array $scope (optional) List of permissions to request during login
-     * @param bool $displayAsPopup (optional) Indicate if the page will be displayed as a popup
-     * @return string
-     */
-    public function getLoginUrl($redirectUrl = null, $scope = array(), $displayAsPopup = false)
-    {
-        if ($loginHelper = $this->getRedirectLoginHelper($redirectUrl)) {
-            return $loginHelper->getLoginUrl($scope, $this->version, $displayAsPopup);
-        }
-    }
-
-    /**
-     * @param string $redirectUrl (optional)
-     * @param array $scope (optional) List of permissions to request during re-login
-     * @return string
-     */
-    public function getReRequestUrl($redirectUrl = null, $scope = array())
-    {
-        if ($loginHelper = $this->getRedirectLoginHelper($redirectUrl)) {
-            return $loginHelper->getReRequestUrl($scope, $this->version);
-        }
-    }
-
-    /**
-     * @param string $next url to redirect to after logout
-     * @return string
-     */
-    public function getLogoutUrl($next)
-    {
-        if (($sess = $this->getSession()) && ($loginHelper = $this->getRedirectLoginHelper())) {
-            return $loginHelper->getLogoutUrl($sess, $next);
-        }
-    }
-
-    /**
-     * Make a Facebook Open Graph API request
-     *
-     * @param string $path request URL
-     * @param string $method HTTP request method
-     * @param array $parameters additional request parameters
-     * @param bool $etag
-     * @throws \Facebook\FacebookRequestException if request fails
-     * @return \Facebook\FacebookResponse
-     */
-    public function makeRequest($path, $method = 'GET', $parameters = null, $etag = null)
-    {
-        if ($sess = $this->getSession()) {
-            if ($request = new \Facebook\FacebookRequest(
-                $sess, $method, $path, $parameters, $this->version, $etag
-            )) {
-                return $request->execute();
+        if ($this->getAccessToken() && ($client = $this->_fb->getOAuth2Client())) {
+            try {
+                // Returns a long-lived access token
+                if ($accessToken = $client->getLongLivedAccessToken($this->getAccessToken())) {
+                    $this->setAccessToken($accessToken);
+                }
+            } catch(FacebookSDKException $e) {
+                $this->sdkError($e);
             }
         }
-        return null;
+    }
+
+    /*** RedirectLogin methods ***/
+
+    /**
+     * @param string $redirectUrl The URL Facebook should redirect users to after login.
+     * @param array  $scope       List of permissions to request during login.
+     * @param string $separator   The separator to use in http_build_query().
+     * @return string
+     */
+    public function getLoginUrl($redirectUrl = null, $scope = [], $separator = '&')
+    {
+        if (!$redirectUrl) $redirectUrl = $this->redirectUrl;
+        if ($loginHelper = $this->_fb->getRedirectLoginHelper()) {
+            return $loginHelper->getLoginUrl($redirectUrl, $scope, $separator);
+        }
+    }
+
+    /**
+     * @param string $redirectUrl The URL Facebook should redirect users to after login.
+     * @param array  $scope       List of permissions to request during login.
+     * @param string $separator   The separator to use in http_build_query().
+     * @return string
+     */
+    public function getReRequestUrl($redirectUrl, array $scope = [], $separator = '&')
+    {
+        if (!$redirectUrl) $redirectUrl = $this->redirectUrl;
+        if ($loginHelper = $this->_fb->getRedirectLoginHelper()) {
+            return $loginHelper->getReRequestUrl($redirectUrl, $scope, $separator);
+        }
+    }
+
+    /**
+     * @param string $redirectUrl The URL Facebook should redirect users to after login.
+     * @param array  $scope       List of permissions to request during login.
+     * @param string $separator   The separator to use in http_build_query().
+     * @return string
+     */
+    public function getReAuthenticationUrl($redirectUrl, array $scope = [], $separator = '&')
+    {
+        if (!$redirectUrl) $redirectUrl = $this->redirectUrl;
+        if ($loginHelper = $this->_fb->getRedirectLoginHelper()) {
+            return $loginHelper->getReAuthenticationUrl($redirectUrl, $scope, $separator);
+        }
+    }
+
+    /**
+     * @param string $next The url Facebook should redirect the user to after a successful logout.
+     * @param string $separator The separator to use in http_build_query().
+     * @param AccessToken|string $accessToken The access token that will be logged out.
+     * @return string
+     */
+    public function getLogoutUrl($next, $separator = '&', $accessToken = null)
+    {
+        if (!$accessToken) $accessToken = $this->getAccessToken();
+        if ($loginHelper = $this->_fb->getRedirectLoginHelper()) {
+            return $loginHelper->getLogoutUrl($accessToken, $next, $separator);
+        }
+    }
+
+    // FacebookAuthenticationException = Login status or token expired, revoked, or invalid, or OAuth authentication error
+    // FacebookAuthorizationException = missing permissions
+
+    /*** SDK calls ***/
+
+    /**
+     * If the method doesn't exist on this class, call it on the Facebook class
+     * This allows calling request(), get(),
+     * Do not call this method. This is a PHP magic method that we override
+     * to implement the behavior feature.
+     * @param string $name the method name
+     * @param array $parameters method parameters
+     * @throws \CException if current class and its behaviors do not have a method or closure with the given name
+     * @return mixed the method return value
+     */
+    public function __call($name,$parameters)
+    {
+        try {
+            $this->getAccessToken(); // set the default access token if there is one
+            if($this->_fb && method_exists($this->_fb,$name))
+                return call_user_func_array([$this->_fb,$name],$parameters);
+
+            // Login status or token expired, revoked, or invalid, or OAuth authentication error, so we may want to run to code to prompt to renew
+        } catch (FacebookAuthenticationException $e) {
+            return $this->authenticationError($e);
+
+            // missing permissions, so we may want to run to code to prompt to renew and get more permissions
+        } catch (FacebookAuthorizationException $e) {
+            return $this->authorizationError($e);
+
+            // general Facebook SDK exceptions
+        } catch(FacebookSDKException $e) {
+            if ($previous = $e->getPrevious()) {
+                if ($previous instanceof FacebookAuthenticationException) {
+                    return $this->authenticationError($previous);
+                }
+                if ($previous instanceof FacebookAuthorizationException) {
+                    return $this->authorizationError($previous);
+                }
+            }
+            return $this->sdkError($e);
+        }
+
+        throw new \CException(Yii::t('yii','{class} and Facebook do not have a method or closure named "{name}".',
+            ['{class}'=>get_class($this), '{name}'=>$name]));
+    }
+
+    /*** Convenience methods ***/
+
+    /**
+     * Get the user's Facebook ID.
+     * @return string the user id
+     */
+    public function getUserId()
+    {
+        if (!$this->_userId) {
+            if (Yii::app()->session && isset(Yii::app()->session['fb_userId'])) {
+                $this->_userId = Yii::app()->session['fb_userId'];
+            }
+            // if no cached user id, try to refresh the session
+            if (!$this->_userId) {
+                $this->getAccessToken();
+            }
+        }
+        return $this->_userId;
     }
 
     /**
      * Get current logged in user
-     *
-     * @return \Facebook\GraphUser
+     * @return Facebook\GraphNodes\GraphUser
      */
     public function getMe()
     {
@@ -847,18 +937,19 @@ class SFacebook extends \CApplicationComponent
 
     /**
      * Get Facebook user by id
-     *
      * @param $id Facebook ID of user
-     * @return \Facebook\GraphUser
+     * @return \Facebook\GraphNodes\GraphUser
      */
     public function getGraphUser($id)
     {
-        return $this->makeRequest('/' . $id, 'GET')->getGraphObject(\Facebook\GraphUser::className());
+        if ($response = $this->get('/' . $id)) {
+            return $response->getGraphUser();
+        }
+        return null;
     }
 
     /**
      * Get the Facebook profile picture for the currently logged in user
-     *
      * @param mixed size facebook image size (square, small, normal, large)
      * @return url of Facebook profile picture
      */
@@ -872,7 +963,6 @@ class SFacebook extends \CApplicationComponent
 
     /**
      * Get the Facebook user profile picture for a given Open Graph object
-     *
      * @param mixed id Facebook user id
      * @param mixed size (optional) size of the facebook image to return (square, small, normal, large),
      * or an array specifying width and height

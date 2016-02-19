@@ -34,14 +34,14 @@ https://packagist.org/packages/splashlab/yii-facebook-opengraph
         "splashlab/yii-facebook-opengraph": "dev-master"
     }
 
-Instead of 'dev-master' you can choose a release tag like '1.1.0-beta'.
+Instead of 'dev-master' you can choose a release tag like '1.0.2-beta'.
 
 Run `composer update` to get the extension. This will pull down the official Facebook SDK as a dependency.
 
 Configure Yii application component SFacebook in your yii config file:
 
-    'components'=>array(
-        'facebook'=>array(
+    'components'=>[
+        'facebook'=>[
             'class' => '\YiiFacebook\SFacebook',
             'appId'=>'YOUR_FACEBOOK_APP_ID', // needed for JS SDK, Social Plugins and PHP SDK
             'secret'=>'YOUR_FACEBOOK_APP_SECRET', // needed for the PHP SDK
@@ -57,18 +57,38 @@ Configure Yii application component SFacebook in your yii config file:
             //'frictionlessRequests'=>false, // JS SDK - enable frictionless requests for request dialogs
             //'hideFlashCallback'=>null, // JS SDK - A function that is called whenever it is necessary to hide Adobe Flash objects on a page.
             //'html5'=>true,  // use html5 Social Plugins instead of older XFBML
-            //'defaultScope'=>array(), // default Facebook Login permissions to request with Login button
+            //'defaultScope'=>[], // default Facebook Login permissions to request with Login button
             //'redirectUrl'=>null, // default Facebook post-Login redirect URL
             //'expiredSessionCallback'=>null, // PHP callable method to run if expired Facebook session is detected
             //'userFbidAttribute'=>null, // if using FBAuthRequest, declare Facebook ID attribute on user model here
             //'accountLinkUrl'=>null, // if using FBAuthRequest, declare link to user account page here
-            //'ogTags'=>array(  // set default OG tags
+            //'ogTags'=>[  // set default OG tags
                 //'og:title'=>'MY_WEBSITE_NAME',
                 //'og:description'=>'MY_WEBSITE_DESCRIPTION',
                 //'og:image'=>'URL_TO_WEBSITE_LOGO',
-            //),
-        ),
-    ),
+            //],
+            //'authenticationErrorCallback' => function(\Facebook\Exceptions\FacebookAuthenticationException $e) {
+                // special logic for expired API accessTokens
+                // prompt to re-authenticate?
+                // log error?
+                // throw $e?
+                // return true?
+            //},
+            //'authorizationErrorCallback' => function(\Facebook\Exceptions\FacebookAuthorizationException $e) {
+                // special logic for missing API permissions
+                // prompt to authorize additional permissions?
+                // log error?
+                // throw $e?
+                // return true?
+            //},
+            //'sdkErrorCallback' => function(\Facebook\Exceptions\FacebookSDKException $e) {
+                // special logic for generic Facebook SDK errors
+                // log error?
+                // throw $e?
+                // return true?
+            //}
+        ],
+    ],
 
 Then, to enable the JS SDK and Open Graph meta tag functionality in your base Controller,
 add this function to override the `afterRender()` callback:
@@ -80,19 +100,6 @@ add this function to override the `afterRender()` callback:
         Yii::app()->facebook->renderOGMetaTags(); // this renders the OG tags
         return true;
     }
-
-## Installation without Composer
-
-1. Download the extension from GitHub
-2. Copy it in to your `extensions` directory
-3. Include the `autoload.php` file in your application bootstrap
-   `require __DIR__ . '/extensions/yii-facebook-opengraph/src/autoload.php';`
-4. You should be all set to use the extension as usual
-
-Note that this is untested without Composer. Inspiration comes from these links:
-
-* https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader-examples.md
-* https://www.sammyk.me/using-the-facebook-sdk-v4-without-composer
 
 * * *
 
@@ -107,11 +114,11 @@ Set custom OG tags on a page (in view or action):
 
 Render Facebook Social Plugins using helper Yii widgets:
 
-    <?php $this->widget('\YiiFacebook\Plugins\LikeButton', array(
+    <?php $this->widget('\YiiFacebook\Plugins\LikeButton', [
          //'href' => 'YOUR_URL', // if omitted Facebook will use the current page URL
          'show_faces'=>true,
          'share' => true
-    )); ?>
+    ]); ?>
 
 You can, of course, just use the XFBML code for social plugins as well (if loading the JS SDK with XFBML = true):
 
@@ -119,36 +126,57 @@ You can, of course, just use the XFBML code for social plugins as well (if loadi
 
 At any point you can add additional JavaScript code to run after the Facebook JS SDK initializes:
 
-    Yii::app()->facebook->addJsCallback($js);
+    <?php Yii::app()->facebook->addJsCallback($js); ?>
 
 To use the PHP SDK anywhere in your application, just call it like so (there pass-through the Facebook class):
 
     <?php $userid = Yii::app()->facebook->getUserId() ?>
-    <?php $accessToken = Yii::app()->facebook->getToken() ?>
-    <?php $longLivedSession = Yii::app()->facebook->getLongLivedSession() ?>
-    <?php $exchangeToken = Yii::app()->facebook->getExchangeToken() ?>
+    <?php $accessToken = Yii::app()->facebook->getAccessToken() ?>
+    <?php $accessToken = Yii::app()->facebook->getLongLivedAccessToken() ?>
     <?php $loginUrl = Yii::app()->facebook->getLoginUrl() ?>
     <?php $reRequestUrl = Yii::app()->facebook->getReRequestUrl() ?>
-    <?php $accessToken = Yii::app()->facebook->accessToken() ?>
+    <?php $reAuthenticationUrl = Yii::app()->facebook->getReAuthenticationUrl() ?>
     <?php $sessionInfo = Yii::app()->facebook->getSessionInfo() ?>
     <?php $signedRequest = Yii::app()->facebook->getSignedRequest() ?>
-    <?php $signedRequestData = Yii::app()->facebook->getSignedRequestData() ?>
-    <?php $property = Yii::app()->facebook->getSignedRequestProperty('property_name') ?>
     <?php $logoutUrl = Yii::app()->facebook->getLogoutUrl('http://example.com/after-logout') ?>
-    <?php $graphPageObject = Yii::app()->facebook->makeRequest('/SOME_PAGE_ID')
-            ->getGraphObject(\Facebook\GraphPage::className()) ?>
+
+## Graph API Calls
+
+Calling API methods directly on the `Yii::app()->facebook` component will automatically check for and add the proper
+accessToken for the logged in user. Call them like so:
+
+    <?php $graphPageObject = Yii::app()->facebook->get('/SOME_PAGE_ID')->getPageObject() ?>
+    <?php $response = Yii::app()->facebook->post('/me/feed', [
+                        'link' => 'www.example.com',
+                        'message' => 'User provided message'
+                    ])->getGraphObject() ?>
+
+## Exception Handlers
+
+If you call the SDK methods directly on the `Yii::app()->facebook` component then some default error handling
+logic will run. You can override this logic by specifying 3 different global Facebook error handlers:
+
+* authenticationErrorCallback => `function(\Facebook\Exceptions\FacebookAuthenticationException $e)`
+* authorizationErrorCallback => `function(\Facebook\Exceptions\FacebookAuthorizationException $e)`
+* sdkErrorCallback => `function(\Facebook\Exceptions\FacebookSDKException $e)`
+
+## Direct API Calls
+
+If you want to make API calls without the default accessToken or without the error handlers, call it on the `fb`
+property like this (`Yii::app()->facebook->fb`):
+
     <?php
     try {
 
-        $response = Yii::app()->facebook->makeRequest('/me/feed', 'POST', array(
+        $response = Yii::app()->facebook->fb->post('/me/feed', [
             'link' => 'www.example.com',
             'message' => 'User provided message'
-        ))->getGraphObject()
+        ])->getGraphObject()
 
-        echo "Posted with id: " . $response->getProperty('id');
+        echo "Posted with id: " . $response->getField('id');
 
-    } catch (\Facebook\FacebookRequestException $e) {
-
+    } catch (\Facebook\Exceptions\FacebookSDKException $e) {
+        // your own error handlers
         echo "Exception occurred, code: " . $e->getCode();
         echo " with message: " . $e->getMessage();
 
@@ -157,12 +185,14 @@ To use the PHP SDK anywhere in your application, just call it like so (there pas
     ?>
     <?php Yii::app()->facebook->destroySession() ?>
 
-I also created a couple of helper functions:
+## Convenience Methods
+
+There are a couple of additional convenience methods added the component:
 
     <?php $graphUserObject = Yii::app()->facebook->getMe() // gets the Graph info of the current user ?>
     <?php $graphUserObject = Yii::app()->facebook->getGraphUser($user_id) // gets the Graph object of the current user ?>
     <?php $imageUrl = Yii::app()->facebook->getProfilePicture('large') // gets the Facebook picture URL of the current user ?>
-    <?php $imageUrl = Yii::app()->facebook->getProfilePicture(array('height'=>300,'width'=>300)) // $size can also be specific ?>
+    <?php $imageUrl = Yii::app()->facebook->getProfilePicture(['height'=>300,'width'=>300]) // $size can also be specific ?>
     <?php $imageUrl = Yii::app()->facebook->getProfilePictureById($openGraphId, $size) // gets the Facebook picture URL of a given OG entity ?>
 
 Also included are two helper classes: `FBAuthRequest` and `FBUserIdentity`
@@ -171,7 +201,7 @@ Also included are two helper classes: `FBAuthRequest` and `FBUserIdentity`
 is displayed as a `notice` Flash message. You can optionally pass in Facebook permissions to prompt for.
 
     \YiiFacebook\FBAuthRequest::fbLoginPrompt();
-    \YiiFacebook\FBAuthRequest::fbLoginPrompt(array('manage_pages'));
+    \YiiFacebook\FBAuthRequest::fbLoginPrompt(['manage_pages']);
 
 `FBUserIdentity` is a base CBaseUserIdentity class that can be extended when adding Facebook authentication to your application.
 
@@ -180,12 +210,15 @@ is displayed as a `notice` Flash message. You can optionally pass in Facebook pe
 BREAKING CHANGES:
 ---------------------------------------------------------------------------
 * New version 1.x breaks everything from previous version and requires PHP 5.4
+* 2.x version breaks most things, now using the PHP SDK v5 and Graph API v2.5
 
 * * *
 
 CHANGE LOG:
 ---------------------------------------------------------------------------
 * 1.0.2-beta Updating to PHP SDK 4.0 and Open Graph API 2.2
+* 2.0.0-beta Updated to PHP SDK 5.1 and Open Graph API v2.5
+
 
 * * *
 
