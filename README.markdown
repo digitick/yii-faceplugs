@@ -34,7 +34,7 @@ https://packagist.org/packages/splashlab/yii-facebook-opengraph
         "splashlab/yii-facebook-opengraph": "dev-master"
     }
 
-Instead of 'dev-master' you can choose a release tag like '1.0.2-beta'.
+Instead of 'dev-master' you can choose a release tag like '1.1.0-beta'.
 
 Run `composer update` to get the extension. This will pull down the official Facebook SDK as a dependency.
 
@@ -80,6 +80,19 @@ add this function to override the `afterRender()` callback:
         Yii::app()->facebook->renderOGMetaTags(); // this renders the OG tags
         return true;
     }
+
+## Installation without Composer
+
+1. Download the extension from GitHub
+2. Copy it in to your `extensions` directory
+3. Include the `autoload.php` file in your application bootstrap
+   `require __DIR__ . '/extensions/yii-facebook-opengraph/src/autoload.php';`
+4. You should be all set to use the extension as usual
+
+Note that this is untested without Composer. Inspiration comes from these links:
+
+* https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader-examples.md
+* https://www.sammyk.me/using-the-facebook-sdk-v4-without-composer
 
 * * *
 
