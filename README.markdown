@@ -1,7 +1,7 @@
 The master branch is not stable, please use tagged release branches. The previous stable branch with support for the
 old API is now under the `opengraph-v1.0` branch.
 
-### This is a Yii application component wrapper for the official Facebook PHP SDK 5.0
+#### This is a Yii1 application component wrapper for Facebook PHP SDK 5.0
 
 Also included are some helper functions that:
 
@@ -10,18 +10,21 @@ Also included are some helper functions that:
   * Easy rendering of Facebook Social Plugins.
 
 Facebook PHP SDK:
-https://developers.facebook.com/docs/reference/php
-https://developers.facebook.com/docs/php/gettingstarted
-https://github.com/facebook/facebook-php-sdk-v4
+* https://developers.facebook.com/docs/reference/php
+* https://developers.facebook.com/docs/php/gettingstarted
+* https://github.com/facebook/facebook-php-sdk-v4
 
 Facebook JS SDK:
-https://developers.facebook.com/docs/javascript
+* https://developers.facebook.com/docs/javascript
 
 Facebook Social Plugins:
-https://developers.facebook.com/docs/plugins
+* https://developers.facebook.com/docs/plugins
 
 Open Graph Protocol:
-https://developers.facebook.com/docs/graph-api
+* https://developers.facebook.com/docs/graph-api
+
+Upgrading from PHP SDK 4 to PHP SDK 5
+* https://www.sammyk.me/upgrading-the-facebook-php-sdk-from-v4-to-v5
 
 * * *
 
@@ -107,11 +110,15 @@ add this function to override the `afterRender()` callback:
 USAGE:
 ---------------------------------------------------------------------------
 
+### Open Graph meta tags
+
 Some Open Graph meta tags are set by default.
 
 Set custom OG tags on a page (in view or action):
 
     <?php Yii::app()->facebook->ogTags['og:title'] = "My Page Title"; ?>
+
+### Social Plugin helper widgets
 
 Render Facebook Social Plugins using helper Yii widgets:
 
@@ -125,9 +132,13 @@ You can, of course, just use the XFBML code for social plugins as well (if loadi
 
     <div class="fb-like" data-share="true" data-show-faces="true"></div>
 
+### Run JS after Facebook JS SDK initializes
+
 At any point you can add additional JavaScript code to run after the Facebook JS SDK initializes:
 
     <?php Yii::app()->facebook->addJsCallback($js); ?>
+
+### Calling Facebook PHP SDK methods
 
 To use the PHP SDK anywhere in your application, just call it like so (there pass-through the Facebook class):
 
@@ -141,7 +152,7 @@ To use the PHP SDK anywhere in your application, just call it like so (there pas
     <?php $signedRequest = Yii::app()->facebook->getSignedRequest() ?>
     <?php $logoutUrl = Yii::app()->facebook->getLogoutUrl('http://example.com/after-logout') ?>
 
-### Graph API Calls
+### Graph API calls
 
 Calling API methods directly on the `Yii::app()->facebook` component will automatically check for and add the proper
 accessToken for the logged in user. Call them like so:
@@ -152,37 +163,32 @@ accessToken for the logged in user. Call them like so:
                         'message' => 'User provided message'
                     ])->getGraphObject() ?>
 
-### Exception Handlers
+### Facebook Exception Handlers
 
 If you call the SDK methods directly on the `Yii::app()->facebook` component then some default error handling
 logic will run. You can override this logic by specifying 3 different global Facebook error handlers:
 
-* authenticationErrorCallback => `function(\Facebook\Exceptions\FacebookAuthenticationException $e)`
-* authorizationErrorCallback => `function(\Facebook\Exceptions\FacebookAuthorizationException $e)`
-* sdkErrorCallback => `function(\Facebook\Exceptions\FacebookSDKException $e)`
+* `authenticationErrorCallback` => `function(\Facebook\Exceptions\FacebookAuthenticationException $e)`
+* `authorizationErrorCallback` => `function(\Facebook\Exceptions\FacebookAuthorizationException $e)`
+* `sdkErrorCallback` => `function(\Facebook\Exceptions\FacebookSDKException $e)`
 
-### Direct API Calls
+### Direct Graph API Calls
 
-If you want to make API calls without the default accessToken or without the error handlers, call it on the `fb`
-property like this (`Yii::app()->facebook->fb`):
+If you want to make API calls _without_ the default accessToken or _without_ the global error handlers, call it
+via the `fb` property like this (`Yii::app()->facebook->fb`):
 
     <?php
     try {
-
         $response = Yii::app()->facebook->fb->post('/me/feed', [
             'link' => 'www.example.com',
             'message' => 'User provided message'
         ])->getGraphObject()
-
         echo "Posted with id: " . $response->getField('id');
-
     } catch (\Facebook\Exceptions\FacebookSDKException $e) {
         // your own error handlers
         echo "Exception occurred, code: " . $e->getCode();
         echo " with message: " . $e->getMessage();
-
     }
-
     ?>
     <?php Yii::app()->facebook->destroySession() ?>
 
@@ -217,8 +223,8 @@ BREAKING CHANGES:
 
 CHANGE LOG:
 ---------------------------------------------------------------------------
-* 1.0.2-beta Updating to PHP SDK 4.0 and Open Graph API 2.2
-* 2.0.0-beta Updated to PHP SDK 5.1 and Open Graph API v2.5
+* 1.0.2-beta Updated to PHP SDK 4.0 and Open Graph API 2.2
+* 2.0.0-beta Updated to PHP SDK 5.1 and Open Graph API 2.5
 
 
 * * *
