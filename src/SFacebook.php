@@ -679,11 +679,15 @@ class SFacebook extends \CApplicationComponent
     public function getAccessToken()
     {
         if (!$this->_token) {
-            if (Yii::app()->session && isset(Yii::app()->session['fb_token']) && Yii::app()->session['fb_token']) {
+            if (Yii::app()->session
+                && isset(Yii::app()->session['fb_token'])
+                && Yii::app()->session['fb_token']
+                && !$this->isExpired()) { // only instantiate cached token if we know it's not expired
                 $this->setAccessToken(Yii::app()->session['fb_token']);
             } else {
                 if ($accessToken = $this->getNewAccessToken()) {
-                    $this->getLongLivedAccessToken($accessToken);
+                    // this calls setAccessToken() as well
+                    return $this->getLongLivedAccessToken($accessToken);
                 }
             }
         }
@@ -704,31 +708,25 @@ class SFacebook extends \CApplicationComponent
             $accessToken = new AccessToken($accessToken);
         }
         if ($accessToken instanceof AccessToken) {
-            if ($this->isExpired($accessToken)) {
-                throw new FacebookAuthenticationException;
-            } else {
-                $this->_token = $accessToken;
-                // this way it will automatically be used by all API requests
-                $this->_fb->setDefaultAccessToken($accessToken);
+            if ($accessToken->getExpiresAt()) {
+                Yii::app()->session['fb_token_expires'] = $accessToken->getExpiresAt();
             }
+            $this->_token = $accessToken;
+            // this way it will automatically be used by all API requests
+            $this->_fb->setDefaultAccessToken($accessToken);
         }
     }
 
     /**
-     * Get the cached session expiration
-     * @param AccessToken $accessToken
+     * Check if cached token has expired
      * @return string cached access token
      */
-    public function isExpired($accessToken)
+    protected function isExpired()
     {
-        $expiresAt = null;
-        if ($accessToken && ($expiresAt = $accessToken->getExpiresAt())) {
-            Yii::app()->session['fb_token_expires'] = $expiresAt;
-
-        } elseif (Yii::app()->session['fb_token_expires']) {
-            $expiresAt = Yii::app()->session['fb_token_expires'];
-        }
-        if ($expiresAt && $expiresAt->getTimestamp() > time()) {
+        if (isset(Yii::app()->session['fb_token_expires'])
+            && ($expires = Yii::app()->session['fb_token_expires'])
+            && $expires instanceof \DateTime
+            && $expires->getTimestamp() > time()) {
             return false;
         }
         return true;
@@ -790,6 +788,12 @@ class SFacebook extends \CApplicationComponent
             try {
                 // Returns a long-lived access token
                 if ($accessToken = $client->getLongLivedAccessToken($accessToken)) {
+                    if ($accessToken->getExpiresAt()) {
+                        Yii::app()->session['fb_token_expires'] = $accessToken->getExpiresAt();
+                    } else {
+                        Yii::app()->session['fb_token_expires'] = new \DateTime();
+                        Yii::app()->session['fb_token_expires']->modify('+30 days');
+                    }
                     $this->setAccessToken($accessToken);
                 }
             } catch(FacebookSDKException $e) {
@@ -875,7 +879,10 @@ class SFacebook extends \CApplicationComponent
     public function __call($name,$parameters)
     {
         try {
-            $this->getAccessToken(); // set the default access token if there is one
+            // if we can't get a valid access token, throw an error
+            if (!$this->getAccessToken()) {
+                throw new FacebookAuthenticationException();
+            } // set the default access token if there is one
             if($this->_fb && method_exists($this->_fb,$name))
                 return call_user_func_array([$this->_fb,$name],$parameters);
 
@@ -926,7 +933,7 @@ class SFacebook extends \CApplicationComponent
 
     /**
      * Get current logged in user
-     * @return Facebook\GraphNodes\GraphUser
+     * @return \Facebook\GraphNodes\GraphUser
      */
     public function getMe()
     {
